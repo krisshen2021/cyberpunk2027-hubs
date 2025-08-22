@@ -1,0 +1,203 @@
+<div class="rpg-combat-interface" data-scene-type="fullscreen-combat">
+
+    <!-- 顶部血量条区域 -->
+    <div class="combat-health-bars">
+        <!-- NPC血量条 -->
+        <div class="health-bar-container npc-health">
+            <div class="fighter-info npc-info">
+                {{#if NPC_SPECIFIC_AVATAR}}
+                <div class="fighter-avatar">
+                    <img src="{{NPC_SPECIFIC_AVATAR}}" alt="{{NPC_SPECIFIC_NAME}}" class="avatar-image">
+                </div>
+                {{/if}}
+                <div class="fighter-details">
+                    <div class="fighter-name">{{NPC_SPECIFIC_NAME}}</div>
+                    <div class="fighter-status" data-status="{{NPC_STATUS}}">{{NPC_STATUS}}</div>
+                </div>
+            </div>
+            <div class="health-bar">
+                <div class="health-bar-bg">
+                    <div class="health-bar-fill npc-hp" data-hp="{{NPC_HP}}" data-max-hp="{{NPC_MAX_HP}}"></div>
+                </div>
+                <div class="health-text">
+                    <span class="hp-current">{{NPC_HP}}</span>
+                    <span class="hp-separator">/</span>
+                    <span class="hp-max">{{NPC_MAX_HP}}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 战斗状态指示器 -->
+        <div class="combat-status-indicator">
+            <div class="status-icon">⚔️</div>
+            <div class="vs-text">VS</div>
+            {{#ifEqual COMBAT_CRITICAL "true"}}
+            <div class="critical-indicator" data-critical="{{COMBAT_CRITICAL}}">
+                {{#if COMBAT_DAMAGE}}<span class="damage-text">{{COMBAT_DAMAGE}}</span>{{/if}}
+            </div>
+            {{/ifEqual}}
+        </div>
+
+        <!-- 用户血量条 -->
+        <div class="health-bar-container user-health">
+            <div class="health-bar">
+                <div class="health-bar-bg">
+                    <div class="health-bar-fill user-hp" data-hp="{{USER_HP}}" data-max-hp="{{USER_MAX_HP}}"></div>
+                </div>
+                <div class="health-text">
+                    <span class="hp-current">{{USER_HP}}</span>
+                    <span class="hp-separator">/</span>
+                    <span class="hp-max">{{USER_MAX_HP}}</span>
+                </div>
+            </div>
+            <div class="fighter-info user-info">
+                <div class="fighter-details">
+                    <div class="fighter-name">{{USER_NAME}}</div>
+                    <div class="fighter-status" data-status="{{USER_STATUS}}">{{USER_STATUS}}</div>
+                </div>
+                {{#if USER_AVATAR}}
+                <div class="fighter-avatar">
+                    <img src="{{USER_AVATAR}}" alt="{{USER_NAME}}" class="avatar-image">
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <!-- 中间对话内容区域 -->
+    <div class="combat-dialogue-area">
+        <!-- 战斗结果显示 - 浮动层 -->
+        {{#if COMBAT_DAMAGE}}
+        <div class="combat-result-display floating-damage">
+            <div class="damage-indicator {{#ifEqual COMBAT_CRITICAL "true"}}critical{{/ifEqual}}">
+                <span class="damage-value">{{COMBAT_DAMAGE}}</span>
+                <span class="damage-label">{{#ifEqual COMBAT_CRITICAL "true"}}CRITICAL!{{else}}DAMAGE{{/ifEqual}}</span>
+                {{#ifNotEmpty COMBAT_ACCURACY}}<span class="accuracy-text">{{COMBAT_ACCURACY}}</span>{{/ifNotEmpty}}
+            </div>
+        </div>
+        {{/if}}
+
+        {{#ifNotEmpty LLM_DIALOGUE}}
+        <div class="dialogue-container">
+            <div class="dialogue-content" data-function="show_markdown()">{{LLM_DIALOGUE}}</div>
+        </div>
+        {{/ifNotEmpty}}
+    </div>
+
+    <!-- 底部对战数据区域 -->
+    <div class="combat-stats-area">
+        <!-- 左侧 - NPC数据 -->
+        <div class="fighter-stats-panel npc-panel">
+            <div class="panel-header">
+                <div class="panel-title">🎯 {{NPC_SPECIFIC_NAME}}</div>
+                <div class="panel-subtitle">ENEMY</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item atk-stat">
+                    <div class="stat-icon">⚔️</div>
+                    <div class="stat-info">
+                        <div class="stat-label">ATK</div>
+                        <div class="stat-value">{{NPC_ATK}}</div>
+                    </div>
+                </div>
+
+                <div class="stat-item def-stat">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-info">
+                        <div class="stat-label">DEF</div>
+                        <div class="stat-value">{{NPC_DEF}}</div>
+                    </div>
+                </div>
+
+                <div class="stat-item skl-stat">
+                    <div class="stat-icon">💫</div>
+                    <div class="stat-info">
+                        <div class="stat-label">SKL</div>
+                        <div class="stat-value">{{NPC_SKL}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="equipment-section">
+                <div class="equipment-item weapon">
+                    <div class="equip-label">🔫 WEAPON</div>
+                    <div class="equip-value">{{NPC_WEAPON}}</div>
+                </div>
+
+                <div class="equipment-item skill">
+                    <div class="equip-label">🎯 SKILL</div>
+                    <div class="equip-value">{{NPC_SKILL}}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧 - 用户数据 -->
+        <div class="fighter-stats-panel user-panel">
+            <div class="panel-header">
+                <div class="panel-title">👤 {{USER_NAME}}</div>
+                <div class="panel-subtitle">PLAYER</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item atk-stat">
+                    <div class="stat-icon">⚔️</div>
+                    <div class="stat-info">
+                        <div class="stat-label">ATK</div>
+                        <div class="stat-value">{{USER_ATK}}</div>
+                    </div>
+                </div>
+
+                <div class="stat-item def-stat">
+                    <div class="stat-icon">🛡️</div>
+                    <div class="stat-info">
+                        <div class="stat-label">DEF</div>
+                        <div class="stat-value">{{USER_DEF}}</div>
+                    </div>
+                </div>
+
+                <div class="stat-item skl-stat">
+                    <div class="stat-icon">💫</div>
+                    <div class="stat-info">
+                        <div class="stat-label">SKL</div>
+                        <div class="stat-value">{{USER_SKL}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="equipment-section">
+                <div class="equipment-item weapon">
+                    <div class="equip-label">🔫 WEAPON</div>
+                    <div class="equip-value">{{USER_WEAPON}}</div>
+                </div>
+
+                <div class="equipment-item skill">
+                    <div class="equip-label">🎯 SKILL</div>
+                    <div class="equip-value">{{USER_SKILL}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 共享功能集成 - 可折叠详细信息 -->
+    <div class="combat-details-toggle">
+        <div class="toggle-header" data-function="toggle-wrapper(combat-extended-info, init_show=false)">
+            <div class="toggle-indicator">▼</div>
+            <div class="toggle-label">DETAILED COMBAT INFO</div>
+        </div>
+
+        <div class="extended-info-container" id="combat-extended-info">
+            <div class="extended-stats">
+                <div class="debug-info">
+                    <h4>战斗统计详情</h4>
+                    <div class="debug-grid">
+                        <div>命中状态: {{COMBAT_ACCURACY}}</div>
+                        <div>暴击状态: {{COMBAT_CRITICAL}}</div>
+                        <div>伤害数值: {{COMBAT_DAMAGE}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

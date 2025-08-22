@@ -1,0 +1,65 @@
+{
+  "all_modules": [
+    "scene-container",
+    "combat-interface",
+    "inventory-check",
+    "character-status",
+    "dialogue-panel",
+    "map-display"
+  ],
+  "themes": {
+    "cyberpunk": {
+      "name": "Cyberpunk 2027",
+      "description": "电子风格",
+      "author": "Muffin",
+      "modules": {
+        "scene-container": {
+          "name": "场景容器",
+          "description": "显示环境、角色和用户状态信息的面板",
+          "enabled": true
+        },
+        "combat-interface": {
+          "name": "战斗界面",
+          "description": "显示武器、技能、伤害等战斗相关信息",
+          "enabled": true
+        },
+        "inventory-check": {
+          "name": "物品检查",
+          "description": "显示物品详情和检查结果",
+          "enabled": false
+        },
+        "character-status": {
+          "name": "角色状态",
+          "description": "显示角色生命值、技能等状态信息",
+          "enabled": false
+        }
+      }
+    },
+    "ai-warrior": {
+      "name": "A.I Warrior",
+      "description": "机甲风",
+      "author": "Muffin",
+      "modules": {
+        "scene-container": {
+          "name": "作战环境",
+          "description": "显示战术环境和A.I分析数据",
+          "enabled": true
+        },
+        "combat-interface": {
+          "name": "作战界面",
+          "description": "A.I战术分析和武器系统",
+          "enabled": false
+        },
+        "inventory-check": {
+          "name": "装备检查",
+          "description": "装备状态和维护信息",
+          "enabled": false
+        }
+      }
+    }
+  },
+  "settings": {
+    "default_theme": "cyberpunk",
+    "version": "1.0"
+  }
+}

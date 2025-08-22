@@ -1,0 +1,218 @@
+{
+  "template_type": "combat-interface",
+  "version": "2.0.0",
+  "description": "Cyberpunk 2027主题的RPG战斗界面模板配置 - 消息框内全宽全高显示，支持双方对战数据",
+  
+  "data_types": {
+    "rpg_stats": {
+      "description": "RPG战斗属性数据类型",
+      "output_format": "object",
+      "auto_properties": ["hp", "max_hp", "atk", "def", "skl"],
+      "default_values": {
+        "hp": "100",
+        "max_hp": "100", 
+        "atk": "50",
+        "def": "30",
+        "skl": "40"
+      }
+    }
+  },
+  
+  "data_mapping": {
+    "{{LLM_DIALOGUE}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-llm-msg",
+      "required": false,
+      "default": "",
+      "description": "LLM输出的战斗对话内容"
+    },
+    
+    "{{NPC_SPECIFIC}}": {
+      "source": "llm",
+      "category": "npc_specific",
+      "attribute": "data-npc-name",
+      "required": false,
+      "default": "",
+      "description": "战斗对手NPC名称"
+    },
+    "{{NPC_HP}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-hp",
+      "required": false,
+      "default": "100",
+      "description": "NPC当前血量"
+    },
+    "{{NPC_MAX_HP}}": {
+      "source": "llm", 
+      "category": "basic_data",
+      "attribute": "data-npc-max-hp",
+      "required": false,
+      "default": "100",
+      "description": "NPC最大血量"
+    },
+    "{{NPC_ATK}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-atk",
+      "required": false,
+      "default": "50",
+      "description": "NPC攻击力"
+    },
+    "{{NPC_DEF}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-def",
+      "required": false,
+      "default": "30",
+      "description": "NPC防御力"
+    },
+    "{{NPC_SKL}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-skl",
+      "required": false,
+      "default": "40",
+      "description": "NPC技能力"
+    },
+    "{{NPC_WEAPON}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-weapon",
+      "required": false,
+      "default": "徒手",
+      "description": "NPC当前武器"
+    },
+    "{{NPC_SKILL}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-skill",
+      "required": false,
+      "default": "基础攻击",
+      "description": "NPC当前技能"
+    },
+    "{{NPC_STATUS}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-npc-status",
+      "required": false,
+      "default": "正常",
+      "description": "NPC战斗状态"
+    },
+    
+    "{{USER_HP}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-hp",
+      "required": false,
+      "default": "100",
+      "description": "用户当前血量"
+    },
+    "{{USER_MAX_HP}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-max-hp",
+      "required": false,
+      "default": "100",
+      "description": "用户最大血量"
+    },
+    "{{USER_ATK}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-atk",
+      "required": false,
+      "default": "45",
+      "description": "用户攻击力"
+    },
+    "{{USER_DEF}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-def",
+      "required": false,
+      "default": "35",
+      "description": "用户防御力"
+    },
+    "{{USER_SKL}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-skl",
+      "required": false,
+      "default": "38",
+      "description": "用户技能力"
+    },
+    "{{USER_WEAPON}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-weapon",
+      "required": false,
+      "default": "徒手",
+      "description": "用户当前武器"
+    },
+    "{{USER_SKILL}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-skill",
+      "required": false,
+      "default": "基础攻击",
+      "description": "用户当前技能"
+    },
+    "{{USER_STATUS}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-status",
+      "required": false,
+      "default": "正常",
+      "description": "用户战斗状态"
+    },
+    
+    "{{USER_NAME}}": {
+      "source": "auto",
+      "category": "auto_data",
+      "type": "user",
+      "attribute": "name",
+      "required": false,
+      "default": "用户",
+      "description": "用户名称（自动获取）"
+    },
+    "{{USER_AVATAR}}": {
+      "source": "auto",
+      "category": "auto_data",
+      "type": "user",
+      "attribute": "avatar",
+      "required": false,
+      "default": "",
+      "description": "用户头像（自动获取）"
+    },
+    
+    "{{COMBAT_DAMAGE}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-combat-damage",
+      "required": false,
+      "default": "0",
+      "description": "本次攻击造成的伤害值"
+    },
+    "{{COMBAT_CRITICAL}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-combat-critical",
+      "required": false,
+      "default": "否",
+      "description": "是否暴击"
+    },
+    "{{COMBAT_ACCURACY}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-combat-accuracy",
+      "required": false,
+      "default": "命中",
+      "description": "攻击命中状态"
+    }
+  },
+  
+  "validation": {
+    "min_required_fields": 1,
+    "ignore_unknown_attributes": true
+  }
+}

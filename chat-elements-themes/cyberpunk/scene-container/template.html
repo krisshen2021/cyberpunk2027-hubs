@@ -1,0 +1,198 @@
+<div class="scene-container" data-scene-type="enhanced-typed">
+    <div class="scene-status-frame">
+
+        <!-- Environment Section -->
+        <div class="scene-section environment-section" data-section="environment">
+            <div class="section-header" data-function="toggle-wrapper(environment-content-wrapper)">
+                <div class="toggle-indicator">▼</div>
+                <div class="section-icon">🌍</div>
+                <div class="section-title">ENVIRONMENT</div>
+            </div>
+            <div class="section-content" id="environment-content-wrapper">
+
+                <div class="scene-element scene-datetime" data-element="datetime">
+                    <div class="element-header">
+                        <span class="element-icon datetime-icon">📅</span>
+                        <span class="element-label">DATETIME</span>
+                    </div>
+                    <div class="element-content datetime-content">
+                        <span class="date-display">{{DATE_DATA}}</span>
+                        <span class="time-display">{{TIME_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element scene-location" data-element="location">
+                    <div class="element-header">
+                        <span class="element-icon location-icon">📍</span>
+                        <span class="element-label">LOCATION</span>
+                    </div>
+                    <div class="element-content location-content">
+                        <span class="location-display">{{LOCATION_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element scene-weather" data-element="weather">
+                    <div class="element-header">
+                        <span class="element-icon weather-icon">🌤️</span>
+                        <span class="element-label">WEATHER</span>
+                    </div>
+                    <div class="element-content weather-content">
+                        <span class="weather-display">{{WEATHER_DATA}}</span>
+                        <span class="temperature-display">{{TEMPERATURE_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element scene-event" data-element="event">
+                    <div class="element-header">
+                        <span class="element-icon event-icon">⚡</span>
+                        <span class="element-label">EVENT</span>
+                    </div>
+                    <div class="element-content event-content">
+                        <span class="event-display">{{EVENT_DATA}}</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Character Section -->
+        <div class="scene-section character-section" data-section="character">
+            <div class="section-header" data-function="toggle-wrapper(character-content-wrapper, init_show=false)">
+                <div class="toggle-indicator">▼</div>
+                <div class="section-icon">👤</div>
+                <div class="section-title">CHARACTER</div>
+            </div>
+            <div class="section-content" id="character-content-wrapper">
+                <div class="scene-element character-info" data-element="character-info">
+                    <div class="element-header">
+                        <span class="element-icon information-icon">ℹ️</span>
+                        <span class="element-label">{{MAIN_CHAR_NAME}}</span>
+                    </div>
+                    <div class="element-content avatar-content">
+                        <div class="avatar-display"><img src="{{MAIN_CHAR_AVATAR}}" alt="Main Character Avatar"></div>
+                    </div>
+                </div>
+
+                <div class="scene-element character-looks" data-element="character-looks">
+                    <div class="element-header">
+                        <span class="element-icon looks-icon">💄</span>
+                        <span class="element-label">APPEARANCE</span>
+                    </div>
+                    <div class="element-content looks-content">
+                        <span class="looks-display">{{CHARACTER_LOOKS_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element character-wearing" data-element="character-wearing">
+                    <div class="element-header">
+                        <span class="element-icon wearing-icon">👗</span>
+                        <span class="element-label">OUTFIT</span>
+                    </div>
+                    <div class="element-content wearing-content">
+                        <span class="wearing-display">{{CHARACTER_WEARING_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element character-behavior" data-element="character-behavior">
+                    <div class="element-header">
+                        <span class="element-icon behavior-icon" data-icon="behavior">🎭</span>
+                        <span class="element-label">BEHAVIOR</span>
+                    </div>
+                    <div class="element-content behavior-content">
+                        <span class="behavior-display">{{CHARACTER_BEHAVIOR_DATA}}</span>
+                    </div>
+                </div>
+                {{#ifNotEmpty NPC_LIST_CHAR}}
+                <div class="scene-element npc-allies-info" data-element="npc-allies">
+                    <div class="element-header">
+                        <span class="element-label">{{MAIN_CHAR_NAME}}'s Allies</span>
+                    </div>
+                    <div class="element-content npc-list-content">
+                        {{#each NPC_LIST_CHAR}}
+                        <div class="npc-item ally-item">
+                            <div class="npc-avatar-wrapper" data-function="popup-info({{name}}, detailed)">
+                                <img src="{{avatar}}" alt="{{name}} Avatar" class="npc-avatar" onerror="this.style.display='none'">
+                            </div>
+                            <div class="npc-name">{{name}}</div>
+                            <div class="npc-role">盟友</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/ifNotEmpty}}
+
+            </div>
+        </div>
+
+        <!-- User Section -->
+        <div class="scene-section user-section" data-section="user">
+            <div class="section-header" data-function="toggle-wrapper(user-content-wrapper, init_show=false)">
+                <div class="toggle-indicator">▼</div>
+                <div class="section-icon">🧑</div>
+                <div class="section-title">USER STATUS</div>
+            </div>
+            <div class="section-content" id="user-content-wrapper">
+                <div class="scene-element user-info" data-element="user-info">
+                    <div class="element-header">
+                        <span class="element-icon information-icon">ℹ️</span>
+                        <span class="element-label">{{USER_NAME}}</span>
+                    </div>
+                    <div class="element-content avatar-content">
+                        <div class="avatar-display"><img src="{{USER_AVATAR}}" alt="User Avatar"></div>
+                    </div>
+                </div>
+
+                <div class="scene-element user-info-data" data-element="user-info-data">
+                    <div class="element-header">
+                        <span class="element-icon user-info-icon">ℹ️</span>
+                        <span class="element-label">INFO</span>
+                    </div>
+                    <div class="element-content user-info-content">
+                        <span class="user-info-display">{{USER_INFO_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element user-location" data-element="user-location">
+                    <div class="element-header">
+                        <span class="element-icon user-location-icon">🗺️</span>
+                        <span class="element-label">POSITION</span>
+                    </div>
+                    <div class="element-content user-location-content">
+                        <span class="user-location-display">{{USER_LOCATION_DATA}}</span>
+                    </div>
+                </div>
+
+                <div class="scene-element user-activity" data-element="user-activity">
+                    <div class="element-header">
+                        <span class="element-icon user-activity-icon">🏃</span>
+                        <span class="element-label">ACTIVITY</span>
+                    </div>
+                    <div class="element-content user-activity-content">
+                        <span class="user-activity-display">{{USER_ACTIVITY_DATA}}</span>
+                    </div>
+                </div>
+                {{#ifNotEmpty NPC_LIST_USER}}
+                <div class="scene-element npc-allies-info" data-element="npc-allies">
+                    <div class="element-header">
+                        <span class="element-label">{{USER_NAME}}'s Allies</span>
+                    </div>
+                    <div class="element-content npc-list-content">
+                        {{#each NPC_LIST_USER}}
+                        <div class="npc-item ally-item">
+                            <div class="npc-avatar-wrapper" data-function="popup-info({{name}}, detailed)">
+                                <img src="{{avatar}}" alt="{{name}} Avatar" class="npc-avatar"
+                                    onerror="this.style.display='none'">
+                            </div>
+                            <div class="npc-name">{{name}}</div>
+                            <div class="npc-role">盟友</div>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/ifNotEmpty}}
+
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,220 @@
+{
+  "template_type": "scene-container",
+  "version": "2.0.0",
+  "description": "Cyberpunk 2027主题的场景容器模板配置 - 支持数据类型系统",
+  "data_types": {
+    "npc_list": {
+      "description": "NPC列表数据类型，自动处理为数组，每个元素包含name和avatar",
+      "output_format": "array",
+      "auto_properties": ["name", "avatar"],
+      "separator": ","
+    },
+    "npc_specific": {
+      "description": "特定NPC数据类型，自动派生_NAME和_AVATAR属性",
+      "output_format": "object",
+      "auto_properties": ["_NAME", "_AVATAR"]
+    },
+    "basic_data": {
+      "description": "基础数据类型，简单字符串",
+      "output_format": "string"
+    },
+    "auto_data": {
+      "description": "自动获取的ST系统数据",
+      "output_format": "string"
+    }
+  },
+  "data_mapping": {
+    "{{DATE_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-date",
+      "required": false,
+      "default": "未知日期",
+      "description": "当前日期信息"
+    },
+    "{{TIME_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-time",
+      "required": false,
+      "default": "未知时间",
+      "description": "当前时间信息"
+    },
+    "{{LOCATION_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-location",
+      "required": true,
+      "default": "未知位置",
+      "description": "当前位置信息"
+    },
+    "{{WEATHER_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-weather",
+      "required": false,
+      "default": "天气未知",
+      "description": "天气信息"
+    },
+    "{{TEMPERATURE_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-temperature",
+      "required": false,
+      "default": "温度未知",
+      "description": "温度信息"
+    },
+    "{{EVENT_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-event",
+      "required": false,
+      "default": "无特殊事件",
+      "description": "当前事件信息"
+    },
+    "{{CHARACTER_LOOKS_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-character-looks",
+      "required": false,
+      "default": "外观未知",
+      "description": "角色外观描述"
+    },
+    "{{CHARACTER_WEARING_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-character-wearing",
+      "required": false,
+      "default": "服装未知",
+      "description": "角色服装描述"
+    },
+    "{{CHARACTER_BEHAVIOR_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-character-behavior",
+      "required": false,
+      "default": "行为未知",
+      "description": "角色行为描述"
+    },
+    "{{USER_INFO_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-info",
+      "required": false,
+      "default": "用户信息未知",
+      "description": "用户相关信息"
+    },
+    "{{USER_LOCATION_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-location",
+      "required": false,
+      "default": "用户位置未知",
+      "description": "用户所在位置"
+    },
+    "{{USER_ACTIVITY_DATA}}": {
+      "source": "llm",
+      "category": "basic_data",
+      "attribute": "data-user-activity",
+      "required": false,
+      "default": "用户活动未知",
+      "description": "用户当前活动"
+    },
+    "{{NPC_LIST}}": {
+      "source": "llm",
+      "category": "npc_list",
+      "attribute": "data-npc-list",
+      "required": false,
+      "default": [],
+      "description": "通用NPC角色列表（逗号分隔，从LLM输出获取）"
+    },
+    "{{NPC_LIST_CHAR}}": {
+      "source": "llm",
+      "category": "npc_list",
+      "attribute": "data-npc-list-char",
+      "required": false,
+      "default": [],
+      "description": "属于角色的npc列表（逗号分隔，从LLM输出获取）"
+    },
+    "{{NPC_LIST_USER}}": {
+      "source": "llm",
+      "category": "npc_list",
+      "attribute": "data-npc-list-user",
+      "required": false,
+      "default": [],
+      "description": "属于用户的npc列表（逗号分隔，从LLM输出获取）"
+    },
+     "{{NPC_LIST_SLAVES}}": {
+      "source": "llm",
+      "category": "npc_list",
+      "attribute": "data-npc-list-slaves",
+      "required": false,
+      "default": [],
+      "description": "奴隶列表"
+    },
+    "{{NPC_SPECIFIC}}": {
+      "source": "llm",
+      "category": "npc_specific",
+      "attribute": "data-npc-specific",
+      "required": false,
+      "default": "Unknown",
+      "description": "通用特定NPC角色名称（单个，从LLM输出获取）"
+    },
+    "{{NPC_SPECIFIC_LEADER}}": {
+      "source": "llm",
+      "category": "npc_specific",
+      "attribute": "data-npc-specific-leader",
+      "required": false,
+      "default": "Unknown",
+      "description": "领导者NPC（可选，用于显示当前场景的关键人物）"
+    },
+    "{{NPC_SPECIFIC_TARGET}}": {
+      "source": "llm",
+      "category": "npc_specific",
+      "attribute": "data-npc-specific-target",
+      "required": false,
+      "default": "Unknown",
+      "description": "目标NPC（可选，用于显示任务目标或关注对象）"
+    },
+    "{{USER_NAME}}": {
+      "source": "auto",
+      "category": "auto_data",
+      "type": "user",
+      "attribute": "name",
+      "required": false,
+      "default": "User",
+      "description": "用户名称（自动获取）"
+    },
+    "{{USER_AVATAR}}": {
+      "source": "auto",
+      "category": "auto_data",
+      "type": "user",
+      "attribute": "avatar",
+      "required": false,
+      "default": "",
+      "description": "用户头像（自动获取）"
+    },
+    "{{MAIN_CHAR_NAME}}": {
+      "source": "auto",
+      "category": "auto_data",
+      "type": "main_character",
+      "attribute": "name",
+      "required": false,
+      "default": "Character",
+      "description": "主角色名称（自动获取）"
+    },
+    "{{MAIN_CHAR_AVATAR}}": {
+      "source": "auto",
+      "category": "auto_data",
+      "type": "main_character",
+      "attribute": "avatar",
+      "required": false,
+      "default": "",
+      "description": "主角色头像（自动获取）"
+    }
+  },
+  "validation": {
+    "min_required_fields": 1,
+    "ignore_unknown_attributes": true
+  }
+}

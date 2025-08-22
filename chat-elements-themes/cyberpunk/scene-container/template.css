@@ -1,0 +1,613 @@
+/* === Cyberpunk主题的场景容器 === */
+.scene-container {
+max-width: 100%;
+margin: 20px auto;
+position: relative;
+}
+
+.scene-container::before {
+content: '';
+position: absolute;
+top: -10px;
+left: -10px;
+right: -10px;
+bottom: -10px;
+background: linear-gradient(45deg, #ff2a6d, #05d9e8, #ff2a6d, #d1f7ff);
+background-size: 400% 400%;
+animation: borderGlow 4s ease-in-out infinite;
+z-index: -1;
+border-radius: 15px;
+filter: blur(6px);
+opacity: 0.8;
+}
+
+@keyframes borderGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.scene-container .scene-status-frame {
+background:
+linear-gradient(135deg, rgba(15, 15, 35, 0.95), rgba(0, 0, 0, 0.95)),
+radial-gradient(circle at 30% 40%, rgba(255, 42, 109, 0.1), transparent 50%),
+radial-gradient(circle at 80% 20%, rgba(5, 217, 232, 0.1), transparent 50%);
+border: 1px solid rgba(5, 217, 232, 0.4);
+border-radius: 12px;
+padding: 20px;
+display: grid;
+grid-template-columns: 1fr 1fr;
+grid-template-rows: auto auto;
+gap: 18px;
+backdrop-filter: blur(20px);
+box-shadow:
+0 8px 32px rgba(0, 0, 0, 0.6),
+inset 0 1px 0 rgba(255, 255, 255, 0.1),
+0 0 40px rgba(5, 217, 232, 0.2);
+}
+
+/* === 分组容器 === */
+.scene-container .scene-section {
+background:
+linear-gradient(135deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)),
+linear-gradient(45deg, transparent, rgba(var(--section-rgb), 0.05), transparent);
+border: 1px solid rgba(var(--section-rgb), 0.3);
+border-radius: 6px;
+padding: 16px;
+position: relative;
+overflow: hidden;
+transition: all 0.3s ease;
+height: fit-content;
+}
+
+.scene-container .scene-section::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(var(--section-rgb), 0.8), transparent);
+animation: sectionScan 3s linear infinite;
+}
+
+@keyframes sectionScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.scene-container .scene-section:hover {
+transform: translateY(-2px);
+box-shadow:
+0 8px 25px rgba(0, 0, 0, 0.4),
+0 0 20px rgba(var(--section-rgb), 0.3);
+border-color: rgba(var(--section-rgb), 0.6);
+}
+
+.scene-container .environment-section {
+--section-rgb: 5, 217, 232;  /* 冰蓝色 #05d9e8 */
+--section-color: rgb(5, 217, 232);
+grid-column: 1 / -1;
+}
+
+.scene-container .character-section {
+--section-rgb: 255, 42, 109;  /* 赛博粉 #ff2a6d */
+--section-color: rgb(255, 42, 109);
+}
+
+.scene-container .user-section {
+--section-rgb: 209, 247, 255;  /* 淡青色 #d1f7ff */
+--section-color: rgb(209, 247, 255);
+}
+
+/* === 分组头部 === */
+.scene-container .section-header {
+display: grid;
+grid-template-columns: 20px 24px 1fr; /* 指示器 图标 标题 */
+align-items: center;
+gap: 8px;
+margin-bottom: 12px;
+padding-bottom: 8px;
+border-bottom: 1px solid rgba(var(--section-rgb), 0.3);
+position: relative;
+}
+
+.scene-container .section-header::after {
+content: '';
+position: absolute;
+bottom: -1px;
+left: 0;
+width: 30%;
+height: 1px;
+background: var(--section-color);
+box-shadow: 0 0 10px var(--section-color);
+}
+
+.scene-container .section-icon {
+font-size: 16px;
+margin-right: 8px;
+color: var(--section-color);
+filter: drop-shadow(0 0 8px var(--section-color));
+animation: iconPulse 2.5s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px var(--section-color)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 12px var(--section-color)); }
+}
+
+.scene-container .section-title {
+font-size: 12px;
+font-weight: 700;
+color: var(--section-color);
+text-shadow: 0 0 10px var(--section-color);
+text-transform: uppercase;
+letter-spacing: 1.5px;
+font-family: var(--cp2027-font-cyberpunk);
+}
+
+.scene-container .section-content {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 12px;
+}
+
+/* === 大于1000px时：角色和用户内板块排三行 === */
+@media (min-width: 1001px) {
+    .scene-container .character-section .section-content,
+    .scene-container .user-section .section-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === 小于1000px时：环境区内板块排三行 === */
+@media (max-width: 1000px) {
+    .scene-container .environment-section .section-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* === 元素块 === */
+.scene-container .scene-element {
+background:
+linear-gradient(135deg, rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.2)),
+linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.02), transparent);
+border: 1px solid rgba(255, 255, 255, 0.1);
+border-radius: 4px;
+padding: 12px;
+position: relative;
+overflow: hidden;
+transition: all 0.3s ease;
+}
+
+.scene-container .scene-element::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 1px;
+background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+animation: scanLine 2.5s linear infinite;
+}
+
+@keyframes scanLine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.scene-container .scene-element:hover {
+transform: translateY(-2px);
+box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+border-color: rgba(var(--section-rgb), 0.4);
+background:
+linear-gradient(135deg, rgba(var(--section-rgb), 0.05), rgba(0, 0, 0, 0.3));
+}
+
+/* === 元素内部结构 === */
+.scene-container .element-header {
+display: flex;
+align-items: center;
+margin-bottom: 8px;
+padding-bottom: 6px;
+border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.scene-container .element-icon {
+font-size: 14px;
+margin-right: 6px;
+color: rgba(var(--section-rgb), 0.7);
+filter: drop-shadow(0 0 5px rgba(var(--section-rgb), 0.5));
+}
+
+.scene-container .element-label {
+font-weight: 600;
+font-size: 10px;
+text-transform: uppercase;
+letter-spacing: 0.8px;
+color: rgba(var(--section-rgb), 0.8);
+text-shadow: 0 0 8px rgba(var(--section-rgb), 0.3);
+font-family: var(--cp2027-font-cyberpunk);
+}
+
+.scene-container .element-content {
+font-size: 13px;
+line-height: 1.4;
+color: #e8e8e8;
+font-weight: 400;
+/* 使用默认字体保证可读性 */
+}
+
+/* === 内容显示 === */
+.scene-container .datetime-content {
+display: flex;
+flex-direction: column;
+gap: 3px;
+}
+
+.scene-container .date-display {
+color: #05d9e8;
+font-weight: 700;
+text-shadow: 0 0 10px #05d9e8;
+font-size: 14px;
+font-family: var(--cp2027-font-cyberpunk);
+}
+
+.scene-container .time-display {
+color: #7dd3fc;
+font-size: 12px;
+font-weight: 600;
+font-family: var(--cp2027-font-cyberpunk);
+text-shadow: 0 0 6px #7dd3fc;
+}
+
+.scene-container .weather-content {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.scene-container .temperature-display {
+color: #fbbf24;
+font-weight: 700;
+font-size: 14px;
+text-shadow: 0 0 10px #fbbf24;
+font-family: var(--cp2027-font-cyberpunk);
+}
+
+.scene-container .location-display {
+color: #34d399;
+font-weight: 600;
+text-shadow: 0 0 8px #34d399;
+}
+
+.scene-container .event-display {
+color: #f87171;
+font-weight: 700;
+text-shadow: 0 0 10px #f87171;
+animation: eventFlicker 2s ease-in-out infinite alternate;
+}
+
+@keyframes eventFlicker {
+    0% { opacity: 1; text-shadow: 0 0 10px #f87171; }
+    100% { opacity: 0.7; text-shadow: 0 0 15px #f87171, 0 0 20px #ef4444; }
+}
+
+.scene-container .weather-display,
+.scene-container .looks-display,
+.scene-container .wearing-display,
+.scene-container .behavior-display {
+color: #fb7185;
+font-weight: 500;
+}
+
+.scene-container .user-info-display,
+.scene-container .user-location-display,
+.scene-container .user-activity-display {
+color: #a5f3fc;
+font-weight: 500;
+}
+
+/* === 数据属性选择器 === */
+[data-section="environment"] {
+/* 环境分组特殊样式 */
+}
+
+[data-section="character"] {
+/* 角色分组特殊样式 */
+}
+
+[data-section="user"] {
+/* 用户分组特殊样式 */
+}
+
+[data-element="datetime"],
+[data-element="location"],
+[data-element="weather"],
+[data-element="event"],
+[data-element="character-looks"],
+[data-element="character-wearing"],
+[data-element="character-behavior"],
+[data-element="user-info"],
+[data-element="user-location"],
+[data-element="user-activity"] {
+/* 元素特殊样式 */
+}
+
+/* === 响应式设计 === */
+@media (max-width: 1000px) {
+.scene-container .scene-status-frame {
+grid-template-columns: 1fr;
+gap: 15px;
+    }
+.scene-container .environment-section {
+grid-column: 1;
+    }
+}
+
+@media (max-width: 768px) {
+.scene-container .scene-status-frame {
+grid-template-columns: 1fr;
+gap: 12px;
+padding: 15px;
+    }
+.scene-container .section-content {
+grid-template-columns: 1fr;
+    }
+.scene-container .scene-section {
+padding: 12px;
+    }
+}
+
+/* === 数据流动画 === */
+.scene-container::after {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background:
+repeating-linear-gradient(
+90deg,
+transparent,
+transparent 98px,
+rgba(5, 217, 232, 0.02) 100px
+        );
+animation: dataFlow 12s linear infinite;
+pointer-events: none;
+z-index: 1;
+}
+
+@keyframes dataFlow {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(100px); }
+}
+
+/* === 特殊发光效果 === */
+.scene-container .scene-section:hover .scene-container .section-title {
+animation: titleGlow 0.5s ease-out;
+}
+
+@keyframes titleGlow {
+    0% { text-shadow: 0 0 10px var(--section-color); }
+    50% { text-shadow: 0 0 20px var(--section-color), 0 0 30px var(--section-color); }
+    100% { text-shadow: 0 0 10px var(--section-color); }
+}
+.scene-container .avatar-display{
+    width: 100%;
+    height: 80px;
+}
+.scene-container .avatar-display img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+
+/* === NPC列表样式 === */
+.scene-container .npc-list-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+/* === 单个特定NPC样式 === */
+.scene-container .npc-specific-content {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+}
+
+.scene-container .npc-specific-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(255, 42, 109, 0.15), rgba(5, 217, 232, 0.15));
+    border: 2px solid rgba(255, 42, 109, 0.4);
+    border-radius: 12px;
+    min-width: 100px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.scene-container .npc-specific-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 42, 109, 0.8), transparent);
+    animation: targetScan 2s linear infinite;
+}
+
+@keyframes targetScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.scene-container .npc-specific-item:hover {
+    transform: translateY(-3px) scale(1.08);
+    border-color: rgba(255, 42, 109, 0.7);
+    box-shadow:
+        0 6px 24px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(255, 42, 109, 0.5);
+    background: linear-gradient(135deg, rgba(255, 42, 109, 0.25), rgba(5, 217, 232, 0.25));
+}
+
+.scene-container .npc-specific-item .npc-avatar-wrapper {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 42, 109, 0.5);
+}
+
+.scene-container .npc-specific-item:hover .npc-avatar-wrapper {
+    border-color: rgba(255, 42, 109, 0.8);
+    box-shadow: 0 0 20px rgba(255, 42, 109, 0.6);
+}
+
+.scene-container .npc-specific-item .npc-name {
+    font-size: 12px;
+    color: #ff2a6d;
+    text-shadow: 0 0 10px rgba(255, 42, 109, 0.5);
+    margin-top: 8px;
+    font-weight: 700;
+}
+
+/* === 通用NPC样式 === */
+.scene-container .npc-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px;
+    background: linear-gradient(135deg, rgba(5, 217, 232, 0.1), rgba(255, 42, 109, 0.1));
+    border: 1px solid rgba(5, 217, 232, 0.3);
+    border-radius: 8px;
+    min-width: 80px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.scene-container .npc-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(5, 217, 232, 0.6), transparent);
+    animation: npcScan 3s linear infinite;
+}
+
+@keyframes npcScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.scene-container .npc-item:hover {
+    transform: translateY(-2px) scale(1.05);
+    border-color: rgba(255, 42, 109, 0.5);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(255, 42, 109, 0.3);
+    background: linear-gradient(135deg, rgba(255, 42, 109, 0.15), rgba(5, 217, 232, 0.15));
+}
+
+.scene-container .npc-avatar-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 6px;
+    border: 2px solid rgba(5, 217, 232, 0.4);
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+
+.scene-container .npc-avatar-wrapper::after {
+    content: '👤';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: rgba(5, 217, 232, 0.6);
+    z-index: -1;
+}
+
+.scene-container .npc-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.scene-container .npc-item:hover .npc-avatar-wrapper {
+    border-color: rgba(255, 42, 109, 0.6);
+    box-shadow: 0 0 15px rgba(255, 42, 109, 0.4);
+}
+
+.scene-container .npc-item:hover .npc-avatar {
+    transform: scale(1.1);
+}
+
+.scene-container .npc-name {
+    font-size: 10px;
+    font-weight: 600;
+    text-align: center;
+    color: #e8e8e8;
+    text-shadow: 0 0 8px rgba(5, 217, 232, 0.3);
+    font-family: var(--cp2027-font-cyberpunk);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.scene-container .npc-item:hover .npc-name {
+    color: #ff2a6d;
+    text-shadow: 0 0 12px rgba(255, 42, 109, 0.6);
+}
+
+/* === 空列表样式 === */
+.scene-container .npc-list-content:empty::after {
+    content: 'No network contacts';
+    color: rgba(255, 255, 255, 0.3);
+    font-style: italic;
+    font-size: 11px;
+}
+
+/* === 响应式适配 === */
+@media (max-width: 768px) {
+    .scene-container .npc-list-content {
+        gap: 8px;
+    }
+
+    .scene-container .npc-item {
+        min-width: 70px;
+        padding: 6px;
+    }
+
+    .scene-container .npc-avatar-wrapper {
+        width: 32px;
+        height: 32px;
+    }
+
+    .scene-container .npc-avatar-wrapper::after {
+        font-size: 16px;
+    }
+
+    .scene-container .npc-name {
+        font-size: 9px;
+        max-width: 70px;
+    }
+}

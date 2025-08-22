@@ -1,0 +1,1036 @@
+/**
+ * RPG战斗界面 - Cyberpunk 2027
+ * 消息框内全宽全高沉浸式战斗体验
+ */
+
+/* ===================================
+   主容器 - 消息框内全宽全高布局
+   =================================== */
+.rpg-combat-interface {
+    /* 消息框内全宽全高 */
+    width: 100%;
+    height: 100%;
+    min-height: 500px;
+
+    /* 布局结构 */
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    grid-template-rows: auto 1fr auto auto;
+    grid-template-areas:
+        "health-bars"
+        "dialogue-area"
+        "stats-area"
+        "details-toggle";
+
+    /* 背景和视觉效果 */
+    background:
+        radial-gradient(circle at 20% 30%, rgba(255, 42, 109, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(5, 217, 232, 0.15) 0%, transparent 50%),
+        linear-gradient(135deg, rgba(15, 15, 35, 0.95) 0%, rgba(0, 0, 0, 0.98) 100%);
+
+    /* 边框和阴影 */
+    border: 2px solid rgba(5, 217, 232, 0.4);
+    box-shadow:
+        0 0 50px rgba(5, 217, 232, 0.3),
+        inset 0 0 100px rgba(0, 0, 0, 0.5);
+
+    /* 字体和基础样式 */
+    font-family: var(--cp2027-font-cyberpunk, 'Orbitron', 'Courier New', monospace);
+    color: #e8e8e8;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 数据流背景动画 */
+.rpg-combat-interface::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 98px,
+            rgba(5, 217, 232, 0.03) 100px,
+            rgba(5, 217, 232, 0.03) 102px
+        );
+    animation: dataStream 15s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes dataStream {
+    0% { transform: translateX(-100px); }
+    100% { transform: translateX(100px); }
+}
+
+/* 扫描线效果 */
+.rpg-combat-interface::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 42, 109, 0.8), transparent);
+    animation: scanLine 4s linear infinite;
+    z-index: 10;
+}
+
+@keyframes scanLine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* ===================================
+   顶部血量条区域
+   =================================== */
+.combat-health-bars {
+    grid-area: health-bars;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    /* background:
+        linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(255, 42, 109, 0.1) 50%, rgba(0, 0, 0, 0.7) 100%);
+    border-bottom: 2px solid rgba(5, 217, 232, 0.3); */
+    position: relative;
+    z-index: 5;
+}
+
+/* 血量条容器 */
+.health-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: none;
+}
+
+.health-bar-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: healthBarScan 3s linear infinite;
+}
+
+@keyframes healthBarScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* NPC血量条 - 左侧 */
+.npc-health {
+    justify-self: start;
+    border-left: 3px solid rgba(255, 42, 109, 0.6);
+}
+
+.npc-health:hover {
+    border-left-color: rgba(255, 42, 109, 1);
+    box-shadow: 0 0 20px rgba(255, 42, 109, 0.4);
+}
+
+/* 用户血量条 - 右侧 */
+.user-health {
+    justify-self: end;
+    border-right: 3px solid rgba(5, 217, 232, 0.6);
+}
+
+.user-health:hover {
+    border-right-color: rgba(5, 217, 232, 1);
+    box-shadow: 0 0 20px rgba(5, 217, 232, 0.4);
+}
+
+/* 战斗角色信息 */
+.fighter-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 0 0 auto;
+}
+
+.user-info {
+    text-align: right;
+}
+
+.fighter-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid rgba(5, 217, 232, 0.6);
+    position: relative;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+
+.npc-info .fighter-avatar {
+    border-color: rgba(255, 42, 109, 0.6);
+}
+
+.fighter-avatar::after {
+    content: '👤';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    color: rgba(5, 217, 232, 0.4);
+    z-index: -1;
+}
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: all 0.3s ease;
+}
+
+.fighter-avatar:hover .avatar-image {
+    transform: scale(1.1);
+}
+
+.fighter-details {
+    flex: 1;
+}
+
+.fighter-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 0 8px rgba(5, 217, 232, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 2px;
+}
+
+.npc-info .fighter-name {
+    color: #ff2a6d;
+    text-shadow: 0 0 10px rgba(255, 42, 109, 0.5);
+}
+
+.fighter-status {
+    font-size: 10px;
+    color: #7dd3fc;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(125, 211, 252, 0.3);
+}
+
+.fighter-status[data-status="受伤"],
+.fighter-status[data-status="重伤"],
+.fighter-status[data-status="危险"] {
+    color: #ff6b6b;
+    border-color: rgba(255, 107, 107, 0.5);
+    box-shadow: 0 0 8px rgba(255, 107, 107, 0.3);
+}
+
+/* 血量条 */
+.health-bar {
+    flex: 1;
+    min-width: 160px;
+}
+
+.health-bar-bg {
+    height: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.health-bar-fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+}
+
+/* NPC血量条 - 红色系 */
+.npc-hp {
+    background: linear-gradient(90deg,
+        rgba(220, 38, 127, 1) 0%,
+        rgba(255, 42, 109, 0.9) 50%,
+        rgba(255, 102, 153, 0.8) 100%);
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        0 0 15px rgba(255, 42, 109, 0.6);
+}
+
+/* 用户血量条 - 蓝色系 */
+.user-hp {
+    background: linear-gradient(90deg,
+        rgba(5, 217, 232, 1) 0%,
+        rgba(125, 211, 252, 0.9) 50%,
+        rgba(209, 247, 255, 0.8) 100%);
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        0 0 15px rgba(5, 217, 232, 0.6);
+}
+
+/* 血量条动态宽度 - 支持所有可能的数值 */
+.health-bar-fill[data-hp="100"] { width: 100%; }
+.health-bar-fill[data-hp="99"] { width: 99%; }
+.health-bar-fill[data-hp="98"] { width: 98%; }
+.health-bar-fill[data-hp="97"] { width: 97%; }
+.health-bar-fill[data-hp="96"] { width: 96%; }
+.health-bar-fill[data-hp="95"] { width: 95%; }
+.health-bar-fill[data-hp="94"] { width: 94%; }
+.health-bar-fill[data-hp="93"] { width: 93%; }
+.health-bar-fill[data-hp="92"] { width: 92%; }
+.health-bar-fill[data-hp="91"] { width: 91%; }
+.health-bar-fill[data-hp="90"] { width: 90%; }
+.health-bar-fill[data-hp="89"] { width: 89%; }
+.health-bar-fill[data-hp="88"] { width: 88%; }
+.health-bar-fill[data-hp="87"] { width: 87%; }
+.health-bar-fill[data-hp="86"] { width: 86%; }
+.health-bar-fill[data-hp="85"] { width: 85%; }
+.health-bar-fill[data-hp="84"] { width: 84%; }
+.health-bar-fill[data-hp="83"] { width: 83%; }
+.health-bar-fill[data-hp="82"] { width: 82%; }
+.health-bar-fill[data-hp="81"] { width: 81%; }
+.health-bar-fill[data-hp="80"] { width: 80%; }
+.health-bar-fill[data-hp="79"] { width: 79%; }
+.health-bar-fill[data-hp="78"] { width: 78%; }
+.health-bar-fill[data-hp="77"] { width: 77%; }
+.health-bar-fill[data-hp="76"] { width: 76%; }
+.health-bar-fill[data-hp="75"] { width: 75%; }
+.health-bar-fill[data-hp="74"] { width: 74%; }
+.health-bar-fill[data-hp="73"] { width: 73%; }
+.health-bar-fill[data-hp="72"] { width: 72%; }
+.health-bar-fill[data-hp="71"] { width: 71%; }
+.health-bar-fill[data-hp="70"] { width: 70%; }
+.health-bar-fill[data-hp="69"] { width: 69%; }
+.health-bar-fill[data-hp="68"] { width: 68%; }
+.health-bar-fill[data-hp="67"] { width: 67%; }
+.health-bar-fill[data-hp="66"] { width: 66%; }
+.health-bar-fill[data-hp="65"] { width: 65%; }
+.health-bar-fill[data-hp="64"] { width: 64%; }
+.health-bar-fill[data-hp="63"] { width: 63%; }
+.health-bar-fill[data-hp="62"] { width: 62%; }
+.health-bar-fill[data-hp="61"] { width: 61%; }
+.health-bar-fill[data-hp="60"] { width: 60%; }
+.health-bar-fill[data-hp="59"] { width: 59%; }
+.health-bar-fill[data-hp="58"] { width: 58%; }
+.health-bar-fill[data-hp="57"] { width: 57%; }
+.health-bar-fill[data-hp="56"] { width: 56%; }
+.health-bar-fill[data-hp="55"] { width: 55%; }
+.health-bar-fill[data-hp="54"] { width: 54%; }
+.health-bar-fill[data-hp="53"] { width: 53%; }
+.health-bar-fill[data-hp="52"] { width: 52%; }
+.health-bar-fill[data-hp="51"] { width: 51%; }
+.health-bar-fill[data-hp="50"] { width: 50%; }
+.health-bar-fill[data-hp="49"] { width: 49%; }
+.health-bar-fill[data-hp="48"] { width: 48%; }
+.health-bar-fill[data-hp="47"] { width: 47%; }
+.health-bar-fill[data-hp="46"] { width: 46%; }
+.health-bar-fill[data-hp="45"] { width: 45%; }
+.health-bar-fill[data-hp="44"] { width: 44%; }
+.health-bar-fill[data-hp="43"] { width: 43%; }
+.health-bar-fill[data-hp="42"] { width: 42%; }
+.health-bar-fill[data-hp="41"] { width: 41%; }
+.health-bar-fill[data-hp="40"] { width: 40%; }
+.health-bar-fill[data-hp="39"] { width: 39%; }
+.health-bar-fill[data-hp="38"] { width: 38%; }
+.health-bar-fill[data-hp="37"] { width: 37%; }
+.health-bar-fill[data-hp="36"] { width: 36%; }
+.health-bar-fill[data-hp="35"] { width: 35%; }
+.health-bar-fill[data-hp="34"] { width: 34%; }
+.health-bar-fill[data-hp="33"] { width: 33%; }
+.health-bar-fill[data-hp="32"] { width: 32%; }
+.health-bar-fill[data-hp="31"] { width: 31%; }
+.health-bar-fill[data-hp="30"] {
+    width: 30%;
+    background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9));
+    box-shadow: 0 0 15px rgba(255, 165, 0, 0.8);
+    animation: healthWarning 2s ease-in-out infinite alternate;
+}
+.health-bar-fill[data-hp="29"] { width: 29%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="28"] { width: 28%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="27"] { width: 27%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="26"] { width: 26%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="25"] { width: 25%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="24"] { width: 24%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="23"] { width: 23%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="22"] { width: 22%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="21"] { width: 21%; background: linear-gradient(90deg, rgba(255, 165, 0, 1), rgba(255, 140, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 165, 0, 0.8); animation: healthWarning 2s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="20"] {
+    width: 20%;
+    background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9));
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    animation: healthCritical 1s ease-in-out infinite alternate;
+}
+.health-bar-fill[data-hp="19"] { width: 19%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="18"] { width: 18%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="17"] { width: 17%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="16"] { width: 16%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="15"] { width: 15%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="14"] { width: 14%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="13"] { width: 13%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="12"] { width: 12%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="11"] { width: 11%; background: linear-gradient(90deg, rgba(255, 69, 0, 1), rgba(255, 0, 0, 0.9)); box-shadow: 0 0 15px rgba(255, 0, 0, 0.8); animation: healthCritical 1s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="10"] {
+    width: 10%;
+    background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1));
+    box-shadow: 0 0 20px rgba(255, 0, 0, 1);
+    animation: healthCritical 0.5s ease-in-out infinite alternate;
+}
+.health-bar-fill[data-hp="9"] { width: 9%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="8"] { width: 8%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="7"] { width: 7%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="6"] { width: 6%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="5"] { width: 5%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="4"] { width: 4%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="3"] { width: 3%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="2"] { width: 2%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="1"] { width: 1%; background: linear-gradient(90deg, rgba(139, 0, 0, 1), rgba(255, 0, 0, 1)); box-shadow: 0 0 20px rgba(255, 0, 0, 1); animation: healthCritical 0.5s ease-in-out infinite alternate; }
+.health-bar-fill[data-hp="0"] { width: 0%; }
+
+@keyframes healthWarning {
+    0% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+@keyframes healthCritical {
+    0% { opacity: 0.3; transform: scale(0.98); }
+    100% { opacity: 1; transform: scale(1.02); }
+}
+
+/* 血量文字显示 */
+.health-text {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hp-current {
+    color: #00ff88;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.6);
+    font-weight: 700;
+}
+
+.hp-separator {
+    color: #666;
+    margin: 0 4px;
+}
+
+.hp-max {
+    color: #ccc;
+}
+
+/* 中央战斗状态指示器 */
+.combat-status-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 15px;
+    position: relative;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+/* 移除状态图标样式 */
+.status-icon {
+    display: none;
+}
+
+.vs-text {
+    font-size: 16px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow:
+        0 0 10px rgba(5, 217, 232, 0.8),
+        0 0 20px rgba(5, 217, 232, 0.6),
+        0 0 30px rgba(255, 42, 109, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    animation: vsGlow 2s ease-in-out infinite alternate;
+    position: relative;
+}
+
+.critical-indicator {
+    position: absolute;
+    top: -8px;
+    right: -15px;
+    background: radial-gradient(circle, #ffdd00, #ff8800);
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+    font-weight: 700;
+    color: #000;
+    animation: criticalBlink 1s ease-in-out infinite alternate;
+    box-shadow: 0 0 12px rgba(255, 221, 0, 0.8);
+}
+
+@keyframes vsGlow {
+    0% {
+        text-shadow:
+            0 0 10px rgba(5, 217, 232, 0.8),
+            0 0 20px rgba(5, 217, 232, 0.6),
+            0 0 30px rgba(255, 42, 109, 0.4);
+        transform: scale(1);
+    }
+    100% {
+        text-shadow:
+            0 0 15px rgba(5, 217, 232, 1),
+            0 0 25px rgba(5, 217, 232, 0.8),
+            0 0 35px rgba(255, 42, 109, 0.6);
+        transform: scale(1.05);
+    }
+}
+
+@keyframes criticalBlink {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.7; transform: scale(1.2); }
+}
+
+/* ===================================
+   中间对话区域
+   =================================== */
+.combat-dialogue-area {
+    grid-area: dialogue-area;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    position: relative;
+    z-index: 3;
+    min-height: 250px;
+}
+
+.dialogue-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* 对话容器样式已经简化，移除了边框样式 */
+
+.dialogue-content {
+    font-size: 18px;
+    line-height: 1.6;
+    color: #ffffff;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    font-weight: 400;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    max-width: 90%;
+}
+
+/* 战斗结果显示 - 浮动层 */
+.floating-damage {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.combat-result-display {
+    display: flex;
+    justify-content: center;
+}
+
+.damage-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 15px;
+    background: rgba(255, 42, 109, 0.15);
+    border: 1px solid rgba(255, 42, 109, 0.6);
+    border-radius: 6px;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.damage-indicator.critical {
+    background: rgba(255, 221, 0, 0.2);
+    border-color: rgba(255, 221, 0, 0.8);
+    animation: criticalDamage 1s ease-in-out infinite alternate;
+}
+
+@keyframes criticalDamage {
+    0% { transform: scale(1); box-shadow: 0 0 15px rgba(255, 221, 0, 0.6); }
+    100% { transform: scale(1.05); box-shadow: 0 0 25px rgba(255, 221, 0, 0.9); }
+}
+
+.damage-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ff2a6d;
+    text-shadow: 0 0 6px rgba(255, 42, 109, 0.8);
+}
+
+.damage-indicator.critical .damage-value {
+    color: #ffdd00;
+    text-shadow: 0 0 15px rgba(255, 221, 0, 1);
+}
+
+.damage-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-top: 2px;
+}
+
+.accuracy-text {
+    font-size: 10px;
+    color: #7dd3fc;
+    margin-top: 2px;
+}
+
+/* ===================================
+   底部对战数据区域
+   =================================== */
+.combat-stats-area {
+    grid-area: stats-area;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    padding: 18px;
+    /* background: linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(255, 42, 109, 0.05) 50%, rgba(0, 0, 0, 0.6) 100%);
+    border-top: 2px solid rgba(5, 217, 232, 0.3); */
+    position: relative;
+    z-index: 4;
+}
+
+/* 战斗数据面板 */
+.fighter-stats-panel {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.fighter-stats-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: panelScan 4s linear infinite;
+}
+
+@keyframes panelScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* NPC面板 - 红色主题 */
+.npc-panel {
+    border: 1px solid rgba(255, 42, 109, 0.4);
+    border-left: 4px solid rgba(255, 42, 109, 0.8);
+}
+
+.npc-panel:hover {
+    border-color: rgba(255, 42, 109, 0.6);
+    box-shadow: 0 0 25px rgba(255, 42, 109, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 用户面板 - 蓝色主题 */
+.user-panel {
+    border: 1px solid rgba(5, 217, 232, 0.4);
+    border-right: 4px solid rgba(5, 217, 232, 0.8);
+}
+
+.user-panel:hover {
+    border-color: rgba(5, 217, 232, 0.6);
+    box-shadow: 0 0 25px rgba(5, 217, 232, 0.3);
+    transform: translateY(-2px);
+}
+
+/* 面板头部 */
+.panel-header {
+    text-align: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.panel-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 3px;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.npc-panel .panel-title {
+    color: #ff2a6d;
+    text-shadow: 0 0 10px rgba(255, 42, 109, 0.6);
+}
+
+.user-panel .panel-title {
+    color: #05d9e8;
+    text-shadow: 0 0 10px rgba(5, 217, 232, 0.6);
+}
+
+.panel-subtitle {
+    font-size: 10px;
+    color: #7dd3fc;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+}
+
+/* 属性统计网格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.stat-item {
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: statScan 6s linear infinite;
+}
+
+@keyframes statScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+.stat-item:hover {
+    border-color: rgba(5, 217, 232, 0.5);
+    background: rgba(5, 217, 232, 0.1);
+    transform: translateY(-1px);
+}
+
+.npc-panel .stat-item:hover {
+    border-color: rgba(255, 42, 109, 0.5);
+    background: rgba(255, 42, 109, 0.1);
+}
+
+.stat-icon {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.stat-info {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 9px;
+    color: #7dd3fc;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 1px;
+}
+
+.stat-value {
+    font-size: 14px;
+    color: #fff;
+    font-weight: 600;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.4);
+}
+
+/* 装备区域 */
+.equipment-section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.equipment-item {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    padding: 6px 8px;
+    transition: all 0.3s ease;
+}
+
+.equipment-item:hover {
+    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.equip-label {
+    font-size: 8px;
+    color: #ffdd00;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 2px;
+}
+
+.equip-value {
+    font-size: 12px;
+    color: #e8e8e8;
+    font-weight: 500;
+}
+
+/* ===================================
+   详细信息切换区域 + 共享功能集成
+   =================================== */
+.combat-details-toggle {
+    grid-area: details-toggle;
+    background: rgba(0, 0, 0, 0.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    z-index: 5;
+}
+
+.toggle-header {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.toggle-header:hover {
+    background: rgba(5, 217, 232, 0.1);
+}
+
+/* Grid版本的Toggle指示器 - 战斗界面专用 */
+.toggle-header .toggle-indicator {
+    justify-self: center;
+    align-self: center;
+    font-size: 14px;
+    color: #05d9e8;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 展开状态：向下箭头（0度） */
+.toggle-expanded .toggle-indicator {
+    transform: rotate(0deg);
+    color: #00ff88;
+    text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);
+}
+
+/* 收起状态：向右箭头（-90度） */
+.toggle-collapsed .toggle-indicator {
+    transform: rotate(-90deg);
+    color: #ff6666;
+    text-shadow: 0 0 8px rgba(255, 102, 102, 0.5);
+}
+
+.toggle-label {
+    font-size: 12px;
+    color: #7dd3fc;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* 可折叠内容区域 */
+.extended-info-container {
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease-out;
+    overflow: hidden;
+}
+
+/* 折叠状态 - 兼容共享功能系统 */
+.extended-info-container.content-collapsed {
+    max-height: 0 !important;
+    opacity: 0 !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.debug-info h4 {
+    color: #05d9e8;
+    font-size: 14px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 8px rgba(5, 217, 232, 0.5);
+}
+
+.debug-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    font-size: 12px;
+    color: #ccc;
+}
+
+/* ===================================
+   响应式设计
+   =================================== */
+@media (max-width: 1200px) {
+    .combat-stats-area {
+        gap: 20px;
+        padding: 20px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .rpg-combat-interface {
+        height: auto;
+        min-height: 400px;
+        grid-template-rows: auto auto 1fr auto;
+    }
+
+    .combat-health-bars {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .health-bar-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .user-health {
+        flex-direction: column;
+        order: 2;
+    }
+
+    .combat-status-indicator {
+        order: 1;
+        justify-self: center;
+        width: 60px;
+        height: 60px;
+    }
+
+    .combat-stats-area {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .combat-dialogue-area {
+        padding: 20px 15px;
+    }
+
+    .dialogue-container {
+        max-width: 95%;
+    }
+}
+
+@media (max-width: 480px) {
+    .rpg-combat-interface {
+        font-size: 14px;
+        min-height: 350px;
+    }
+
+    .fighter-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .fighter-name {
+        font-size: 14px;
+    }
+
+    .health-bar {
+        min-width: 150px;
+    }
+
+    .panel-title {
+        font-size: 16px;
+    }
+
+    .stat-value {
+        font-size: 14px;
+    }
+}
+
+/* ===================================
+   可访问性增强
+   =================================== */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.1s !important;
+        transition-duration: 0.1s !important;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .rpg-combat-interface {
+        border-width: 3px;
+    }
+
+    .health-bar-bg {
+        border-width: 3px;
+    }
+
+    .fighter-stats-panel {
+        border-width: 2px;
+    }
+}

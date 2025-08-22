@@ -1,0 +1,98 @@
+<div class="scene-container" data-scene-type="mech-tactical">
+    <div class="inner-container">
+        <div class="corner-bolt top-left"></div>
+        <div class="corner-bolt top-right"></div>
+        <div class="corner-bolt bottom-left"></div>
+        <div class="corner-bolt bottom-right"></div>
+
+        <!-- 主控制网格 -->
+        <div class="tactical-grid">
+
+            <!-- 环境扫描模块 - 顶部通栏 -->
+            <div class="tactical-section environment-scan" data-section="environment">
+                <div class="section-header">
+                    <div class="hex-bolt-left"></div>
+                    <span class="section-title">ENVIRONMENT SCAN</span>
+                    <div class="hex-bolt-right"></div>
+                </div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">VIRTUAL DATE</span>
+                        <span class="data-value">{{DATE_DATA}} | {{TIME_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">LOCATION</span>
+                        <span class="data-value">{{LOCATION_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">CONDITIONS</span>
+                        <span class="data-value">{{WEATHER_DATA}} | {{TEMPERATURE_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">EVENT</span>
+                        <span class="data-value">{{EVENT_DATA}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 目标分析模块 -->
+            <div class="tactical-section target-analysis" data-section="target">
+                <div class="section-header">
+                    <div class="hex-bolt-left"></div>
+                    <span class="section-title">TARGET ANALYSIS</span>
+                    <div class="hex-bolt-right"></div>
+                </div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">VISUAL</span>
+                        <span class="data-value">{{CHARACTER_LOOKS_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">GEAR</span>
+                        <span class="data-value">{{CHARACTER_WEARING_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">BEHAVIOR</span>
+                        <span class="data-value">{{CHARACTER_BEHAVIOR_DATA}}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作员状态模块 -->
+            <div class="tactical-section operator-status" data-section="operator">
+                <div class="section-header">
+                    <div class="hex-bolt-left"></div>
+                    <span class="section-title">OPERATOR STATUS</span>
+                    <div class="hex-bolt-right"></div>
+                </div>
+                <div class="data-grid">
+                    <div class="data-item">
+                        <span class="data-label">PROFILE</span>
+                        <span class="data-value">{{USER_INFO_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">POSITION</span>
+                        <span class="data-value">{{USER_LOCATION_DATA}}</span>
+                    </div>
+                    <div class="data-item">
+                        <span class="data-label">ACTIVITY</span>
+                        <span class="data-value">{{USER_ACTIVITY_DATA}}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 系统时间戳 -->
+        <!-- <div class="ai-timestamp">
+        <div class="timestamp-container">
+            <span class="timestamp-label">SCAN TIME</span>
+            <span class="timestamp-value">{{DATE_DATA}} | {{TIME_DATA}}</span>
+        </div>
+        <div class="system-info">
+            <span class="system-label">SYS</span>
+            <span class="system-id">MECH-001</span>
+        </div>
+    </div> -->
+    </div>
+</div>

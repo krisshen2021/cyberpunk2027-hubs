@@ -1,0 +1,331 @@
+<div id="cyberpunk2027-theme-settings">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>[Muffin] Cyberpunk 2027 HUBS</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            <!-- Theme Enable/Disable -->
+            <div class="flex-container cyberpunk-settings-row">
+                <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_enabled">
+                    <input type="checkbox" id="cyberpunk_enabled" />
+                    <span class="cyberpunk-toggle-text">Enable Cyberpunk 2027 HUBS</span>
+                </label>
+                <div class="justifyLeft cyberpunk-description">
+                    <small>Transform SillyTavern into a futuristic cyberpunk interface with customizable layouts, styles and functions.</small>
+                </div>
+            </div>
+
+            <!-- Visual Style Selection -->
+            <div class="flex-container cyberpunk-settings-row">
+                <label for="cyberpunk_style" class="title_restorable cyberpunk-setting-label">
+                    <span>🎨 Visual Style</span>
+                </label>
+                <select id="cyberpunk_style" class="cyberpunk-select cyberpunk-style-select">
+                    <option value="noir">⚡ Neon Noir - Electric Blue Aesthetic</option>
+                    <option value="rust">🔥 Rust & Chrome - Post-Apocalyptic Orange</option>
+                </select>
+                <div class="justifyLeft cyberpunk-description">
+                    <small>Choose your cyberpunk color scheme: electric neon blues or warm rust tones.</small>
+                </div>
+            </div>
+
+            <!-- UI Layout Selection -->
+            <div class="flex-container cyberpunk-settings-row">
+                <label for="cyberpunk_layout" class="title_restorable cyberpunk-setting-label">
+                    <span>🖥️ UI Layout</span>
+                </label>
+                <select id="cyberpunk_layout" class="cyberpunk-select cyberpunk-layout-select">
+                    <option value="decker">🏢 Decker's Dream - Enhanced Default Layout</option>
+                    <option value="tyrell">🏗️ Tyrell Cockpit - Vertical Navigation Bar</option>
+                </select>
+                <div class="justifyLeft cyberpunk-description">
+                    <small>Select interface layout: enhanced traditional or futuristic vertical navigation.</small>
+                </div>
+            </div>
+
+            <!-- Chat Style Integration -->
+            <div class="flex-container cyberpunk-settings-row">
+                <div class="cyberpunk-theme-config">
+                    <div class="cyberpunk-config-header">
+                        <strong>💬 Custom Chat Styles</strong>
+                    </div>
+                    <div class="cyberpunk-description" style="margin-bottom: 15px;">
+                        <small>When enabled, adds Matrix Terminal and Neural Holographic chat styles to SillyTavern's chat display options. You can select them from the main UI's "Chat Style" dropdown in the top toolbar.</small>
+                    </div>
+                    <div class="flex-container" style="align-items: center; gap: 10px;">
+                        <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_chat_style_enabled" style="margin: 0;">
+                            <input type="checkbox" id="cyberpunk_chat_style_enabled" />
+                            <span class="cyberpunk-toggle-text" style="font-size: 14px;">Enable Custom Chat Styles</span>
+                        </label>
+                    </div>
+                    <div class="cyberpunk-description" style="margin-top: 8px;">
+                        <small>🖥️ <strong>Matrix Terminal</strong> - Green code rain aesthetic with monospace font<br>
+                        🧠 <strong>Neural Holographic</strong> - Futuristic holographic projection style with animated borders</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character Background for Tyrell Layout -->
+            <div class="flex-container cyberpunk-settings-row">
+                <div class="cyberpunk-theme-config">
+                    <div class="cyberpunk-config-header">
+                        <strong>🖼️ Character Background (Tyrell Layout)</strong>
+                    </div>
+                    <div class="cyberpunk-description" style="margin-bottom: 15px;">
+                        <small>When enabled and using Tyrell layout, displays the current character's avatar as background in the right panel area. Background updates automatically when you switch characters.</small>
+                    </div>
+                    <div class="flex-container" style="align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_character_backgrounds" style="margin: 0;">
+                            <input type="checkbox" id="cyberpunk_character_backgrounds" />
+                            <span class="cyberpunk-toggle-text" style="font-size: 14px;">Enable Character Backgrounds</span>
+                        </label>
+                    </div>
+
+                    <div class="cyberpunk-config-note" style="margin-top: 8px;">
+                        <small>💡 This feature only works with Tyrell layout. The background will show in the right panel area and automatically adapt to the current character.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AI Background Generation for Context-based Backgrounds -->
+            <div class="flex-container cyberpunk-settings-row">
+                <div class="cyberpunk-theme-config">
+                    <div class="cyberpunk-config-header">
+                        <strong>🤖 AI Background Generation</strong>
+                    </div>
+                    <div class="cyberpunk-description" style="margin-bottom: 15px;">
+                        <small>Generate contextual backgrounds based on complete chat history. The AI analyzes the environment and only generates new backgrounds when the setting changes significantly. A floating generate button will appear on character backgrounds.</small>
+                    </div>
+                    <div class="flex-container" style="align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_ai_backgrounds" style="margin: 0;">
+                            <input type="checkbox" id="cyberpunk_ai_backgrounds" />
+                            <span class="cyberpunk-toggle-text" style="font-size: 14px;">Enable AI Backgrounds</span>
+                        </label>
+                    </div>
+
+                    <!-- Auto-generation Settings -->
+                    <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                        <label class="cyberpunk-control-label" for="cyberpunk_ai_bg_auto">
+                            🔄 Auto Generation
+                        </label>
+                        <div class="flex-container" style="align-items: center; gap: 10px;">
+                            <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_ai_bg_auto" style="margin: 0;">
+                                <input type="checkbox" id="cyberpunk_ai_bg_auto" />
+                                <span class="cyberpunk-toggle-text" style="font-size: 12px;">Auto-generate on message intervals</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Message Interval Setting -->
+                    <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                        <label class="cyberpunk-control-label" for="cyberpunk_ai_bg_interval">
+                            📊 Message Interval
+                        </label>
+                        <div class="cyberpunk-control-wrapper">
+                            <input type="number" id="cyberpunk_ai_bg_interval" class="cyberpunk-number-input"
+                                   min="5" max="50" step="5" value="10" style="width: 80px;">
+                            <span class="cyberpunk-unit">msgs</span>
+                        </div>
+                    </div>
+
+                    <!-- Image Dimensions Settings -->
+                    <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                        <label class="cyberpunk-control-label" for="cyberpunk_ai_bg_width">
+                            📐 Image Width
+                        </label>
+                        <div class="cyberpunk-control-wrapper">
+                            <input type="number" id="cyberpunk_ai_bg_width" class="cyberpunk-number-input"
+                                   min="256" max="2048" step="64" value="1024" style="width: 80px;">
+                            <span class="cyberpunk-unit">px</span>
+                        </div>
+                    </div>
+
+                    <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                        <label class="cyberpunk-control-label" for="cyberpunk_ai_bg_height">
+                            📏 Image Height
+                        </label>
+                        <div class="cyberpunk-control-wrapper">
+                            <input type="number" id="cyberpunk_ai_bg_height" class="cyberpunk-number-input"
+                                   min="256" max="2048" step="64" value="768" style="width: 80px;">
+                            <span class="cyberpunk-unit">px</span>
+                        </div>
+                    </div>
+
+                    <!-- Resource Management -->
+                    <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                        <label class="cyberpunk-control-label">
+                            🗂️ Resource Management
+                        </label>
+                        <div class="cyberpunk-control-wrapper">
+                            <button id="cyberpunk_resource_management" style="
+                                background: linear-gradient(135deg, #1a2240 0%, #2a3450 100%);
+                                color: #e0f0ff; border: 2px solid #004dcc; border-radius: 6px;
+                                padding: 10px 20px; cursor: pointer; font-weight: 600;
+                                transition: all 0.3s ease; font-size: 13px;
+                            ">管理AI背景图像</button>
+                        </div>
+                    </div>
+
+                    <div class="cyberpunk-description" style="margin-top: 8px;">
+                        <small><strong>How it works:</strong> AI analyzes the complete chat history to understand environment changes. Manual generation via floating button is always available. Auto-generation triggers every N messages only when environment changes significantly. Uses ST's image generation system with configurable dimensions.</small>
+                    </div>
+
+                    <div class="cyberpunk-description" style="margin-top: 8px; color: #ffdd00;">
+                        <small><strong>Resource Management:</strong> Scan and clean up unused AI background images to free up storage space. The system will identify images that are no longer referenced by any chat.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Background System -->
+            <div class="flex-container cyberpunk-settings-row">
+                <div class="cyberpunk-theme-config">
+                    <div class="cyberpunk-config-header">
+                        <strong>🎬 Video Background System</strong>
+                    </div>
+                    <div class="cyberpunk-description" style="margin-bottom: 15px;">
+                        <small>Dynamic cyberpunk video background that plays only on the homepage/welcome screen to maintain performance. Automatically hidden when entering chats to preserve browser resources.</small>
+                    </div>
+
+                    <div class="flex-container" style="align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_video_background" style="margin: 0;">
+                            <input type="checkbox" id="cyberpunk_video_background" />
+                            <span class="cyberpunk-toggle-text" style="font-size: 14px;">Enable Video Background</span>
+                        </label>
+                    </div>
+
+                    <!-- Video Loop Control -->
+                    <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                        <label class="cyberpunk-control-label" for="cyberpunk_video_bg_loop">
+                            🔄 Loop Playback
+                        </label>
+                        <div class="flex-container" style="align-items: center; gap: 10px;">
+                            <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_video_bg_loop" style="margin: 0;">
+                                <input type="checkbox" id="cyberpunk_video_bg_loop" />
+                                <span class="cyberpunk-toggle-text" style="font-size: 12px;">Loop video continuously</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="cyberpunk-description" style="margin-top: 8px;">
+                        <small><strong>Performance optimized:</strong> Video is muted and only plays on homepage, automatically pausing in chats. Z-index layered below ST system backgrounds and other cyberpunk backgrounds for proper compositing.</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Template Rendering System -->
+            <div class="flex-container cyberpunk-settings-row">
+                <div class="cyberpunk-theme-config">
+                    <div class="cyberpunk-config-header">
+                        <strong>📋 Template Rendering System</strong>
+                    </div>
+                    <div class="cyberpunk-description" style="margin-bottom: 15px;">
+                        <small>Automatically detect and render LLM output data templates into styled visual components. When characters output structured data in their messages, this system transforms them into interactive UI elements.</small>
+                    </div>
+
+                    <div class="flex-container" style="align-items: center; gap: 10px; margin-bottom: 15px;">
+                        <label class="checkbox_label cyberpunk-main-toggle" for="cyberpunk_template_rendering" style="margin: 0;">
+                            <input type="checkbox" id="cyberpunk_template_rendering" />
+                            <span class="cyberpunk-toggle-text" style="font-size: 14px;">Enable Template Rendering</span>
+                        </label>
+                    </div>
+
+                    <!-- Template Configuration Container -->
+                    <div class="cyberpunk-template-config-container" style="max-width: 100%; overflow: hidden; padding: 0 5px;">
+                        <!-- Theme Selection -->
+                        <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                            <label class="cyberpunk-control-label">
+                                🎨 Theme Selection
+                            </label>
+                            <select id="cyberpunk_template_theme" class="cyberpunk-select" style="width: 100%; max-width: 100%; margin: 8px 0; box-sizing: border-box;">
+                                <!-- Theme options will be loaded dynamically from themes-config.json -->
+                                <option value="">Loading themes...</option>
+                            </select>
+                            <div class="cyberpunk-description">
+                                <small>选择模板渲染的视觉主题风格</small>
+                            </div>
+                        </div>
+
+                        <!-- Available Modules (Dynamic) -->
+                        <div class="cyberpunk-control-group" style="margin-bottom: 15px;">
+                            <label class="cyberpunk-control-label">
+                                🎭 Available Modules
+                            </label>
+                            <div id="cyberpunk_template_modules" style="width: 100%; max-width: 100%; box-sizing: border-box;">
+                                <!-- Modules will be loaded dynamically based on selected theme -->
+                                <div class="cyberpunk-description" style="color: #888; font-style: italic;">
+                                    <small>Loading modules...</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theme Configuration Customization -->
+            <div class="flex-container cyberpunk-settings-row cyberpunk-config-section">
+                <div class="cyberpunk-theme-config">
+                    <div class="cyberpunk-config-header">
+                        <strong>⚙️ Theme Configuration</strong>
+                    </div>
+                    <div class="cyberpunk-config-controls">
+                        <!-- Blur Strength Control -->
+                        <div class="cyberpunk-control-group">
+                            <label class="cyberpunk-control-label" for="cyberpunk_blur_strength">
+                                🌫️ Blur Strength
+                            </label>
+                            <div class="cyberpunk-control-wrapper">
+                                <input type="range" id="cyberpunk_blur_strength" class="cyberpunk-slider"
+                                       min="0" max="30" step="1" value="10">
+                                <input type="number" id="cyberpunk_blur_strength_number" class="cyberpunk-number-input"
+                                       min="0" max="30" step="1" value="10">
+                                <span class="cyberpunk-unit">px</span>
+                            </div>
+                            <button type="button" class="cyberpunk-reset-btn" data-control="blur_strength" title="Reset to theme default">
+                                🔄
+                            </button>
+                        </div>
+
+                        <!-- Shadow Width Control -->
+                        <div class="cyberpunk-control-group">
+                            <label class="cyberpunk-control-label" for="cyberpunk_shadow_width">
+                                👤 Shadow Width
+                            </label>
+                            <div class="cyberpunk-control-wrapper">
+                                <input type="range" id="cyberpunk_shadow_width" class="cyberpunk-slider"
+                                       min="0" max="10" step="1" value="2">
+                                <input type="number" id="cyberpunk_shadow_width_number" class="cyberpunk-number-input"
+                                       min="0" max="10" step="1" value="2">
+                                <span class="cyberpunk-unit">px</span>
+                            </div>
+                            <button type="button" class="cyberpunk-reset-btn" data-control="shadow_width" title="Reset to theme default">
+                                🔄
+                            </button>
+                        </div>
+
+                        <!-- Font Scale Control -->
+                        <div class="cyberpunk-control-group">
+                            <label class="cyberpunk-control-label" for="cyberpunk_font_scale">
+                                🔤 Font Scale
+                            </label>
+                            <div class="cyberpunk-control-wrapper">
+                                <input type="range" id="cyberpunk_font_scale" class="cyberpunk-slider"
+                                       min="0.5" max="2.0" step="0.1" value="1.0">
+                                <input type="number" id="cyberpunk_font_scale_number" class="cyberpunk-number-input"
+                                       min="0.5" max="2.0" step="0.1" value="1.0">
+                                <span class="cyberpunk-unit">×</span>
+                            </div>
+                            <button type="button" class="cyberpunk-reset-btn" data-control="font_scale" title="Reset to theme default">
+                                🔄
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="cyberpunk-config-note">
+                        <small>💡 These custom values override theme defaults and sync with ST's main settings</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

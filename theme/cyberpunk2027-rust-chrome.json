@@ -1,0 +1,24 @@
+{
+    "name": "Cyberpunk 2027 - Rust & Chrome", 
+    "blur_strength": "5px",
+    "main_text_color": "#f5e5d5",
+    "italics_text_color": "#ff9955",
+    "underline_text_color": "#cc8866",
+    "quote_text_color": "#ffcc44",
+    "blur_tint_color": "#4a4038",
+    "chat_tint_color": "#2a2520",
+    "user_mes_blur_tint_color": "#55453d",
+    "bot_mes_blur_tint_color": "#3d352e",
+    "shadow_color": "#8b4513",
+    "shadow_width": "4px",
+    "border_color": "#c66b2a",
+    "font_scale": "0.9",
+    "main_font_size": "15px",
+    "extension_settings": {
+        "cyberpunk2027-theme": {
+            "enabled": true,
+            "layout": "decker",
+            "style": "rust"
+        }
+    }
+}

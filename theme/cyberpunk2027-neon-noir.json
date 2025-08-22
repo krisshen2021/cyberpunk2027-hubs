@@ -1,0 +1,24 @@
+{
+    "name": "Cyberpunk 2027 - Neon Noir",
+    "blur_strength": "15px",
+    "main_text_color": "#e0f0ff",
+    "italics_text_color": "#00ffdd",
+    "underline_text_color": "#ff44dd",
+    "quote_text_color": "#ffdd00",
+    "blur_tint_color": "#1a2240",
+    "chat_tint_color": "#0f1530",
+    "user_mes_blur_tint_color": "#200f30",
+    "bot_mes_blur_tint_color": "#0f2030",
+    "shadow_color": "#004d66",
+    "shadow_width": "3px",
+    "border_color": "#004dcc",
+    "font_scale": "1.1",
+    "main_font_size": "15px",
+    "extension_settings": {
+        "cyberpunk2027-theme": {
+            "enabled": true,
+            "layout": "decker",
+            "style": "noir"
+        }
+    }
+}

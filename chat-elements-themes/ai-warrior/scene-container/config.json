@@ -1,0 +1,83 @@
+{
+  "template_type": "scene-container",
+  "version": "1.0.0",
+  "description": "A.I战士主题的作战环境模板配置",
+  "data_mapping": {
+    "{{DATE_DATA}}": {
+      "attribute": "data-date",
+      "required": false,
+      "default": "未知日期",
+      "description": "当前日期信息"
+    },
+    "{{TIME_DATA}}": {
+      "attribute": "data-time",
+      "required": false,
+      "default": "未知时间",
+      "description": "当前时间信息"
+    },
+    "{{LOCATION_DATA}}": {
+      "attribute": "data-location",
+      "required": true,
+      "default": "未知位置",
+      "description": "作战位置信息"
+    },
+    "{{WEATHER_DATA}}": {
+      "attribute": "data-weather",
+      "required": false,
+      "default": "环境未知",
+      "description": "环境状况"
+    },
+    "{{TEMPERATURE_DATA}}": {
+      "attribute": "data-temperature",
+      "required": false,
+      "default": "温度未知",
+      "description": "环境温度"
+    },
+    "{{EVENT_DATA}}": {
+      "attribute": "data-event",
+      "required": false,
+      "default": "无任务活动",
+      "description": "当前任务事件"
+    },
+    "{{CHARACTER_LOOKS_DATA}}": {
+      "attribute": "data-character-looks",
+      "required": false,
+      "default": "外观未扫描",
+      "description": "目标外观扫描"
+    },
+    "{{CHARACTER_WEARING_DATA}}": {
+      "attribute": "data-character-wearing",
+      "required": false,
+      "default": "装备未识别",
+      "description": "目标装备识别"
+    },
+    "{{CHARACTER_BEHAVIOR_DATA}}": {
+      "attribute": "data-character-behavior",
+      "required": false,
+      "default": "行为模式未知",
+      "description": "目标行为分析"
+    },
+    "{{USER_INFO_DATA}}": {
+      "attribute": "data-user-info",
+      "required": false,
+      "default": "操作员信息未知",
+      "description": "操作员相关信息"
+    },
+    "{{USER_LOCATION_DATA}}": {
+      "attribute": "data-user-location",
+      "required": false,
+      "default": "操作员位置未知",
+      "description": "操作员所在位置"
+    },
+    "{{USER_ACTIVITY_DATA}}": {
+      "attribute": "data-user-activity",
+      "required": false,
+      "default": "操作员活动未知",
+      "description": "操作员当前活动"
+    }
+  },
+  "validation": {
+    "min_required_fields": 1,
+    "ignore_unknown_attributes": true
+  }
+}
