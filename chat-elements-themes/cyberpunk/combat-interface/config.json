@@ -15,17 +15,27 @@
         "def": "30",
         "skl": "40"
       }
+    },
+    "dialogue_msg": {
+      "description": "对话消息数据类型 - 从span标签innerHTML中获取内容",
+      "output_format": "innerHTML",
+      "source_method": "innerHTML",
+      "supports_markdown": true,
+      "supports_html": true,
+      "max_length": 10000,
+      "encoding": "utf-8"
     }
   },
   
   "data_mapping": {
     "{{LLM_DIALOGUE}}": {
       "source": "llm",
-      "category": "basic_data",
-      "attribute": "data-llm-msg",
+      "category": "dialogue_msg",
+      "attribute": "data-llm-dialogue",
+      "source_method": "innerHTML",
       "required": false,
       "default": "",
-      "description": "LLM输出的战斗对话内容"
+      "description": "LLM输出的战斗对话内容 - 从span标签innerHTML中获取，支持markdown和HTML"
     },
     
     "{{NPC_SPECIFIC}}": {

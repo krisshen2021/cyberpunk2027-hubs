@@ -55,7 +55,7 @@ git commit -m "🎉 Initial release: Cyberpunk 2027 Hubs v1.0.0
 - Comprehensive documentation"
 
 # 添加GitHub远程仓库（替换为你的GitHub用户名）
-git remote add origin https://github.com/你的用户名/cyberpunk2027-hubs.git
+git remote add origin https://github.com/krisshen2021/cyberpunk2027-hubs.git
 
 # 推送到GitHub
 git push -u origin main

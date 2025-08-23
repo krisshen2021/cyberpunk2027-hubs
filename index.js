@@ -4028,6 +4028,18 @@ function processTemplateData(element, config) {
                     // 处理NPC特定数据，并自动派生属性
                     processNPCSpecificData(placeholder, value, processedData, config.data_types?.npc_specific);
                     return; // 跳过后续处理，因为已经在函数内处理完毕
+                case 'dialogue_msg':
+                    // 处理对话消息数据 - 从innerHTML获取内容
+                    if (fieldConfig.source_method === 'innerHTML') {
+                        const innerHTML = element.innerHTML.trim();
+                        if (innerHTML) {
+                            value = innerHTML;
+                            console.log(`[${extensionName}] TEMPLATE-DATA: 从innerHTML获取对话内容，长度: ${innerHTML.length}`);
+                        } else {
+                            value = fieldConfig.default || '';
+                        }
+                    }
+                    break;
                 case 'basic_data':
                 default:
                     // 基础数据类型，保持原样
@@ -4201,6 +4213,11 @@ function getSimpleDefaultValue(dataKey, configDefault) {
     // 如果配置中有默认值，使用配置的
     if (configDefault && configDefault.trim() !== '') {
         return configDefault;
+    }
+    
+    // 处理dataKey为空或undefined的情况
+    if (!dataKey || typeof dataKey !== 'string') {
+        return '';
     }
     
     // 否则使用智能默认值
