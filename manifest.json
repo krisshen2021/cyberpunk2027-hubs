@@ -1,9 +1,12 @@
 {
     "display_name": "Cyberpunk 2027 hubs",
     "description": "A futuristic, post-apocalyptic theme with customizable layouts and styles.",
-    "author": "Kris & Copilot",
+    "author": "Muffin",
     "version": "1.0.0",
     "js": "index.js",
     "css": "style.css",
-    "settings": "settings.html"
+    "settings": "settings.html",
+    "license": "AGPL-3.0",
+    "homepage": "https://github.com/krisshen2021/cyberpunk2027-hubs",
+    "auto_update": true
 }

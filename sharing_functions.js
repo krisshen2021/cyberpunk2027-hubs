@@ -6,12 +6,12 @@
  * 例如：<div data-function="toggle-wrapper(target-id)">点击切换</div>
  */
 
-import { getThumbnailUrl, converter } from '../../../script.js';
+import { getThumbnailUrl, converter } from '../../../../script.js';
 import { dataTypeFunctions } from './function_types.js';
 
 class SharingFunctions {
     constructor() {
-        this.extensionName = 'cyberpunk2027-hubs';
+        this.extensionName = 'third-party/cyberpunk2027-hubs';
         this.activeTooltip = null;
         this.activeModal = null;
         console.log(`[${this.extensionName}] SharingFunctions 模块已初始化`);

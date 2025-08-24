@@ -1,15 +1,15 @@
 // Cyberpunk 2027 Theme - index.js
 
-import { extension_settings, renderExtensionTemplateAsync, getContext } from '../../extensions.js';
-import { saveSettingsDebounced, eventSource, event_types, characters, this_chid, getThumbnailUrl, getRequestHeaders, name1 } from '../../../script.js';
-import { power_user } from '../../power-user.js';
-import { executeSlashCommandsWithOptions } from '../../slash-commands.js';
-import { user_avatar } from '../../personas.js';
+import { extension_settings, renderExtensionTemplateAsync, getContext } from '../../../extensions.js';
+import { saveSettingsDebounced, eventSource, event_types, characters, this_chid, getThumbnailUrl, getRequestHeaders, name1 } from '../../../../script.js';
+import { power_user } from '../../../power-user.js';
+import { executeSlashCommandsWithOptions } from '../../../slash-commands.js';
+import { user_avatar } from '../../../personas.js';
 import { TemplateRenderer } from './handlebars-renderer.js';
 import { dataTypeFunctions } from './function_types.js';
 import { sharingFunctions } from './sharing_functions.js';
 
-const extensionName = 'cyberpunk2027-hubs';
+const extensionName = 'third-party/cyberpunk2027-hubs';
 
 // 初始化Handlebars渲染器实例
 const templateRenderer = new TemplateRenderer();
@@ -4021,6 +4021,9 @@ function processTemplateData(element, config) {
             
             // 根据category进行类型化处理
             switch (category) {
+                case 'general_array':
+                    value = dataTypeFunctions.processGeneralArray(value, config.data_types?.general_array);
+                    break;
                 case 'npc_list':
                     value = processListData(value, config.data_types?.npc_list);
                     break;

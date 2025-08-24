@@ -4,7 +4,7 @@
  */
 
 // 导入Handlebars和DOMPurify（从ST的lib.js）
-import { Handlebars, DOMPurify } from '../../../lib.js';
+import { Handlebars, DOMPurify } from '../../../../lib.js';
 
 export class TemplateRenderer {
     constructor() {

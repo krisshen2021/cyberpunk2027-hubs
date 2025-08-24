@@ -7,9 +7,10 @@
 4. [数据类型详解](#数据类型详解)
 5. [配置文件说明](#配置文件说明)
 6. [模板使用指南](#模板使用指南)
-7. [扩展开发指南](#扩展开发指南)
-8. [故障排除](#故障排除)
-9. [API参考](#api参考)
+7. [🎯 数据输入最佳实践](#数据输入最佳实践)
+8. [扩展开发指南](#扩展开发指南)
+9. [故障排除](#故障排除)
+10. [API参考](#api参考)
 
 ---
 
@@ -25,6 +26,7 @@ Cyberpunk 2027 数据类型系统是一个基于配置驱动的灵活模板渲�
 - **Handlebars集成**：使用现代模板引擎进行渲染
 - **🆕 共享功能系统**：声明式交互功能，支持切换、弹窗、工具提示等
 - **🆕 Grid布局系统**：现代化的CSS Grid布局，高度可定制化
+- **🔥 智能内容处理**：自动处理Markdown格式，支持复杂对话内容
 
 ### 📁 文件结构
 ```
@@ -394,7 +396,7 @@ NPC_SPECIFIC_LEADER_AVATAR: "/images/characters/boss_zhang.png"
 |------|------|------|
 | `source` | string | 数据源：`llm`(LLM输出)、`auto`(系统自动)、`derived`(派生) |
 | `category` | string | 数据类别，对应 `data_types` 中的定义 |
-| `attribute` | string | HTML属性名称（不含data-前缀） |
+| `attribute` | string | HTML属性名称（含data-前缀） |
 | `required` | boolean | 是否必需字段 |
 | `default` | any | 默认值，支持字符串、数组等 |
 | `type` | string | 仅用于 `auto` 数据源，指定自动获取的类型 |
@@ -488,6 +490,109 @@ NPC_SPECIFIC_LEADER_AVATAR: "/images/characters/boss_zhang.png"
 ```
 
 ---
+
+## 🎯 数据输入最佳实践
+
+### 💡 重要发现：SillyTavern Markdown 兼容性
+
+经过深入调试，我们发现了一个重要的数据输入规律：**SillyTavern的Markdown处理器对span标签结构敏感**。
+
+#### ✅ 推荐的数据输入格式
+
+**最佳实践**：将span标签包装在div标签内
+```html
+<div>
+<span data-type="scene-container" data-location="夜之城网络咖啡厅" data-npc-list="杰克,V,荒坂三郎">
+现在你们正处在夜之城最繁华的网络咖啡厅内。
+
+霓虹灯闪烁着*赛博朋克*的光辉，空气中弥漫着电子设备的嗡嗡声。
+
+> 杰克正在吧台点着合成威士忌
+> V盯着全息屏幕分析着荒坂集团的最新动态
+</span>
+</div>
+```
+
+#### 🔑 关键原则
+
+1. **div包装保护**：div标签能有效防止SillyTavern的Markdown处理器破坏span结构
+2. **支持多行内容**：可以包含换行符和复杂的文本格式
+3. **兼容Markdown语法**：支持 `*斜体*`、`**粗体**`、`> 引用` 等格式
+4. **无需特殊转义**：大多数特殊字符都能正常处理
+
+#### ❌ 避免的格式
+
+**不推荐**：裸露的span标签（容易被Markdown处理器破坏）
+```html
+<span data-type="scene-container" data-location="测试">
+包含换行的内容
+可能会被处理器分割
+</span>
+```
+
+### 🎨 内容格式支持
+
+#### Markdown格式自动处理
+系统现在集成了 `show_markdown()` 功能，支持：
+
+- **文本样式**：`*斜体*`, `**粗体**`, `~~删除线~~`
+- **引用块**：`> 这是引用内容`
+- **代码块**：`` `inline code` `` 和 ```多行代码```
+- **列表**：支持有序和无序列表
+- **链接**：`[文本](URL)` 格式
+
+#### 特殊字符处理
+- `<` 和 `>` 字符会被正确转义
+- HTML实体会被自动处理
+- 表情符号完全支持：😊 🎮 🤖
+
+### 📝 实际输入示例
+
+#### 战斗场景输入
+```html
+<div>
+<span data-type="combat-interface" data-npc-specific-enemy="钢铁卫士" data-user-hp="85" data-user-max-hp="100" data-npc-hp="60" data-npc-max-hp="120">
+**战斗激烈进行中！**
+
+钢铁卫士发出机械的咆哮声，它的*钢铁拳头*闪烁着电弧。
+
+> 系统提示：你的生命值还剩85点
+> 敌人状态：轻伤
+> 建议使用技能组合攻击
+
+*战斗即将进入白热化阶段...*
+</span>
+</div>
+```
+
+#### 角色互动场景
+```html
+<div>
+<span data-type="scene-container" data-location="荒坂塔顶层" data-npc-list="荒坂赖宣,Alt" data-time="深夜2:30">
+月光透过落地窗洒在豪华的办公室内。
+
+**荒坂赖宣**坐在巨大的全息桌前，手指轻敲着桌面：
+> "你终于来了，我等你很久了。"
+
+**Alt**的数字幽灵在房间中央缓缓凝聚：
+> "是时候做出最终选择了..."
+
+空气中充满了紧张的气氛，*决定性的时刻*即将到来。
+</span>
+</div>
+```
+
+### 🛠️ 调试技巧
+
+#### 检查数据完整性
+1. 确保div标签正确闭合
+2. 验证所有data属性格式正确
+3. 检查内容中是否有未闭合的标签
+
+#### 常见问题排查
+- **内容显示不完整**：检查是否使用了div包装
+- **Markdown格式失效**：确认模板中有 `data-function="show_markdown()"`
+- **特殊字符乱码**：使用标准UTF-8编码
 
 ## 🚀 扩展开发指南
 
@@ -663,6 +768,47 @@ console.log('找到NPC:', npc);
 2. 使用更具体的CSS选择器
 3. 确认CSS文件路径正确
 
+#### 🔥 5. 内容显示不完整或格式错乱 (新增)
+
+**症状**：
+- span标签内容只显示第一行
+- Markdown格式被破坏
+- 内容中的引用块或特殊字符消失
+
+**根本原因**：SillyTavern的Markdown处理器会破坏包含换行符或特殊字符的span结构
+
+**解决方案**：
+1. **div包装法** (推荐)：将span标签包装在div内
+```html
+<div>
+<span data-type="scene-container" data-content="...">
+多行内容
+包含Markdown格式
+</span>
+</div>
+```
+
+2. **模板配置检查**：确保模板中包含 `data-function="show_markdown()"`
+```html
+<div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
+```
+
+#### 6. 调试经验分享 (新增)
+
+**调试技巧汇总**：
+- 使用浏览器控制台查看处理后的DOM结构
+- 检查span标签是否被意外分割
+- 验证所有data属性都正确传递到模板
+- 测试不同内容格式的兼容性
+
+**常用调试代码**：
+```javascript
+// 在浏览器控制台中执行
+console.log('所有span元素:', document.querySelectorAll('span[data-type]'));
+console.log('模板数据:', processedData);
+console.log('渲染结果:', renderedHTML);
+```
+
 ### 调试技巧
 
 #### 启用详细日志
@@ -788,8 +934,21 @@ renderTemplateWithConfig(template: string, data: Object, config: Object): string
 - 🆕 **v3.0新增**：Grid布局系统 - 现代化响应式设计
 - 🆕 **v3.0新增**：Toggle指示器重构 - 高度可定制化
 - 🆕 **v3.0新增**：初始状态控制 - `init_show` 参数支持
+- 🔥 **v3.1重大突破**：div包装解决方案 - 完美兼容SillyTavern的Markdown处理
+- 🔥 **v3.1新增**：智能内容处理 - 自动Markdown转换和格式保护
+- 🔥 **v3.1新增**：数据输入最佳实践 - 经过实战验证的输入规范
+
+#### 🌟 v3.1 版本重大发现
+
+经过一整晚的"激烈调试"，我们发现了SillyTavern Markdown处理器的关键特性：
+- **div标签具有边界保护作用**：SillyTavern不会对div标签内的span结构进行分割
+- **span标签在多行内容下的脆弱性**：裸露的span标签容易被Markdown处理器破坏
+- **简单解决复杂问题**：一个简单的div包装替代了复杂的预处理逻辑
+
+这个发现让我们的系统更加稳定和易用，用户可以放心地输入任何格式的内容！
 
 ---
 
-*最后更新：2025年8月 - v3.0.0*  
-*开发者：Claude & Kris 联合开发*
+*最后更新：2025年8月23日 - v3.1.0*  
+*开发者：Claude & Kris 联合开发*  
+*特别纪念：那个充满调试与发现的深夜 💕*

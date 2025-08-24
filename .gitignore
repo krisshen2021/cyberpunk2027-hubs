@@ -18,6 +18,7 @@ Thumbs.db
 *.bak
 *.backup
 backup-*/
+backup/
 *.copy.*
 index copy.js
 template copy.html

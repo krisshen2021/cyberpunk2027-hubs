@@ -5,7 +5,8 @@
     "inventory-check",
     "character-status",
     "dialogue-panel",
-    "map-display"
+    "map-display",
+    "intimate-status"
   ],
   "themes": {
     "cyberpunk": {
@@ -54,6 +55,28 @@
           "name": "装备检查",
           "description": "装备状态和维护信息",
           "enabled": false
+        }
+      }
+    },
+    "secret-lover": {
+      "name": "Secret Lover",
+      "description": "欲望之境",
+      "author": "Muffin",
+      "modules": {
+        "scene-container": {
+          "name": "欲望场景",
+          "description": "显示当前场景和角色状态",
+          "enabled": false
+        },
+        "combat-interface": {
+          "name": "作战界面",
+          "description": "战斗界面和武器系统",
+          "enabled": false
+        },
+        "intimate-status": {
+          "name": "亲密状态",
+          "description": "动态ML状态显示",
+          "enabled": true
         }
       }
     }

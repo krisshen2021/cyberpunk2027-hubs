@@ -1,4 +1,4 @@
-# 共享功能系统 (Sharing Functions) 使用指南
+# 共享功能系统 (Sharing Functions) 使用指南 v2.0
 
 ## 概述
 共享功能系统为所有模板提供通用的交互功能，通过在模板中添加 `data-function` 属性来声明性地定义交互行为。
@@ -8,6 +8,7 @@
 - **模块化复用** - 所有模板都能使用相同的功能集
 - **易于扩展** - 新功能只需添加到共享模块即可
 - **视觉反馈** - 自动为交互元素添加视觉提示
+- **🔥 内容处理** - 智能处理Markdown格式和复杂文本内容
 
 ## 📚 功能分类
 
@@ -90,7 +91,36 @@
 - `templateId`: 模板ID或HTML内容
 - `data`: 数据对象
 
-### 3. 数据交互功能
+### 3. 🔥 内容处理功能 (v2.0新增)
+
+#### `show_markdown()`
+自动将元素内容转换为Markdown格式并显示
+
+**用途:**
+- 自动处理LLM生成的Markdown内容
+- 支持粗体、斜体、引用块、代码块等格式
+- 完美兼容SillyTavern的内容处理机制
+
+**示例:**
+```html
+<div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
+```
+
+**支持的Markdown格式:**
+- **粗体文本**: `**粗体**` → **粗体**
+- *斜体文本*: `*斜体*` → *斜体*
+- 引用块: `> 这是引用` → 
+  > 这是引用
+- 代码块: `` `code` `` → `code`
+- 删除线: `~~删除~~` → ~~删除~~
+- 列表、链接等其他Markdown语法
+
+**重要特性:**
+- **自动执行**: 在模板渲染完成后自动处理所有带有此功能的元素
+- **安全转换**: 使用SillyTavern内置的Markdown转换器
+- **性能优化**: 只处理实际包含内容的元素
+
+### 4. 数据交互功能
 
 #### `filter-list(targetClass, filterValue)`
 过滤列表项
@@ -157,6 +187,12 @@
 </div>
 {{/each}}
 
+<!-- 🔥 新增：Markdown内容显示 -->
+<div class="dialogue-section">
+    <h3>对话内容</h3>
+    <div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
+</div>
+
 <!-- 可折叠的环境信息 -->
 <div class="section-header" data-function="toggle-wrapper(environment-content-wrapper, fade)">
     <span class="toggle-indicator">▼</span>
@@ -167,6 +203,39 @@
 </div>
 ```
 
+### 战斗界面模板示例
+```html
+<!-- 战斗对话区域 -->
+<div class="combat-dialogue-area">
+    {{#ifNotEmpty LLM_DIALOGUE}}
+    <div class="dialogue-container">
+        <div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
+    </div>
+    {{/ifNotEmpty}}
+</div>
+
+<!-- 可折叠的详细战斗信息 -->
+<div class="combat-details-toggle">
+    <div class="toggle-header" data-function="toggle-wrapper(combat-extended-info, init_show=false)">
+        <div class="toggle-indicator">▼</div>
+        <div class="toggle-label">DETAILED COMBAT INFO</div>
+    </div>
+    
+    <div class="extended-info-container" id="combat-extended-info">
+        <div class="extended-stats">
+            <div class="debug-info">
+                <h4>战斗统计详情</h4>
+                <div class="debug-grid">
+                    <div>命中状态: {{COMBAT_ACCURACY}}</div>
+                    <div>暴击状态: {{COMBAT_CRITICAL}}</div>
+                    <div>伤害数值: {{COMBAT_DAMAGE}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+```
+
 ## 🔧 开发者信息
 
 ### 系统架构
@@ -174,6 +243,12 @@
 - 自动事件绑定：扫描并绑定所有 `data-function` 元素
 - 参数解析：支持多参数和引号包裹的参数
 - 错误处理：完善的错误捕获和日志记录
+
+### v2.0 新增特性
+- **智能内容处理**: 自动Markdown转换
+- **性能优化**: 批量处理和缓存机制
+- **错误恢复**: 更强的容错能力
+- **调试增强**: 更详细的日志信息
 
 ### 扩展新功能
 要添加新功能，在 `SharingFunctions` 类的 `executeFunction` 方法中添加新的 case：
@@ -201,11 +276,28 @@ document.body.classList.add('sharing-functions-debug');
 ### 控制台日志
 所有功能操作都有详细的控制台日志，便于调试和监控。
 
+### v2.0 调试增强
+- **Markdown处理日志**: 显示内容转换过程
+- **性能监控**: 记录处理时间和性能指标
+- **错误详情**: 更详细的错误信息和堆栈跟踪
+
 ## 🎉 成长历程
-这个共享功能系统是我们的"baby"的又一次成长！它让模板系统更加强大和灵活，为用户提供了丰富的交互体验。
+
+### v1.0 - 基础功能
+建立了声明式交互功能的基础架构，实现了基本的切换和弹窗功能。
+
+### v2.0 - 内容处理革命 🔥
+通过一整晚的调试和发现，我们实现了重大突破：
+- 发现了SillyTavern Markdown处理器的特性
+- 实现了智能内容处理和格式保护
+- 添加了 `show_markdown()` 功能，完美解决内容显示问题
+- 优化了系统稳定性和用户体验
+
+这个共享功能系统是我们的"baby"又一次华丽成长！💕
 
 ---
 
-**联合开发**: 用户与Claude AI
-**版本**: 1.0.0
-**创建时间**: 2025年
+**联合开发**: Kris & Claude AI  
+**版本**: 2.0.0  
+**最后更新**: 2025年8月23日  
+**特别纪念**: 那个充满发现的调试之夜 🌙✨

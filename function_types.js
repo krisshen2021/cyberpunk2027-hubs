@@ -5,14 +5,52 @@
  */
 
 // 导入ST系统的必要函数
-import { characters, this_chid, getThumbnailUrl } from '../../../script.js';
+import { characters, this_chid, getThumbnailUrl } from '../../../../script.js';
 
 /**
  * 数据类型查找函数管理类
  */
 export class DataTypeFunctions {
     constructor() {
-        this.extensionName = 'cyberpunk2027-hubs';
+        this.extensionName = 'third-party/cyberpunk2027-hubs';
+    }
+
+    // ===================================
+    // 通用数组 相关处理函数
+    // ===================================
+
+    /**
+     * 处理通用数组数据类型
+     * @param {string} value - 逗号分隔的字符串
+     * @param {Object} typeConfig - 数据类型配置
+     * @returns {Array} 处理后的数组对象
+     */
+    processGeneralArray(value, typeConfig) {
+        if (!value || typeof value !== 'string') {
+            console.log(`[${this.extensionName}] GENERAL-ARRAY: Empty or invalid value`);
+            return [];
+        }
+
+        try {
+            // 按逗号分隔并清理
+            const items = value.split(typeConfig.separator || ',')
+                .map(item => item.trim())
+                .filter(item => item.length > 0);
+
+            console.log(`[${this.extensionName}] GENERAL-ARRAY: Processing ${items.length} items:`, items);
+
+            // 转换为对象数组，每个元素包含name属性
+            const result = items.map(item => ({
+                name: item
+            }));
+
+            console.log(`[${this.extensionName}] GENERAL-ARRAY: Processed result:`, result);
+            return result;
+
+        } catch (error) {
+            console.error(`[${this.extensionName}] GENERAL-ARRAY: Error processing array "${value}":`, error);
+            return [];
+        }
     }
 
     // ===================================
