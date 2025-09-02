@@ -1,231 +1,233 @@
 {
-  "template_type": "intimate-status",
-  "version": "1.0.0",
-  "description": "Secret Lover主题的亲密关系状态面板 - 地下恋人的欲望与危险",
-  
-  "data_types": {
-    "general_array": {
-      "description": "通用数组数据类型，自动处理逗号分隔的字符串为数组，每个元素包含name属性",
-      "output_format": "array",
-      "auto_properties": ["name"],
-      "separator": ","
+    "template_type": "intimate-status",
+    "version": "1.0.0",
+    "description": "Secret Lover主题的亲密关系状态面板 - 地下恋人的欲望与危险",
+    "data_types": {
+        "general_array": {
+            "description": "通用数组数据类型，自动处理逗号分隔的字符串为数组，每个元素包含name属性",
+            "output_format": "array",
+            "auto_properties": [
+                "name"
+            ],
+            "separator": ","
+        },
+        "npc_list": {
+            "description": "NPC列表数据类型，自动处理为数组，每个元素包含name和avatar",
+            "output_format": "array",
+            "auto_properties": [
+                "name",
+                "avatar"
+            ],
+            "separator": ","
+        },
+        "intimate_stats": {
+            "description": "亲密关系数值数据类型",
+            "output_format": "numeric",
+            "min_value": 0,
+            "max_value": 100,
+            "default_value": 50,
+            "threshold_levels": {
+                "low": 30,
+                "medium": 60,
+                "high": 80,
+                "critical": 95
+            }
+        },
+        "relationship_data": {
+            "description": "关系状态数据类型",
+            "output_format": "string",
+            "possible_values": [
+                "陌生人",
+                "初识",
+                "暧昧",
+                "热恋",
+                "地下情人",
+                "危险关系",
+                "生死与共"
+            ]
+        },
+        "dialogue_msg": {
+            "description": "对话消息数据类型 - 从span标签innerHTML中获取内容",
+            "output_format": "innerHTML",
+            "source_method": "innerHTML",
+            "supports_markdown": true,
+            "supports_html": true,
+            "max_length": 10000,
+            "encoding": "utf-8"
+        }
     },
-    "npc_list": {
-      "description": "NPC列表数据类型，自动处理为数组，每个元素包含name和avatar",
-      "output_format": "array",
-      "auto_properties": ["name", "avatar"],
-      "separator": ","
+    "data_mapping": {
+        "{{LLM_DIALOGUE}}": {
+            "source": "llm",
+            "category": "dialogue_msg",
+            "attribute": "data-llm-dialogue",
+            "source_method": "innerHTML",
+            "required": false,
+            "default": "",
+            "description": "LLM输出的亲密互动对话内容"
+        },
+        "{{DESIRE_LEVEL}}": {
+            "source": "llm",
+            "category": "intimate_stats",
+            "attribute": "data-desire-level",
+            "required": false,
+            "default": "50",
+            "description": "欲望度 (0-100)"
+        },
+        "{{STAMINA_LEVEL}}": {
+            "source": "llm",
+            "category": "intimate_stats",
+            "attribute": "data-stamina-level",
+            "required": false,
+            "default": "75",
+            "description": "体力值 (0-100)"
+        },
+        "{{AFFECTION_LEVEL}}": {
+            "source": "llm",
+            "category": "intimate_stats",
+            "attribute": "data-affection-level",
+            "required": false,
+            "default": "30",
+            "description": "爱慕度 (0-100)"
+        },
+        "{{GUARD_LEVEL}}": {
+            "source": "llm",
+            "category": "intimate_stats",
+            "attribute": "data-guard-level",
+            "required": false,
+            "default": "70",
+            "description": "防备度 (0-100)"
+        },
+        "{{CURRENT_RELATIONSHIP}}": {
+            "source": "llm",
+            "category": "relationship_data",
+            "attribute": "data-current-relationship",
+            "required": false,
+            "default": "陌生人",
+            "description": "当前关系状态"
+        },
+        "{{UNLOCKED_INTERACTIONS}}": {
+            "source": "llm",
+            "category": "general_array",
+            "attribute": "data-unlocked-interactions",
+            "required": false,
+            "default": "",
+            "description": "已解锁的互动选项"
+        },
+        "{{UNLOCKED_EQUIPMENT}}": {
+            "source": "llm",
+            "category": "general_array",
+            "attribute": "data-unlocked-equipment",
+            "required": false,
+            "default": "",
+            "description": "已解锁的特殊装备"
+        },
+        "{{NPC_SPECIFIC}}": {
+            "source": "llm",
+            "category": "npc_specific",
+            "attribute": "data-npc-name",
+            "required": false,
+            "default": "",
+            "description": "目标NPC角色名称"
+        },
+        "{{NPC_MOOD}}": {
+            "source": "llm",
+            "category": "basic_data",
+            "attribute": "data-npc-mood",
+            "required": false,
+            "default": "平静",
+            "description": "NPC当前情绪状态"
+        },
+        "{{NPC_ATTITUDE}}": {
+            "source": "llm",
+            "category": "basic_data",
+            "attribute": "data-npc-attitude",
+            "required": false,
+            "default": "中性",
+            "description": "NPC对用户的态度"
+        },
+        "{{USER_NAME}}": {
+            "source": "auto",
+            "category": "auto_data",
+            "type": "user",
+            "attribute": "name",
+            "required": false,
+            "default": "用户",
+            "description": "用户名称（自动获取）"
+        },
+        "{{USER_AVATAR}}": {
+            "source": "auto",
+            "category": "auto_data",
+            "type": "user",
+            "attribute": "avatar",
+            "required": false,
+            "default": "",
+            "description": "用户头像（自动获取）"
+        },
+        "{{SCENE_AMBIANCE}}": {
+            "source": "llm",
+            "category": "basic_data",
+            "attribute": "data-scene-ambiance",
+            "required": false,
+            "default": "暧昧",
+            "description": "场景氛围描述"
+        },
+        "{{DANGER_LEVEL}}": {
+            "source": "llm",
+            "category": "intimate_stats",
+            "attribute": "data-danger-level",
+            "required": false,
+            "default": "25",
+            "description": "危险程度 (0-100)"
+        },
+        "{{NPC_SPECIFIC_AVATAR}}": {
+            "source": "auto",
+            "category": "auto_data",
+            "type": "npc",
+            "attribute": "avatar",
+            "npc_name_source": "{{NPC_SPECIFIC}}",
+            "required": false,
+            "default": "",
+            "description": "NPC头像（自动获取，用作背景）"
+        }
     },
-    "intimate_stats": {
-      "description": "亲密关系数值数据类型",
-      "output_format": "numeric",
-      "min_value": 0,
-      "max_value": 100,
-      "default_value": 50,
-      "threshold_levels": {
-        "low": 30,
-        "medium": 60,
-        "high": 80,
-        "critical": 95
-      }
+    "validation": {
+        "min_required_fields": 1,
+        "ignore_unknown_attributes": true
     },
-    "relationship_data": {
-      "description": "关系状态数据类型",
-      "output_format": "string",
-      "possible_values": ["陌生人", "初识", "暧昧", "热恋", "地下情人", "危险关系", "生死与共"]
-    },
-    "dialogue_msg": {
-      "description": "对话消息数据类型 - 从span标签innerHTML中获取内容",
-      "output_format": "innerHTML",
-      "source_method": "innerHTML",
-      "supports_markdown": true,
-      "supports_html": true,
-      "max_length": 10000,
-      "encoding": "utf-8"
+    "ui_settings": {
+        "status_bar_position": "bottom",
+        "animate_value_changes": true,
+        "show_percentage": true,
+        "color_scheme": {
+            "desire": {
+                "low": "#4a148c",
+                "medium": "#7b1fa2",
+                "high": "#ad1457",
+                "critical": "#c2185b",
+                "max": "#ff1744"
+            },
+            "stamina": {
+                "low": "#1a237e",
+                "medium": "#3949ab",
+                "high": "#00bcd4",
+                "critical": "#00e5ff",
+                "max": "#00ffff"
+            },
+            "affection": {
+                "low": "#2e7d32",
+                "medium": "#66bb6a",
+                "high": "#ffb74d",
+                "critical": "#ff8a65",
+                "max": "#ff6b6b"
+            },
+            "guard": {
+                "low": "#ffecb3",
+                "medium": "#ffcc02",
+                "high": "#ff9800",
+                "critical": "#ff5722",
+                "max": "#d32f2f"
+            }
+        }
     }
-  },
-  
-  "data_mapping": {
-    "{{LLM_DIALOGUE}}": {
-      "source": "llm",
-      "category": "dialogue_msg",
-      "attribute": "data-llm-dialogue",
-      "source_method": "innerHTML",
-      "required": false,
-      "default": "",
-      "description": "LLM输出的亲密互动对话内容"
-    },
-    
-    "{{DESIRE_LEVEL}}": {
-      "source": "llm",
-      "category": "intimate_stats",
-      "attribute": "data-desire-level",
-      "required": false,
-      "default": "50",
-      "description": "欲望度 (0-100)"
-    },
-    "{{STAMINA_LEVEL}}": {
-      "source": "llm", 
-      "category": "intimate_stats",
-      "attribute": "data-stamina-level",
-      "required": false,
-      "default": "75",
-      "description": "体力值 (0-100)"
-    },
-    "{{AFFECTION_LEVEL}}": {
-      "source": "llm",
-      "category": "intimate_stats", 
-      "attribute": "data-affection-level",
-      "required": false,
-      "default": "30",
-      "description": "爱慕度 (0-100)"
-    },
-    "{{GUARD_LEVEL}}": {
-      "source": "llm",
-      "category": "intimate_stats",
-      "attribute": "data-guard-level", 
-      "required": false,
-      "default": "70",
-      "description": "防备度 (0-100)"
-    },
-    
-    "{{CURRENT_RELATIONSHIP}}": {
-      "source": "llm",
-      "category": "relationship_data",
-      "attribute": "data-current-relationship",
-      "required": false,
-      "default": "陌生人",
-      "description": "当前关系状态"
-    },
-    
-    "{{UNLOCKED_INTERACTIONS}}": {
-      "source": "llm",
-      "category": "general_array",
-      "attribute": "data-unlocked-interactions",
-      "required": false,
-      "default": "",
-      "description": "已解锁的互动选项"
-    },
-    "{{UNLOCKED_EQUIPMENT}}": {
-      "source": "llm", 
-      "category": "general_array",
-      "attribute": "data-unlocked-equipment",
-      "required": false,
-      "default": "",
-      "description": "已解锁的特殊装备"
-    },
-    
-    "{{NPC_SPECIFIC}}": {
-      "source": "llm",
-      "category": "npc_specific",
-      "attribute": "data-npc-name",
-      "required": false,
-      "default": "",
-      "description": "目标NPC角色名称"
-    },
-    "{{NPC_MOOD}}": {
-      "source": "llm",
-      "category": "basic_data",
-      "attribute": "data-npc-mood",
-      "required": false,
-      "default": "平静",
-      "description": "NPC当前情绪状态"
-    },
-    "{{NPC_ATTITUDE}}": {
-      "source": "llm",
-      "category": "basic_data", 
-      "attribute": "data-npc-attitude",
-      "required": false,
-      "default": "中性",
-      "description": "NPC对用户的态度"
-    },
-    
-    "{{USER_NAME}}": {
-      "source": "auto",
-      "category": "auto_data", 
-      "type": "user",
-      "attribute": "name",
-      "required": false,
-      "default": "用户",
-      "description": "用户名称（自动获取）"
-    },
-    "{{USER_AVATAR}}": {
-      "source": "auto",
-      "category": "auto_data",
-      "type": "user", 
-      "attribute": "avatar",
-      "required": false,
-      "default": "",
-      "description": "用户头像（自动获取）"
-    },
-    
-    "{{SCENE_AMBIANCE}}": {
-      "source": "llm",
-      "category": "basic_data",
-      "attribute": "data-scene-ambiance",
-      "required": false,
-      "default": "暧昧",
-      "description": "场景氛围描述"
-    },
-    "{{DANGER_LEVEL}}": {
-      "source": "llm",
-      "category": "intimate_stats",
-      "attribute": "data-danger-level", 
-      "required": false,
-      "default": "25",
-      "description": "危险程度 (0-100)"
-    },
-    
-    "{{NPC_SPECIFIC_AVATAR}}": {
-      "source": "auto",
-      "category": "auto_data",
-      "type": "npc",
-      "attribute": "avatar",
-      "npc_name_source": "{{NPC_SPECIFIC}}",
-      "required": false,
-      "default": "",
-      "description": "NPC头像（自动获取，用作背景）"
-    }
-  },
-  
-  "validation": {
-    "min_required_fields": 1,
-    "ignore_unknown_attributes": true
-  },
-  
-  "ui_settings": {
-    "status_bar_position": "bottom",
-    "animate_value_changes": true,
-    "show_percentage": true,
-    "color_scheme": {
-      "desire": {
-        "low": "#4a148c",
-        "medium": "#7b1fa2", 
-        "high": "#ad1457",
-        "critical": "#c2185b",
-        "max": "#ff1744"
-      },
-      "stamina": {
-        "low": "#1a237e",
-        "medium": "#3949ab",
-        "high": "#00bcd4", 
-        "critical": "#00e5ff",
-        "max": "#00ffff"
-      },
-      "affection": {
-        "low": "#2e7d32",
-        "medium": "#66bb6a",
-        "high": "#ffb74d",
-        "critical": "#ff8a65", 
-        "max": "#ff6b6b"
-      },
-      "guard": {
-        "low": "#ffecb3",
-        "medium": "#ffcc02",
-        "high": "#ff9800",
-        "critical": "#ff5722",
-        "max": "#d32f2f"
-      }
-    }
-  }
 }

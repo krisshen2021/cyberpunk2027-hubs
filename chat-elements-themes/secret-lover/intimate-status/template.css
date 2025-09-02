@@ -5,629 +5,745 @@
 
 /* 🎨 CSS变量定义 - 欲望配色方案 */
 :root {
-  /* 欲望度颜色 - 深紫到炽红 */
-  --desire-low: #4a148c;
-  --desire-medium: #7b1fa2;
-  --desire-high: #ad1457;
-  --desire-critical: #c2185b;
-  --desire-max: #ff1744;
-  
-  /* 体力颜色 - 深蓝到青色 */
-  --stamina-low: #1a237e;
-  --stamina-medium: #3949ab;
-  --stamina-high: #00bcd4;
-  --stamina-critical: #00e5ff;
-  --stamina-max: #00ffff;
-  
-  /* 爱慕度颜色 - 绿到橙红渐变 */
-  --affection-low: #2e7d32;
-  --affection-medium: #66bb6a;
-  --affection-high: #ffb74d;
-  --affection-critical: #ff8a65;
-  --affection-max: #ff6b6b;
-  
-  /* 防备度颜色 - 黄色警告系 */
-  --guard-low: #ffecb3;
-  --guard-medium: #ffcc02;
-  --guard-high: #ff9800;
-  --guard-critical: #ff5722;
-  --guard-max: #d32f2f;
-  
-  /* 背景和边框 */
-  --bg-primary: rgba(0, 0, 0, 0.85);
-  --bg-secondary: rgba(20, 20, 40, 0.9);
-  --border-neon: rgba(0, 255, 255, 0.3);
-  --border-danger: rgba(255, 23, 68, 0.4);
-  --text-primary: #e0e0e0;
-  --text-secondary: #b0b0b0;
-  --text-accent: #00ffdd;
+    /* 欲望度颜色 - 深紫到炽红 */
+    --desire-low: #4a148c;
+    --desire-medium: #7b1fa2;
+    --desire-high: #ad1457;
+    --desire-critical: #c2185b;
+    --desire-max: #ff1744;
+
+    /* 体力颜色 - 深蓝到青色 */
+    --stamina-low: #1a237e;
+    --stamina-medium: #3949ab;
+    --stamina-high: #00bcd4;
+    --stamina-critical: #00e5ff;
+    --stamina-max: #00ffff;
+
+    /* 爱慕度颜色 - 绿到橙红渐变 */
+    --affection-low: #2e7d32;
+    --affection-medium: #66bb6a;
+    --affection-high: #ffb74d;
+    --affection-critical: #ff8a65;
+    --affection-max: #ff6b6b;
+
+    /* 防备度颜色 - 黄色警告系 */
+    --guard-low: #ffecb3;
+    --guard-medium: #ffcc02;
+    --guard-high: #ff9800;
+    --guard-critical: #ff5722;
+    --guard-max: #d32f2f;
+
+    /* 背景和边框 */
+    --bg-primary: rgba(42, 0, 24, 0.2);
+    --bg-secondary: rgba(54, 0, 28, 0.4);
+    --border-neon: rgba(0, 255, 255, 0.3);
+    --border-danger: rgba(255, 23, 68, 0.4);
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-accent: #00ffdd;
+    --general-border-radius: 8px;
+
+    --pulse-color:rgba(252, 0, 118, 0.873);
 }
 
 /* 🌟 主容器 - 底部状态栏设计 */
 .intimate-status-container {
-  width: 100%;
-  position: relative;
-  background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
-  border-radius: 12px 12px 0 0;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6), 
-              inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  margin-top: 15px;
-  overflow: hidden;
-  animation: containerPulse 4s ease-in-out infinite;
+    width: 100%;
+    position: relative;
+    background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+    border-radius: var(--general-border-radius);
+    backdrop-filter: blur(10px);
+    margin-top: 15px;
+    overflow: hidden;
+    animation: containerPulse 4s ease-in-out infinite;
 }
 
 @keyframes containerPulse {
-  0%, 100% { box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1); }
-  50% { box-shadow: 0 -6px 30px rgba(255, 23, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.15); }
-}
 
+    0%,
+    100% {
+        box-shadow: 0 0px 10px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.1);
+    }
+
+    50% {
+        box-shadow: 0 0px 30px rgba(255, 23, 68, 0.2), inset 0 0 10px rgba(166, 0, 122, 0.514);
+    }
+}
+.intimate-status-container .img-placeholder {
+	padding: 10px 20px;
+	background-color: rgba(50, 3, 37, 0.65);
+	box-shadow: inset 0 0 20px rgba(108, 5, 112, 0.64);
+}
 /* 💬 对话内容区域 */
 .intimate-dialogue-section {
-  padding: 15px 20px;
-  border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.3);
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(255, 0, 143, 0.2);
+    background: rgba(26, 3, 27, 0.6);
 }
 
 .dialogue-content {
-  color: var(--text-primary);
-  font-size: 14px;
-  line-height: 1.6;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* 📊 主要状态栏布局 - 带NPC背景头像 */
 .intimate-status-bar {
-  display: grid;
-  grid-template-columns: 2fr 1.5fr 1.5fr;
-  gap: 20px;
-  padding: 15px 20px;
-  align-items: stretch;
-  min-height: 100px;
-  position: relative;
-  overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* padding: 15px 20px; */
+    /* align-items: stretch; */
+    /* min-height: 100px; */
+    position: relative;
+    overflow: hidden;
 }
 
 /* NPC背景头像效果 - 使用伪元素 */
 .intimate-status-bar.has-npc-background {
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 .intimate-status-bar.has-npc-background::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 200px;  /* 固定宽度 */
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-image: var(--npc-avatar-url);
-  /* 左边缘渐变遮罩 */
-  mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 30%, rgba(0,0,0,1) 100%);
-  -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,0.3) 30%, rgba(0,0,0,1) 100%);
-  z-index: 1;
-  pointer-events: none;
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    /* 固定宽度 */
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: var(--npc-avatar-url);
+    /* 左边缘渐变遮罩 */
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 1) 100%);
+    -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.3) 30%, rgba(0, 0, 0, 1) 100%);
+    z-index: 1;
+    pointer-events: none;
 }
 
 /* 确保内容在背景之上 */
-.intimate-status-bar > * {
-  position: relative;
-  z-index: 2;
+.intimate-status-bar>* {
+    position: relative;
+    z-index: 2;
 }
 
-/* 💖 左侧：核心数值区域 */
+/* 核心数值区域 */
 .status-metrics-section {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
 }
 
 .metric-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s ease;
-  position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .metric-item:hover {
-  transform: translateY(-2px);
-  border-color: var(--border-neon);
-  box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
+    transform: translateY(-2px);
+    border-color: var(--border-neon);
+    box-shadow: 0 4px 15px rgba(0, 255, 255, 0.2);
 }
 
 .metric-icon {
-  font-size: 16px;
-  filter: drop-shadow(0 0 4px currentColor);
-  animation: iconPulse 2s ease-in-out infinite alternate;
+    font-size: 10px;
+    /* filter: drop-shadow(0 0 4px currentColor); */
+    animation: iconPulse 2s ease-in-out infinite alternate;
 }
 
 @keyframes iconPulse {
-  0% { transform: scale(1); filter: drop-shadow(0 0 4px currentColor); }
-  100% { transform: scale(1.05); filter: drop-shadow(0 0 6px currentColor); }
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px var(--pulse-color));
+    }
+
+    50% {
+        transform: scale(1.2);
+        filter: drop-shadow(0 0 10px var(--pulse-color));
+    }
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 4px var(--pulse-color));
+    }
 }
 
 .metric-info {
-  flex: 1;
-  min-width: 0;
+	min-width: 0;
+	width: 100%;
+	display: grid;
+	grid-template-columns: auto auto 1fr;
+	gap: 5px;
+	place-items: center start;
 }
 
 .metric-label {
-  font-size: 10px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 3px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .metric-value {
-  font-size: 10px;
-  color: var(--text-accent);
-  font-weight: bold;
-  text-align: center;
-  margin-top: 3px;
+    font-size: 12px;
+    color: var(--text-accent);
+    font-weight: bold;
+    text-align: center;
 }
 
 /* 🔥 进度条系统 - 诱惑动画 */
 .metric-bar-container {
-  position: relative;
-  height: 6px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 3px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    height: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    width: 100%;
 }
 
 .metric-bar {
-  position: relative;
-  width: 100%;
-  height: 100%;
+    position: relative;
+    width: 100%;
+    height: 100%;
 }
 
 .metric-fill {
-  height: 100%;
-  border-radius: 3px;
-  position: relative;
-  transition: width 0.8s ease, background-color 0.5s ease;
-  animation: barShimmer 3s linear infinite;
+    height: 100%;
+    border-radius: 3px;
+    position: relative;
+    transition: width 0.8s ease, background-color 0.5s ease;
+    animation: barShimmer 3s linear infinite;
 }
 
 @keyframes barShimmer {
-  0% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2); }
-  50% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4); }
-  100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+    0% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
+
+    50% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+
+    100% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    }
 }
 
 .metric-glow {
-  position: absolute;
-  top: -2px;
-  left: 0;
-  right: 0;
-  bottom: -2px;
-  border-radius: 5px;
-  opacity: 0.3;
-  filter: blur(4px);
-  transition: opacity 0.3s ease;
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    border-radius: 5px;
+    opacity: 0.3;
+    filter: blur(4px);
+    transition: opacity 0.3s ease;
 }
 
 /* 💜 欲望度特殊样式 */
 .desire-fill {
-  background: linear-gradient(90deg, var(--desire-low), var(--desire-medium), var(--desire-high));
+    background: linear-gradient(90deg, var(--desire-low), var(--desire-medium), var(--desire-high));
 }
 
 .desire-fill[style*="width: 100%"] {
-  background: linear-gradient(90deg, var(--desire-high), var(--desire-critical), var(--desire-max));
-  animation: desireMaxPulse 1s ease-in-out infinite alternate;
+    background: linear-gradient(90deg, var(--desire-high), var(--desire-critical), var(--desire-max));
+    animation: desireMaxPulse 1s ease-in-out infinite alternate;
 }
 
 @keyframes desireMaxPulse {
-  0% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--desire-max); }
-  100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 20px var(--desire-max); }
+    0% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--desire-max);
+    }
+
+    100% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 20px var(--desire-max);
+    }
 }
 
-.desire-glow { background: linear-gradient(90deg, var(--desire-low), var(--desire-high)); }
+.desire-glow {
+    background: linear-gradient(90deg, var(--desire-low), var(--desire-high));
+}
 
 /* ⚡ 体力值特殊样式 */
 .stamina-fill {
-  background: linear-gradient(90deg, var(--stamina-low), var(--stamina-medium), var(--stamina-high));
+    background: linear-gradient(90deg, var(--stamina-low), var(--stamina-medium), var(--stamina-high));
 }
 
 .stamina-fill[style*="width: 100%"] {
-  background: linear-gradient(90deg, var(--stamina-high), var(--stamina-critical), var(--stamina-max));
-  animation: staminaMaxPulse 1.5s ease-in-out infinite alternate;
+    background: linear-gradient(90deg, var(--stamina-high), var(--stamina-critical), var(--stamina-max));
+    animation: staminaMaxPulse 1.5s ease-in-out infinite alternate;
 }
 
 @keyframes staminaMaxPulse {
-  0% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--stamina-max); }
-  100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 25px var(--stamina-max); }
+    0% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--stamina-max);
+    }
+
+    100% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 25px var(--stamina-max);
+    }
 }
 
-.stamina-glow { background: linear-gradient(90deg, var(--stamina-low), var(--stamina-high)); }
+.stamina-glow {
+    background: linear-gradient(90deg, var(--stamina-low), var(--stamina-high));
+}
 
 /* 💖 爱慕度特殊样式 */
 .affection-fill {
-  background: linear-gradient(90deg, var(--affection-low), var(--affection-medium), var(--affection-high));
+    background: linear-gradient(90deg, var(--affection-low), var(--affection-medium), var(--affection-high));
 }
 
 .affection-fill[style*="width: 100%"] {
-  background: linear-gradient(90deg, var(--affection-high), var(--affection-critical), var(--affection-max));
-  animation: affectionMaxPulse 2s ease-in-out infinite alternate;
+    background: linear-gradient(90deg, var(--affection-high), var(--affection-critical), var(--affection-max));
+    animation: affectionMaxPulse 2s ease-in-out infinite alternate;
 }
 
 @keyframes affectionMaxPulse {
-  0% { 
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--affection-max);
-    transform: scale(1);
-  }
-  100% { 
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 20px var(--affection-max);
-    transform: scale(1.02);
-  }
+    0% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--affection-max);
+        transform: scale(1);
+    }
+
+    100% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 20px var(--affection-max);
+        transform: scale(1.02);
+    }
 }
 
-.affection-glow { background: linear-gradient(90deg, var(--affection-low), var(--affection-high)); }
+.affection-glow {
+    background: linear-gradient(90deg, var(--affection-low), var(--affection-high));
+}
 
 /* 🛡️ 防备度特殊样式 */
 .guard-fill {
-  background: linear-gradient(90deg, var(--guard-low), var(--guard-medium), var(--guard-high));
+    background: linear-gradient(90deg, var(--guard-low), var(--guard-medium), var(--guard-high));
 }
 
 .guard-fill[style*="width: 100%"] {
-  background: linear-gradient(90deg, var(--guard-high), var(--guard-critical), var(--guard-max));
-  animation: guardMaxPulse 1s ease-in-out infinite;
+    background: linear-gradient(90deg, var(--guard-high), var(--guard-critical), var(--guard-max));
+    animation: guardMaxPulse 1s ease-in-out infinite;
 }
 
 @keyframes guardMaxPulse {
-  0%, 100% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--guard-max); }
-  50% { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 30px var(--guard-max); }
+
+    0%,
+    100% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 0 10px var(--guard-max);
+    }
+
+    50% {
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5), 0 0 30px var(--guard-max);
+    }
 }
 
-.guard-glow { background: linear-gradient(90deg, var(--guard-low), var(--guard-high)); }
+.guard-glow {
+    background: linear-gradient(90deg, var(--guard-low), var(--guard-high));
+}
 
 /* 👤 中间：关系信息区域 - 重构设计 */
 .relationship-section {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  padding: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 20px;
 }
 
 .relationship-status-card {
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 8px;
-  padding: 12px;
-  border: 1px solid rgba(0, 255, 255, 0.2);
-}
-
-.relationship-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: var(--general-border-radius);
+    padding: 10px;
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 5px;
+    height: fit-content;
+    min-height: 50px;
+    place-items: center;
 }
 
 .relationship-label {
-  font-size: 10px;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .relationship-value {
-  font-size: 14px;
-  font-weight: bold;
-  text-align: center;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
-  margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 /* 关系状态颜色 */
-.relationship-value.陌生人 { color: #757575; }
-.relationship-value.初识 { color: #81c784; }
-.relationship-value.暧昧 { color: #ffb74d; }
-.relationship-value.热恋 { color: #ff8a65; }
-.relationship-value.地下情人 { color: #f48fb1; }
-.relationship-value.危险关系 { color: #ff1744; }
-.relationship-value.生死与共 { color: #00e5ff; }
+.relationship-value.陌生人 {
+    color: #757575;
+}
+
+.relationship-value.初识 {
+    color: #81c784;
+}
+
+.relationship-value.暧昧 {
+    color: #ffb74d;
+}
+
+.relationship-value.热恋 {
+    color: #ff8a65;
+}
+
+.relationship-value.地下情人 {
+    color: #f48fb1;
+}
+
+.relationship-value.危险关系 {
+    color: #ff1744;
+}
+
+.relationship-value.生死与共 {
+    color: #00e5ff;
+}
 
 .scene-ambiance {
-  font-size: 11px;
-  color: var(--text-accent);
-  text-align: center;
-  font-style: italic;
+    font-size: 12px;
+    color: var(--text-accent);
 }
 
 .danger-indicator {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 6px;
-  background: rgba(255, 87, 34, 0.2);
-  border-radius: 10px;
-  border: 1px solid var(--border-danger);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 10px;
+    background: rgba(255, 87, 34, 0.2);
+    border-radius: var(--general-border-radius);
+    height: fit-content;
 }
 
 .danger-icon {
-  font-size: 10px;
-  animation: dangerBlink 1.5s ease-in-out infinite alternate;
+    font-size: 10px;
+    animation: dangerBlink 1.5s ease-in-out infinite alternate;
 }
 
 @keyframes dangerBlink {
-  0% { opacity: 0.6; }
-  100% { opacity: 1; filter: drop-shadow(0 0 3px #ff5722); }
+    0% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 1;
+        filter: drop-shadow(0 0 3px #ff5722);
+    }
 }
 
 .danger-level {
-  font-size: 9px;
-  color: #ff5722;
-  font-weight: bold;
+    font-size: 9px;
+    color: #ff5722;
+    font-weight: bold;
 }
 
 .npc-basic-info {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--general-border-radius);
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: grid;
+    grid-template-columns: auto auto auto;
+    height: fit-content;
+    place-items: center;
+    min-height: 50px;
+    gap: 10px;
 }
 
 .npc-name-display {
-  font-size: 13px;
-  font-weight: bold;
-  color: var(--text-primary);
-  text-align: center;
-  margin-bottom: 5px;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    font-weight: bold;
+    color: var(--text-primary);
+    padding: 0 10px;
+    text-wrap-mode: nowrap;
 }
 
 .npc-mood-display,
 .npc-attitude-display {
-  font-size: 10px;
-  color: var(--text-secondary);
-  text-align: center;
-  margin: 2px 0;
+    display: grid;
+    place-items: center;
+    text-wrap-mode: nowrap;
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--text-secondary);
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 0 10px;
 }
 
 /* 🎭 右侧：解锁内容区域 */
 .unlocked-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+	display: grid;
+	gap: 8px;
+	text-wrap-mode: nowrap;
+	grid-template-columns: repeat(2,auto) 1fr;
 }
 
 .unlocked-group {
-  background: rgba(0, 0, 0, 0.3);
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: var(--general-border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    height: fit-content;
 }
 
 .unlocked-header {
-  display: grid;
-  grid-template-columns: 16px 1fr;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  cursor: pointer;
-  transition: all 0.3s ease;
+	display: grid;
+	grid-template-columns: 16px 1fr;
+	align-items: center;
+	gap: 6px;
+	padding: 0px 15px;
+	background: rgba(255, 255, 255, 0.05);
+	cursor: pointer;
+	transition: all 0.3s ease;
+    min-height: 50px;
 }
 
 .unlocked-header:hover {
-  background: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .toggle-indicator {
-  justify-self: center;
-  align-self: center;
-  transition: transform 0.3s ease;
-  transform-origin: center;
-  font-size: 10px;
-  color: var(--text-accent);
+    justify-self: center;
+    align-self: center;
+    transition: transform 0.3s ease;
+    transform-origin: center;
+    font-size: 10px;
+    color: rgba(243, 0, 190, 0.85);
+    text-shadow: 0 0 15px;
 }
 
 .toggle-expanded .toggle-indicator {
-  transform: rotate(90deg);
+    transform: rotate(90deg);
 }
 
 .unlocked-title {
-  font-size: 10px;
-  color: var(--text-primary);
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+    font-size: 14px;
+    color: rgba(255, 0, 242, 0.85);
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 20px;
 }
 
 .unlocked-content {
-  /* max-height: 0; */
-  overflow: hidden;
-  transition: max-height 0.3s ease;
+    /* max-height: 0; */
+    overflow: hidden;
+    transition: max-height 0.3s ease;
 }
 
 .unlocked-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
 }
 
 .unlocked-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05);
 }
 
 .unlocked-item:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .item-icon {
-  font-size: 12px;
-  opacity: 0.8;
+    font-size: 12px;
+    opacity: 0.8;
 }
 
 .item-name {
-  font-size: 10px;
-  color: var(--text-secondary);
-  flex: 1;
+    font-size: 10px;
+    color: var(--text-secondary);
+    flex: 1;
 }
 
 .interaction-item .item-icon {
-  filter: drop-shadow(0 0 3px #ffb74d);
+    filter: drop-shadow(0 0 3px #ffb74d);
 }
 
 .equipment-item .item-icon {
-  filter: drop-shadow(0 0 3px #00bcd4);
+    filter: drop-shadow(0 0 3px #00bcd4);
 }
 
 /* 🌟 特殊效果层 - 满值时的视觉盛宴 */
 .special-effects-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  pointer-events: none;
-  overflow: hidden;
-  border-radius: 12px 12px 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: var(--general-border-radius);
 }
 
 .max-effect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0;
-  transition: opacity 0.5s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 .max-effect[data-trigger-value="100"] {
-  opacity: 1;
+    opacity: 1;
 }
 
 /* 欲望满值 - 火焰粒子效果 */
 .desire-max-effect {
-  background: radial-gradient(circle at 50% 100%, rgba(255, 23, 68, 0.1) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 100%, rgba(255, 23, 68, 0.1) 0%, transparent 70%);
 }
 
 .fire-particles::before,
 .fire-particles::after {
-  content: '';
-  position: absolute;
-  width: 3px;
-  height: 3px;
-  background: var(--desire-max);
-  border-radius: 50%;
-  animation: fireParticles 2s linear infinite;
+    content: '';
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: var(--desire-max);
+    border-radius: 50%;
+    animation: fireParticles 2s linear infinite;
 }
 
 .fire-particles::before {
-  left: 20%;
-  animation-delay: 0s;
+    left: 20%;
+    animation-delay: 0s;
 }
 
 .fire-particles::after {
-  left: 80%;
-  animation-delay: 1s;
+    left: 80%;
+    animation-delay: 1s;
 }
 
 @keyframes fireParticles {
-  0% {
-    bottom: -5px;
-    opacity: 1;
-    transform: scale(1);
-  }
-  100% {
-    bottom: 100%;
-    opacity: 0;
-    transform: scale(0.3);
-  }
+    0% {
+        bottom: -5px;
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        bottom: 100%;
+        opacity: 0;
+        transform: scale(0.3);
+    }
 }
 
 /* 爱慕满值 - 心形粒子效果 */
 .affection-max-effect {
-  background: radial-gradient(circle at 50% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 60%);
+    background: radial-gradient(circle at 50% 50%, rgba(255, 107, 107, 0.1) 0%, transparent 60%);
 }
 
-.heart-particles::before {
-  content: '💖';
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  animation: heartBeat 1.5s ease-in-out infinite;
+/* .heart-particles::before {
+    content: '💖';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 16px;
+    animation: heartBeat 1.5s ease-in-out infinite;
 }
 
 @keyframes heartBeat {
-  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-}
+
+    0%,
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 1;
+    }
+} */
 
 /* 体力满值 - 能量波效果 */
 .stamina-max-effect {
-  background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.1) 50%, transparent 70%);
-  animation: energyWave 1.5s linear infinite;
+    background: linear-gradient(45deg, transparent 30%, rgba(0, 255, 255, 0.1) 50%, transparent 70%);
+    /* animation: energyWave 1.5s linear infinite; */
 }
 
-@keyframes energyWave {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
+/* @keyframes energyWave {
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
+} */
 
 /* 📱 响应式设计 */
 @media (max-width: 768px) {
-  .intimate-status-bar {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  .status-metrics-section {
-    grid-template-columns: 1fr 1fr;
-    order: 1;
-  }
-  
-  .relationship-section {
-    order: 2;
-  }
-  
-  .unlocked-section {
-    order: 3;
-    flex-direction: row;
-  }
+    .intimate-status-bar {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .status-metrics-section {
+        grid-template-columns: 1fr 1fr;
+        order: 1;
+    }
+
+    .relationship-section {
+        order: 2;
+    }
+
+    .unlocked-section {
+        order: 3;
+        flex-direction: row;
+    }
 }
 
 @media (max-width: 480px) {
-  .status-metrics-section {
-    grid-template-columns: 1fr;
-  }
-  
-  .unlocked-section {
-    flex-direction: column;
-  }
+    .status-metrics-section {
+        grid-template-columns: 1fr;
+    }
+
+    .unlocked-section {
+        flex-direction: column;
+    }
 }
 
 /* 🔧 调试模式 */
 body.intimate-status-debug .metric-item {
-  border: 2px dashed #ff9800;
+    border: 2px dashed #ff9800;
 }
 
 /* 🎭 主题适配 */
 .secret-lover-theme {
-  --primary-accent: var(--desire-high);
-  --secondary-accent: var(--text-accent);
+    --primary-accent: var(--desire-high);
+    --secondary-accent: var(--text-accent);
 }
 
 /* 无障碍性支持 */
 @media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

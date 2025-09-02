@@ -10,6 +10,7 @@ import { dataTypeFunctions } from './function_types.js';
 import { sharingFunctions } from './sharing_functions.js';
 
 const extensionName = 'third-party/cyberpunk2027-hubs';
+const extensionTitle = 'CYBERPUNK 2027 HUBS'
 
 // 初始化Handlebars渲染器实例
 const templateRenderer = new TemplateRenderer();
@@ -264,29 +265,29 @@ function applyConfigValue(type, value) {
         document.documentElement.style.setProperty('--blurStrength', value.toString());
         document.documentElement.style.setProperty('--SmartThemeBlurStrength', `calc(${value} * 1px)`);
         if (typeof power_user !== 'undefined') {
-            power_user.blur_strength = value;
+            // power_user.blur_strength = value;
             console.log(`[DEBUG] Updated power_user.blur_strength but skipping ST native controls`);
             // 移除对ST原生控件的设置，避免事件冲突
-            // $('#blur_strength_counter').val(value);
-            // $('#blur_strength').val(value);
+            $('#blur_strength_counter').val(value);
+            $('#blur_strength').val(value);
         }
     } else if (type === 'shadow_width') {
         document.documentElement.style.setProperty('--shadowWidth', value.toString());
         if (typeof power_user !== 'undefined') {
-            power_user.shadow_width = value;
+            // power_user.shadow_width = value;
             console.log(`[DEBUG] Updated power_user.shadow_width but skipping ST native controls`);
             // 移除对ST原生控件的设置，避免事件冲突
-            // $('#shadow_width_counter').val(value);
-            // $('#shadow_width').val(value);
+            $('#shadow_width_counter').val(value);
+            $('#shadow_width').val(value);
         }
     } else if (type === 'font_scale') {
         document.documentElement.style.setProperty('--fontScale', value.toString());
         if (typeof power_user !== 'undefined') {
-            power_user.font_scale = value;
+            // power_user.font_scale = value;
             console.log(`[DEBUG] Updated power_user.font_scale but skipping ST native controls`);
             // 移除对ST原生控件的设置，避免事件冲突
-            // $('#font_scale_counter').val(value);
-            // $('#font_scale').val(value);
+            $('#font_scale_counter').val(value);
+            $('#font_scale').val(value);
         }
     }
 }
@@ -407,7 +408,7 @@ function setupChatStyleIntegration() {
     }
 
     // Add our change handler
-    chatDisplaySelect.addEventListener('change', function() {
+    chatDisplaySelect.addEventListener('change', function () {
         const selectedValue = parseInt(this.value);
         const settings = extension_settings[extensionName];
 
@@ -512,47 +513,6 @@ function getCurrentCharacterAvatar() {
 let backgroundUpdateTimeout = null;
 let isBackgroundTransitioning = false;
 
-// Debug function to test opacity changes
-function testBackgroundOpacity() {
-    const cyberpunkBg = document.getElementById('cyberpunk_bg');
-    if (!cyberpunkBg) {
-        console.log(`[${extensionName}] No cyberpunk_bg element found for testing`);
-        return;
-    }
-
-    console.log(`[${extensionName}] Testing opacity - Current styles:`, {
-        opacity: cyberpunkBg.style.opacity,
-        transition: cyberpunkBg.style.transition,
-        computedOpacity: window.getComputedStyle(cyberpunkBg).opacity,
-        computedTransition: window.getComputedStyle(cyberpunkBg).transition,
-        zIndex: window.getComputedStyle(cyberpunkBg).zIndex,
-        display: window.getComputedStyle(cyberpunkBg).display,
-        visibility: window.getComputedStyle(cyberpunkBg).visibility
-    });
-
-    // Test with !important and transition
-    console.log(`[${extensionName}] Starting aggressive opacity test...`);
-    cyberpunkBg.style.setProperty('transition', 'opacity 2s ease-in-out', 'important');
-    cyberpunkBg.style.setProperty('opacity', '0.1', 'important');
-    console.log(`[${extensionName}] Set opacity to 0.1 with !important`);
-
-    setTimeout(() => {
-        cyberpunkBg.style.setProperty('opacity', '1', 'important');
-        console.log(`[${extensionName}] Set opacity back to 1 with !important`);
-
-        // Check final state
-        setTimeout(() => {
-            console.log(`[${extensionName}] Final state:`, {
-                opacity: cyberpunkBg.style.opacity,
-                computedOpacity: window.getComputedStyle(cyberpunkBg).opacity
-            });
-        }, 2500);
-    }, 3000);
-}
-
-// Make it globally available for manual testing
-window.testBackgroundOpacity = testBackgroundOpacity;
-
 // Helper function to smoothly fade out an element and execute callback
 function fadeOutElement(element, duration = 500, callback = null) {
     if (!element) return;
@@ -632,7 +592,7 @@ function performBackgroundUpdate() {
         // Enhanced chat state detection to prevent assistant avatar on homepage
         // Check if we're on the main interface (no character selected AND no group selected)
         const isOnHomepage = (context.characterId === undefined || context.characterId === null) &&
-                            (context.groupId === undefined || context.groupId === null);
+            (context.groupId === undefined || context.groupId === null);
         const noChatOpen = (!isInChat) || isOnHomepage;
 
         if (noChatOpen) {
@@ -915,11 +875,12 @@ function updateVideoBackgroundSettings() {
  */
 function setupVideoBackgroundIntegration() {
     try {
-        // Video background now reuses the same event listeners as character background
-        // The checkHomepageStatus function handles both systems
+        eventSource.on(event_types.CHAT_CHANGED, checkHomepageStatus);
+        eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, checkHomepageStatus);
+        eventSource.on(event_types.MESSAGE_DELETED, checkHomepageStatus);  // Important: deletion can change last character
 
-        // Initial status check to set correct visibility
-        checkHomepageStatus();
+        // Single initial background setup with longer delay to avoid rapid calls
+        setTimeout(checkHomepageStatus, 1000);
 
         console.log(`[${extensionName}] Video background integration initialized (shares events with character background)`);
     } catch (error) {
@@ -1369,8 +1330,7 @@ function setupCharacterBackgroundIntegration() {
     try {
         // Listen for essential events that can change the current character
         eventSource.on(event_types.CHAT_CHANGED, checkHomepageStatus);
-        eventSource.on(event_types.CHARACTER_SELECTED, checkHomepageStatus);
-        eventSource.on(event_types.MESSAGE_RECEIVED, checkHomepageStatus);
+        eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, checkHomepageStatus);
         eventSource.on(event_types.MESSAGE_DELETED, checkHomepageStatus);  // Important: deletion can change last character
 
         // Single initial background setup with longer delay to avoid rapid calls
@@ -1388,9 +1348,6 @@ function setupAIBackgroundIntegration() {
         eventSource.on(event_types.CHAT_CHANGED, onAIChatChanged);
         eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, onAIMessageReceived);
         eventSource.on(event_types.CHAT_DELETED, onAIChatDeleted);
-
-        console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Event listeners registered`);
-        console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: CHARACTER_MESSAGE_RENDERED = ${event_types.CHARACTER_MESSAGE_RENDERED}`);
 
         // Add manual generate button to character background area
         addAIBackgroundGenerateButton();
@@ -1487,8 +1444,6 @@ function addAIBackgroundGenerateButton() {
 
     // Always append to body for consistent positioning
     document.body.appendChild(generateBtn);
-
-    console.log(`[${extensionName}] Modern AI generate button added to bottom-right corner`);
 }
 
 /**
@@ -1625,11 +1580,8 @@ async function onAIChatChanged() {
  */
 async function onAIMessageReceived() {
     const settings = extension_settings[extensionName];
-    console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Message received event fired`);
-    console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Settings - enabled: ${settings.enabled}, ai_backgrounds: ${settings.ai_backgrounds}, ai_bg_auto: ${settings.ai_bg_auto}`);
 
     if (!settings.enabled || !settings.ai_backgrounds || !settings.ai_bg_auto) {
-        console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Auto-trigger disabled, skipping`);
         return;
     }
 
@@ -1643,15 +1595,15 @@ async function onAIMessageReceived() {
     const interval = settings.ai_bg_interval;
     const shouldTrigger = characterMessageCount % interval === 0 && characterMessageCount > 0;
 
-    console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Total messages: ${totalMessages}, Character messages: ${characterMessageCount}, Interval: ${interval}`);
-    console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Should trigger: ${shouldTrigger} (${characterMessageCount} % ${interval} = ${characterMessageCount % interval})`);
+    console.log(`[${extensionName}] AUTO-TRIGGER: Total messages: ${totalMessages}, Character messages: ${characterMessageCount}, Interval: ${interval}`);
+    console.log(`[${extensionName}] AUTO-TRIGGER: Should trigger: ${shouldTrigger} (${characterMessageCount} % ${interval} = ${characterMessageCount % interval})`);
 
     if (shouldTrigger) {
         console.log(`[${extensionName}] AUTO-TRIGGER: ${characterMessageCount} character messages reached, analyzing environment...`);
         await analyzeEnvironmentAndGenerate();
     } else {
         const remaining = interval - (characterMessageCount % interval);
-        console.log(`[${extensionName}] AUTO-TRIGGER DEBUG: Not triggering - need ${remaining} more character messages (currently ${characterMessageCount})`);
+        console.log(`[${extensionName}] AUTO-TRIGGER: Not triggering - need ${remaining} more character messages (currently ${characterMessageCount})`);
     }
 }
 
@@ -1728,7 +1680,6 @@ async function scanAIBackgroundImages() {
                             name: imageName,
                             path: fullPath,
                             characterDir: folder,
-                            size: 0, // API不提供大小信息
                             lastModified: Date.now()
                         });
                     }
@@ -1835,9 +1786,7 @@ function analyzeUnusedAIBackgrounds(allImages) {
         used: usedImages.length,
         unused: unusedImages.length,
         unusedImages,
-        usedImages,
-        totalSize: allImages.reduce((sum, img) => sum + img.size, 0),
-        unusedSize: unusedImages.reduce((sum, img) => sum + img.size, 0)
+        usedImages
     };
 }
 
@@ -1951,17 +1900,6 @@ function createResourceManagementUI() {
 }
 
 /**
- * 格式化文件大小
- */
-function formatFileSize(bytes) {
-    if (bytes === 0) return '0 B';
-    const k = 1024;
-    const sizes = ['B', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-}
-
-/**
  * 显示资源管理界面
  */
 async function showResourceManagement() {
@@ -2006,14 +1944,6 @@ async function showResourceManagement() {
                         <strong style="color: #ff9955;">未使用:</strong><br>
                         ${analysis.unused} 个文件
                     </div>
-                    <div>
-                        <strong style="color: #ffdd00;">总大小:</strong><br>
-                        ${formatFileSize(analysis.totalSize)}
-                    </div>
-                    <div>
-                        <strong style="color: #ff6666;">可释放空间:</strong><br>
-                        ${formatFileSize(analysis.unusedSize)}
-                    </div>
                 </div>
             `;
 
@@ -2031,8 +1961,7 @@ async function showResourceManagement() {
                             <div>
                                 <div style="font-weight: 600;">${img.name}</div>
                                 <div style="font-size: 12px; color: #b0d0ff;">
-                                    ${img.characterDir} • ${formatFileSize(img.size)} •
-                                    ${new Date(img.lastModified).toLocaleDateString()}
+                                    ${img.characterDir} • ${new Date(img.lastModified).toLocaleDateString()}
                                 </div>
                             </div>
                         </label>
@@ -2080,7 +2009,7 @@ async function showResourceManagement() {
             return;
         }
 
-        if (!confirm(`确定要删除所有 ${currentScanResults.unusedImages.length} 个未使用的文件吗？\n这将释放 ${formatFileSize(currentScanResults.unusedSize)} 的空间。\n此操作无法撤销！`)) {
+        if (!confirm(`确定要删除所有 ${currentScanResults.unusedImages.length} 个未使用的文件吗？\n此操作无法撤销！`)) {
             return;
         }
 
@@ -2174,27 +2103,6 @@ function onResetToDefault(type) {
 // 防止递归事件触发的标志
 let isUpdatingControls = false;
 
-// Function to sync slider and number input
-function syncControlValues(type, value) {
-    if (isUpdatingControls) return; // 防止递归调用
-    
-    isUpdatingControls = true;
-    try {
-        if (type === 'blur_strength') {
-            $('#cyberpunk_blur_strength').val(value);
-            $('#cyberpunk_blur_strength_number').val(value);
-        } else if (type === 'shadow_width') {
-            $('#cyberpunk_shadow_width').val(value);
-            $('#cyberpunk_shadow_width_number').val(value);
-        } else if (type === 'font_scale') {
-            $('#cyberpunk_font_scale').val(value);
-            $('#cyberpunk_font_scale_number').val(value);
-        }
-    } finally {
-        isUpdatingControls = false;
-    }
-}
-
 // 修改欢迎页标题相关变量和函数
 let titleObserver = null;
 
@@ -2214,7 +2122,7 @@ function setupTitleObserver(titleElement) {
                     console.log(`[${extensionName}] Welcome title was reset by ST, reapplying custom title`);
                     setTimeout(() => {
                         if (extension_settings[extensionName].enabled && isOnHomepage) {
-                            target.innerHTML = '<span class="mytitle">CYBERPUNK 2027 HUBS V1.0</span>';
+                            target.innerHTML = `<span class="mytitle">${extensionTitle}</span>`;
                         }
                     }, 50);
                 }
@@ -2246,7 +2154,7 @@ function modifyWelcomePageTitle() {
             if (!recentChatsTitle.dataset.originalContent) {
                 recentChatsTitle.dataset.originalContent = recentChatsTitle.innerHTML;
             }
-            recentChatsTitle.innerHTML = '<span class="mytitle">CYBERPUNK 2027 HUBS V1.0</span>';
+            recentChatsTitle.innerHTML = `<span class="mytitle">${extensionTitle}</span>`;
             console.log(`[${extensionName}] Welcome page title modified`);
 
             // 设置观察器监听该元素的变化
@@ -2312,6 +2220,7 @@ function applyTheme() {
 }
 
 // Function to remove theme
+//TODO: save layout and style and chat style name into a global config json.
 function removeTheme() {
     document.body.classList.remove(
         'cp2027-layout-decker',
@@ -2339,8 +2248,7 @@ function removeTheme() {
         titleObserver = null;
     }
     eventSource.removeListener(event_types.CHAT_CHANGED, checkHomepageStatus);
-    eventSource.removeListener(event_types.CHARACTER_SELECTED, checkHomepageStatus);
-    eventSource.removeListener(event_types.MESSAGE_RECEIVED, checkHomepageStatus);
+    eventSource.removeListener(event_types.CHARACTER_MESSAGE_RENDERED, checkHomepageStatus);
     eventSource.removeListener(event_types.MESSAGE_DELETED, checkHomepageStatus);
 
     // Clear AI background and remove event listeners
@@ -2352,6 +2260,10 @@ function removeTheme() {
     // Remove AI generate button
     const generateBtn = document.getElementById('cyberpunk_ai_generate_btn');
     if (generateBtn) generateBtn.remove();
+
+    // 清理图像重定位队列
+    pendingImageRelocations.clear();
+    console.log(`[${extensionName}] IMAGE-QUEUE: Cleared pending queue`);
 
     // Clear video background and remove event listeners
     removeVideoBackground();
@@ -2456,8 +2368,7 @@ function onLayoutChange() {
         } else {
             clearCharacterBackground();
             eventSource.removeListener(event_types.CHAT_CHANGED, checkHomepageStatus);
-            eventSource.removeListener(event_types.CHARACTER_SELECTED, checkHomepageStatus);
-            eventSource.removeListener(event_types.MESSAGE_RECEIVED, checkHomepageStatus);
+            eventSource.removeListener(event_types.CHARACTER_MESSAGE_RENDERED, checkHomepageStatus);
             eventSource.removeListener(event_types.MESSAGE_DELETED, checkHomepageStatus);
         }
     }
@@ -2504,8 +2415,7 @@ function onCharacterBackgroundsChange() {
         } else {
             clearCharacterBackground();
             eventSource.removeListener(event_types.CHAT_CHANGED, checkHomepageStatus);
-            eventSource.removeListener(event_types.CHARACTER_SELECTED, checkHomepageStatus);
-            eventSource.removeListener(event_types.MESSAGE_RECEIVED, checkHomepageStatus);
+            eventSource.removeListener(event_types.CHARACTER_MESSAGE_RENDERED, checkHomepageStatus);
             eventSource.removeListener(event_types.MESSAGE_DELETED, checkHomepageStatus);
             console.log(`[${extensionName}] Character backgrounds disabled`);
         }
@@ -2573,7 +2483,7 @@ function onVideoBackgroundChange() {
             createVideoBackground();
             setupVideoBackgroundIntegration();
             // Force immediate status check to ensure video appears if on homepage
-            setTimeout(checkHomepageStatus, 100);
+            // setTimeout(checkHomepageStatus, 100);
             console.log(`[${extensionName}] Video background enabled`);
         } else {
             removeVideoBackground();
@@ -2607,20 +2517,20 @@ function onTemplateRenderingChange() {
             // 启用模板渲染：设置事件监听器并执行一次完整渲染
             setupSceneDataIntegration();
             console.log(`[${extensionName}] Template rendering enabled - setting up integration`);
-            
+
             // 延迟执行一次完整的标准化处理，确保当前聊天中的所有模板都被渲染
             setTimeout(async () => {
                 await standardTemplateProcessing('TEMPLATE_RENDERING_ENABLED');
                 console.log(`[${extensionName}] Initial template rendering completed`);
             }, 200);
-            
+
         } else {
             // 禁用模板渲染：移除事件监听器并清理所有已渲染的内容
             console.log(`[${extensionName}] Template rendering disabled - cleaning up`);
-            
+
             // 1. 移除事件监听器
             removeSceneDataIntegration();
-            
+
             // 2. 清理所有已渲染的HTML容器和CSS
             setTimeout(async () => {
                 await cleanupCompleteThemeData();
@@ -2633,42 +2543,14 @@ function onTemplateRenderingChange() {
 }
 
 
-/**
- * 检查指定模块是否启用
- * @param {string} moduleType - 模块类型 (如 'scene-container')
- * @param {string} theme - 主题名称 (可选，默认使用当前主题)
- * @returns {boolean} 模块是否启用
- */
-function isModuleEnabled(moduleType, theme = null) {
-    const settings = extension_settings[extensionName];
-
-    if (!settings.enabled || !settings.template_rendering) {
-        return false;
-    }
-
-    const currentTheme = theme || settings.template_theme || 'cyberpunk';
-    const modules = settings.template_modules?.[currentTheme];
-
-    if (!modules) {
-        // 如果没有模块配置，默认启用所有已知模块
-        return true;
-    }
-
-    return modules[moduleType] === true;
-}
 
 // === Scene Data Processing Functions ===
 
-// 模板变量替换映射 - 现在将被动态加载的配置取代
-// const templateMapping = { ... }; // 移除静态映射
 
 // 缓存模板文件和配置
-let sceneTemplateHTML = null;
-let sceneTemplateCSS = null;
 let templateConfigs = {}; // 新增：缓存模板配置
 
 // 防重复操作标志
-let isRestoring = false;
 let isProcessing = new Set(); // 跟踪正在处理的消息ID
 let isStandardProcessing = false; // 防止标准处理重复执行
 let lastProcessedMessage = null; // 记录最后处理的消息，防止重复处理
@@ -2819,7 +2701,7 @@ async function onModuleChange() {
     const checkbox = $(this);
     const module = checkbox.data('module');
     const isEnabled = checkbox.prop('checked');
-    
+
     // 获取当前实际选择的主题（而不是复选框记住的主题）
     const currentTheme = extension_settings[extensionName].template_theme || 'cyberpunk';
     const settings = extension_settings[extensionName];
@@ -2862,7 +2744,7 @@ async function renderNewlyEnabledModule(moduleType, theme) {
 
         // 查找页面中所有该模块类型的span元素
         const moduleElements = document.querySelectorAll(`span[data-type="${moduleType}"]`);
-        
+
         if (moduleElements.length === 0) {
             console.log(`[${extensionName}] RENDER-NEW-MODULE: No ${moduleType} elements found in current chat`);
             return;
@@ -2879,8 +2761,8 @@ async function renderNewlyEnabledModule(moduleType, theme) {
             try {
                 // 检查是否已经被渲染（通过检查下一个兄弟元素）
                 const nextSibling = element.nextElementSibling;
-                const isAlreadyRendered = nextSibling && 
-                    nextSibling.hasAttribute('data-module-type') && 
+                const isAlreadyRendered = nextSibling &&
+                    nextSibling.hasAttribute('data-module-type') &&
                     nextSibling.getAttribute('data-module-type') === moduleType;
 
                 if (isAlreadyRendered) {
@@ -2977,7 +2859,7 @@ async function getEnabledModulesForTheme(themeName) {
 
         const themeConfig = config.themes[themeName];
         const settings = extension_settings[extensionName];
-        
+
         const enabledModules = Object.entries(themeConfig.modules || {})
             .filter(([moduleId, moduleInfo]) => {
                 // 优先使用用户设置，如果没有则使用配置文件默认值
@@ -3132,7 +3014,7 @@ async function forceCleanupAllTemplateCSS() {
 async function injectSharingFunctionsCSS() {
     try {
         const cssId = `${extensionName}-sharing-functions-css`;
-        
+
         // 检查是否已经注入过
         if (document.getElementById(cssId)) {
             console.log(`[${extensionName}] Sharing functions CSS already injected`);
@@ -3142,22 +3024,22 @@ async function injectSharingFunctionsCSS() {
         // 加载CSS文件
         const cssPath = `/scripts/extensions/${extensionName}/sharing_functions.css`;
         const response = await fetch(cssPath);
-        
+
         if (!response.ok) {
             console.warn(`[${extensionName}] Sharing functions CSS not found: ${cssPath}`);
             return;
         }
 
         const cssContent = await response.text();
-        
+
         // 创建并注入style元素
         const styleElement = document.createElement('style');
         styleElement.id = cssId;
         styleElement.textContent = cssContent;
         document.head.appendChild(styleElement);
-        
+
         console.log(`[${extensionName}] Sharing functions CSS injected successfully, length: ${cssContent.length}`);
-        
+
     } catch (error) {
         console.error(`[${extensionName}] Error injecting sharing functions CSS:`, error);
     }
@@ -3204,11 +3086,11 @@ async function standardTemplateProcessing(trigger, targetMessageElement = null, 
         if (targetMessageId !== null && targetMessageElement) {
             // 单个消息处理
             console.log(`[${extensionName}] STANDARD-PROCESSING: 处理单个消息 ${targetMessageId}`);
-            
+
             // 修复：查找模板元素时包括隐藏的元素
             const allSpanElements = targetMessageElement.querySelectorAll('span[data-type]');
             const hasTemplateElements = allSpanElements.length > 0;
-            
+
             if (hasTemplateElements) {
                 const elementTypes = Array.from(allSpanElements).map(el => el.getAttribute('data-type'));
                 console.log(`[${extensionName}] STANDARD-PROCESSING: 消息${targetMessageId}包含模板元素（包括隐藏的）: ${elementTypes.join(', ')}`);
@@ -3223,7 +3105,7 @@ async function standardTemplateProcessing(trigger, targetMessageElement = null, 
                 let processedCount = 0;
                 let totalMessages = context.chat.length;
                 console.log(`[${extensionName}] STANDARD-PROCESSING: 扫描 ${totalMessages} 条消息寻找模板元素`);
-                
+
                 for (let index = 0; index < context.chat.length; index++) {
                     const messageElement = document.querySelector(`#chat [mesid="${index}"]`);
                     if (messageElement) {
@@ -3244,7 +3126,7 @@ async function standardTemplateProcessing(trigger, targetMessageElement = null, 
                 console.log(`[${extensionName}] STANDARD-PROCESSING: 无聊天数据可处理`);
             }
         }
-
+        scrollToBottom();
         console.log(`[${extensionName}] STANDARD-PROCESSING: 完成，触发源: ${trigger}`);
 
     } catch (error) {
@@ -3330,7 +3212,7 @@ async function processMessageIfHasThemeData(messageElement, messageId) {
     const containers = messageElement.querySelectorAll(containerSelectors);
     containers.forEach(container => container.remove());
     console.log(`[${extensionName}] SIMPLE-PROCESSING: 清理了${containers.length}个已渲染容器`);
-    
+
     // 确保所有原始模板元素都可见（以防之前被隐藏）
     templateElements.forEach(element => {
         if (element.style.display === 'none') {
@@ -3340,7 +3222,7 @@ async function processMessageIfHasThemeData(messageElement, messageId) {
     });
 
     // 基于DOM元素重新渲染（纯净的源数据驱动）
-    await processSceneDataInMessage(messageElement, messageId, false); // 传递false表示不保存扩展数据
+    await processSceneDataInMessage(messageElement, messageId); // 传递false表示不保存扩展数据
     console.log(`[${extensionName}] SIMPLE-PROCESSING: 完成消息${messageId}的纯净渲染`);
 }
 
@@ -3407,7 +3289,7 @@ async function cleanupCompleteThemeData() {
 
         // 2. 清理已渲染的HTML容器
         cleanupRenderedHTMLDOMs(allModules);
-        
+
         // 3. 清理CSS样式
         cleanupStyleDOMs(allModules);
 
@@ -3436,7 +3318,7 @@ function restoreHiddenSpanElements(moduleTypes) {
     moduleTypes.forEach(moduleType => {
         // 查找所有该模块类型的span元素
         const spanElements = document.querySelectorAll(`span[data-type="${moduleType}"]`);
-        
+
         spanElements.forEach(spanElement => {
             // 恢复被隐藏的span元素显示
             if (spanElement.style.display === 'none') {
@@ -3497,68 +3379,6 @@ async function injectStyleDOMs(moduleTypes, theme) {
 }
 
 /**
- * 渲染单个模块元素
- * @param {Element} dataElement - 数据元素
- * @param {number} messageId - 消息ID
- * @param {string} moduleType - 模块类型
- * @param {string} theme - 主题名称
- */
-async function renderSingleModuleElement(dataElement, messageId, moduleType, theme) {
-    try {
-        // 生成唯一ID
-        const elementId = `${moduleType}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-
-        // 加载模板配置和HTML
-        const templateConfig = await loadTemplateConfig(moduleType, theme);
-        const templateHTML = await loadTemplate(moduleType, theme);
-
-        if (!templateConfig || !templateHTML) {
-            console.warn(`[${extensionName}] 模板或配置不可用: ${moduleType}@${theme}`);
-            return null;
-        }
-
-        // 处理数据并渲染
-        const processedData = processTemplateData(dataElement, templateConfig);
-        let renderedHTML = renderTemplateWithConfig(templateHTML, processedData, templateConfig);
-
-        // CSS由主题文件自动处理，无需添加额外类
-
-        // 创建并插入渲染容器
-        const containerDiv = document.createElement('div');
-        containerDiv.innerHTML = renderedHTML;
-        const renderedContainer = containerDiv.firstElementChild;
-        renderedContainer.setAttribute('data-element-id', elementId);
-
-        // 插入到DOM
-        dataElement.parentNode.insertBefore(renderedContainer, dataElement.nextSibling);
-
-        // 隐藏原始数据元素
-        if (dataElement instanceof HTMLElement) {
-            dataElement.style.display = 'none';
-        }
-
-        console.log(`[${extensionName}] 渲染成功: ${moduleType}@${theme}, ID: ${elementId}`);
-
-        return {
-            elementId,
-            moduleType,
-            processedData,
-            renderedHTML
-        };
-
-    } catch (error) {
-        console.error(`[${extensionName}] 渲染单个元素失败:`, error);
-        return null;
-    }
-}
-
-// === 已废弃的批量渲染和保存函数 ===
-// 现在使用纯净的DOM驱动渲染，不再需要批量处理和扩展数据保存
-
-// === 已废弃的复杂主题切换函数 ===
-// 现在使用简化的standardTemplateProcessing处理所有情况
-
-/**
  * 处理主题选择变更（使用新机制）
  */
 function onThemeSelectionChange() {
@@ -3600,7 +3420,7 @@ function onThemeSelectionChange() {
 async function removeExistingTemplates(moduleType) {
     // 移除原始的span元素
     const elements = document.querySelectorAll(`[data-type="${moduleType}"]`);
-    
+
     // 移除已渲染的容器（使用更通用的选择器）
     const renderedElements = document.querySelectorAll(`[data-module-type="${moduleType}"]`);
     renderedElements.forEach(container => container.remove());
@@ -3615,107 +3435,107 @@ async function removeExistingTemplates(moduleType) {
     console.log(`[${extensionName}] TEMPLATE-CLEANUP: Removed ${renderedElements.length} ${moduleType} templates`);
 }
 
-/**
- * 重新渲染现有模板以应用新主题
- * @param {string} newTheme - 新主题名称
- */
-async function reRenderExistingTemplates(newTheme) {
-    // 获取所有模块类型
-    const allModules = await getAllModulesFromConfig();
-    
-    // 动态构建选择器，查找所有模块的模板元素
-    const moduleSelectors = allModules.map(module => `[data-type="${module}"]`);
-    const allTemplateElements = document.querySelectorAll(moduleSelectors.join(', '));
+// /**
+//  * 重新渲染现有模板以应用新主题
+//  * @param {string} newTheme - 新主题名称
+//  */
+// async function reRenderExistingTemplates(newTheme) {
+//     // 获取所有模块类型
+//     const allModules = await getAllModulesFromConfig();
 
-    console.log(`[${extensionName}] THEME-SWITCH: Re-rendering ${allTemplateElements.length} templates with theme: ${newTheme}`);
+//     // 动态构建选择器，查找所有模块的模板元素
+//     const moduleSelectors = allModules.map(module => `[data-type="${module}"]`);
+//     const allTemplateElements = document.querySelectorAll(moduleSelectors.join(', '));
 
-    // 首先完全清理所有现有的渲染区
-    const allRenderedContainers = document.querySelectorAll('[data-module-type]');
-    console.log(`[${extensionName}] THEME-SWITCH: Removing ${allRenderedContainers.length} existing rendered containers`);
-    allRenderedContainers.forEach(container => container.remove());
+//     console.log(`[${extensionName}] THEME-SWITCH: Re-rendering ${allTemplateElements.length} templates with theme: ${newTheme}`);
 
-    // 按模块类型分组
-    const elementsByType = {};
-    allTemplateElements.forEach(element => {
-        const dataType = element.getAttribute('data-type');
-        if (!elementsByType[dataType]) {
-            elementsByType[dataType] = [];
-        }
-        elementsByType[dataType].push(element);
-    });
+//     // 首先完全清理所有现有的渲染区
+//     const allRenderedContainers = document.querySelectorAll('[data-module-type]');
+//     console.log(`[${extensionName}] THEME-SWITCH: Removing ${allRenderedContainers.length} existing rendered containers`);
+//     allRenderedContainers.forEach(container => container.remove());
 
-    // 处理每个模块类型的元素
-    for (const [moduleType, elements] of Object.entries(elementsByType)) {
-        for (const element of elements) {
-            try {
-                // 提取原始数据
-                const originalData = {};
-                Array.from(element.attributes).forEach(attr => {
-                    if (attr.name.startsWith('data-') && attr.name !== 'data-type') {
-                        originalData[attr.name] = attr.value;
-                    }
-                });
+//     // 按模块类型分组
+//     const elementsByType = {};
+//     allTemplateElements.forEach(element => {
+//         const dataType = element.getAttribute('data-type');
+//         if (!elementsByType[dataType]) {
+//             elementsByType[dataType] = [];
+//         }
+//         elementsByType[dataType].push(element);
+//     });
 
-                // 使用新主题重新渲染
-                const newRenderedHTML = await renderTemplateWithNewTheme(moduleType, originalData, newTheme);
+//     // 处理每个模块类型的元素
+//     for (const [moduleType, elements] of Object.entries(elementsByType)) {
+//         for (const element of elements) {
+//             try {
+//                 // 提取原始数据
+//                 const originalData = {};
+//                 Array.from(element.attributes).forEach(attr => {
+//                     if (attr.name.startsWith('data-') && attr.name !== 'data-type') {
+//                         originalData[attr.name] = attr.value;
+//                     }
+//                 });
 
-                if (newRenderedHTML) {
-                    // 创建新元素并直接插入（不依赖nextElementSibling）
-                    const containerDiv = document.createElement('div');
-                    containerDiv.innerHTML = newRenderedHTML;
-                    const newContainer = containerDiv.firstElementChild;
-                    
-                    // 添加模块类型标识
-                    newContainer.setAttribute('data-module-type', moduleType);
+//                 // 使用新主题重新渲染
+//                 const newRenderedHTML = await renderTemplateWithNewTheme(moduleType, originalData, newTheme);
 
-                    // 在span标签后插入新渲染的容器
-                    element.parentNode.insertBefore(newContainer, element.nextSibling);
+//                 if (newRenderedHTML) {
+//                     // 创建新元素并直接插入（不依赖nextElementSibling）
+//                     const containerDiv = document.createElement('div');
+//                     containerDiv.innerHTML = newRenderedHTML;
+//                     const newContainer = containerDiv.firstElementChild;
 
-                    console.log(`[${extensionName}] THEME-SWITCH: Re-rendered ${moduleType} template with theme: ${newTheme}`);
-                }
-            } catch (error) {
-                console.error(`[${extensionName}] THEME-SWITCH: Error re-rendering ${moduleType} template:`, error);
-            }
-        }
-    }
-}
+//                     // 添加模块类型标识
+//                     newContainer.setAttribute('data-module-type', moduleType);
 
-/**
- * 使用指定主题渲染模板
- * @param {string} templateType - 模板类型
- * @param {Object} data - 数据对象
- * @param {string} theme - 主题名称
- * @returns {string|null} 渲染后的HTML
- */
-async function renderTemplateWithNewTheme(templateType, data, theme) {
-    try {
-        const config = await loadTemplateConfig(templateType, theme);
-        if (!config) {
-            console.warn(`[${extensionName}] TEMPLATE-RENDER: Config not found for ${templateType} in ${theme} theme`);
-            return null;
-        }
+//                     // 在span标签后插入新渲染的容器
+//                     element.parentNode.insertBefore(newContainer, element.nextSibling);
 
-        // 加载模板HTML
-        const templateHTML = await loadTemplate(templateType, theme);
-        if (!templateHTML) {
-            console.warn(`[${extensionName}] TEMPLATE-RENDER: Template HTML not found for ${templateType} in ${theme} theme`);
-            return null;
-        }
+//                     console.log(`[${extensionName}] THEME-SWITCH: Re-rendered ${moduleType} template with theme: ${newTheme}`);
+//                 }
+//             } catch (error) {
+//                 console.error(`[${extensionName}] THEME-SWITCH: Error re-rendering ${moduleType} template:`, error);
+//             }
+//         }
+//     }
+// }
 
-        // 加载并注入CSS（如果还没加载过）
-        await loadAndInjectTemplateCSS(templateType, theme);
+// /**
+//  * 使用指定主题渲染模板
+//  * @param {string} templateType - 模板类型
+//  * @param {Object} data - 数据对象
+//  * @param {string} theme - 主题名称
+//  * @returns {string|null} 渲染后的HTML
+//  */
+// async function renderTemplateWithNewTheme(templateType, data, theme) {
+//     try {
+//         const config = await loadTemplateConfig(templateType, theme);
+//         if (!config) {
+//             console.warn(`[${extensionName}] TEMPLATE-RENDER: Config not found for ${templateType} in ${theme} theme`);
+//             return null;
+//         }
 
-        // data已经是处理过的数据对象，直接使用renderTemplateWithConfig渲染
-        let renderedHTML = renderTemplateWithConfig(templateHTML, data, config);
+//         // 加载模板HTML
+//         const templateHTML = await loadTemplate(templateType, theme);
+//         if (!templateHTML) {
+//             console.warn(`[${extensionName}] TEMPLATE-RENDER: Template HTML not found for ${templateType} in ${theme} theme`);
+//             return null;
+//         }
 
-        // CSS由主题文件自动处理，无需添加额外类
+//         // 加载并注入CSS（如果还没加载过）
+//         await loadAndInjectTemplateCSS(templateType, theme);
 
-        return renderedHTML;
-    } catch (error) {
-        console.error(`[${extensionName}] TEMPLATE-RENDER: Error rendering with new theme:`, error);
-        return null;
-    }
-}
+//         // data已经是处理过的数据对象，直接使用renderTemplateWithConfig渲染
+//         let renderedHTML = renderTemplateWithConfig(templateHTML, data, config);
+
+//         // CSS由主题文件自动处理，无需添加额外类
+
+//         return renderedHTML;
+//     } catch (error) {
+//         console.error(`[${extensionName}] TEMPLATE-RENDER: Error rendering with new theme:`, error);
+//         return null;
+//     }
+// }
 
 /**
  * 移除指定主题的模板CSS
@@ -3807,7 +3627,7 @@ async function loadTemplate(templateType, theme = 'cyberpunk') {
 
     try {
         const templatePath = `/scripts/extensions/${extensionName}/chat-elements-themes/${theme}/${templateType}/template.html`;
-        console.log(`[${extensionName}] TEMPLATE-LOAD: Loading HTML from ${templatePath}`);
+        // console.log(`[${extensionName}] TEMPLATE-LOAD: Loading HTML from ${templatePath}`);
 
         const response = await fetch(templatePath);
         if (!response.ok) {
@@ -3816,7 +3636,7 @@ async function loadTemplate(templateType, theme = 'cyberpunk') {
         }
 
         const templateHTML = await response.text();
-        console.log(`[${extensionName}] TEMPLATE-LOAD: Loaded HTML template, length: ${templateHTML.length}`);
+        // console.log(`[${extensionName}] TEMPLATE-LOAD: Loaded HTML template, length: ${templateHTML.length}`);
         return templateHTML;
     } catch (error) {
         console.error(`[${extensionName}] TEMPLATE-LOAD: Error loading template:`, error);
@@ -3841,7 +3661,7 @@ async function loadTemplateConfig(templateType, theme = 'cyberpunk') {
 
     try {
         const configPath = `/scripts/extensions/${extensionName}/chat-elements-themes/${theme}/${templateType}/config.json`;
-        console.log(`[${extensionName}] TEMPLATE-CONFIG: Loading config from ${configPath}`);
+        // console.log(`[${extensionName}] TEMPLATE-CONFIG: Loading config from ${configPath}`);
 
         const response = await fetch(configPath);
         if (!response.ok) {
@@ -3852,7 +3672,7 @@ async function loadTemplateConfig(templateType, theme = 'cyberpunk') {
         const config = await response.json();
         templateConfigs[configKey] = config;
 
-        console.log(`[${extensionName}] TEMPLATE-CONFIG: Loaded config for ${configKey}:`, config);
+        // console.log(`[${extensionName}] TEMPLATE-CONFIG: Loaded config for ${configKey}:`, config);
         return config;
 
     } catch (error) {
@@ -3885,7 +3705,7 @@ function getAutoData(type, attribute) {
                     return mainChar?.avatar ? getThumbnailUrl('avatar', mainChar.avatar) : '';
                 }
                 break;
-                
+
             case 'user':
                 if (attribute === 'name') {
                     // 从 script.js 导出的 name1 变量获取用户名
@@ -3894,15 +3714,15 @@ function getAutoData(type, attribute) {
                 if (attribute === 'avatar') {
                     // 从 personas.js 导出的 user_avatar 变量获取用户头像
                     // 注意：用户头像使用 'persona' 类型，不是 'avatar' 类型
-                    return typeof user_avatar !== 'undefined' && user_avatar ? 
-                           getThumbnailUrl('persona', user_avatar) : '';
+                    return typeof user_avatar !== 'undefined' && user_avatar ?
+                        getThumbnailUrl('persona', user_avatar) : '';
                 }
                 break;
         }
     } catch (error) {
         console.warn(`[${extensionName}] AUTO-DATA: Error getting ${type}.${attribute}:`, error);
     }
-    
+
     return null;
 }
 
@@ -3929,46 +3749,6 @@ function getDerivedData(fieldConfig, processedData, element) {
     return null;
 }
 
-/**
- * 清理span元素内的空白文本节点
- * @param {Element} element - 要清理的span元素
- */
-function cleanupSpanElement(element) {
-    if (!element || !element.childNodes) {
-        return;
-    }
-
-    const nodesToRemove = [];
-    
-    // 遍历所有子节点，找出需要删除的空白文本节点
-    Array.from(element.childNodes).forEach(node => {
-        if (node.nodeType === Node.TEXT_NODE) {
-            // 检查文本节点是否只包含空白字符（空格、换行符、制表符等）
-            const textContent = node.textContent || '';
-            const trimmedContent = textContent.trim();
-            
-            if (trimmedContent === '') {
-                // 这是一个纯空白文本节点，需要删除
-                nodesToRemove.push(node);
-                console.log(`[${extensionName}] TEMPLATE-CLEANUP: 标记删除空白文本节点: "${textContent}" (字符码: ${Array.from(textContent).map(char => char.charCodeAt(0)).join(', ')})`);
-            }
-        }
-    });
-
-    // 删除标记的节点
-    nodesToRemove.forEach(node => {
-        try {
-            node.parentNode.removeChild(node);
-            console.log(`[${extensionName}] TEMPLATE-CLEANUP: 已删除空白文本节点`);
-        } catch (error) {
-            console.warn(`[${extensionName}] TEMPLATE-CLEANUP: 删除文本节点失败:`, error);
-        }
-    });
-
-    if (nodesToRemove.length > 0) {
-        console.log(`[${extensionName}] TEMPLATE-CLEANUP: 清理完成，删除了 ${nodesToRemove.length} 个空白文本节点`);
-    }
-}
 
 function processTemplateData(element, config) {
     const processedData = {};
@@ -3985,7 +3765,7 @@ function processTemplateData(element, config) {
             }
         });
         nodesToRemove.forEach(node => {
-            try { node.parentNode.removeChild(node); } catch (e) {}
+            try { node.parentNode.removeChild(node); } catch (e) { }
         });
     }
 
@@ -3996,7 +3776,7 @@ function processTemplateData(element, config) {
         }
     }
 
-    console.log(`[${extensionName}] TEMPLATE-DATA: 收集到 ${Object.keys(rawAttributes).length} 个data属性`);
+    // console.log(`[${extensionName}] TEMPLATE-DATA: 收集到 ${Object.keys(rawAttributes).length} 个data属性`);
 
     if (!config || !config.data_mapping) {
         // 无配置时使用增强的原始属性处理
@@ -4010,7 +3790,7 @@ function processTemplateData(element, config) {
 
         // 根据数据类型进行处理
         const category = fieldConfig.category || 'basic_data';
-        console.log(`[${extensionName}] TEMPLATE-DATA: 处理 ${placeholder}, category: ${category}`);
+        // console.log(`[${extensionName}] TEMPLATE-DATA: 处理 ${placeholder}, category: ${category}`);
 
         if (fieldConfig.source === 'auto') {
             // 自动从ST系统获取数据
@@ -4018,7 +3798,7 @@ function processTemplateData(element, config) {
         } else if (fieldConfig.source === 'llm') {
             // 从LLM输出获取，根据数据类型进行不同处理
             value = rawAttributes[attributeName] || '';
-            
+
             // 根据category进行类型化处理
             switch (category) {
                 case 'general_array':
@@ -4068,16 +3848,16 @@ function processTemplateData(element, config) {
             processedData[dataKey] = value;
         }
 
-        console.log(`[${extensionName}] TEMPLATE-DATA: 设置 ${dataKey} = ${JSON.stringify(processedData[dataKey])}`);
+        // console.log(`[${extensionName}] TEMPLATE-DATA: 设置 ${dataKey} = ${JSON.stringify(processedData[dataKey])}`);
     });
 
-    console.log(`[${extensionName}] TEMPLATE-DATA: 处理完成，数据对象包含 ${Object.keys(processedData).length} 个字段`);
-    
+    // console.log(`[${extensionName}] TEMPLATE-DATA: 处理完成，数据对象包含 ${Object.keys(processedData).length} 个字段`);
+
     if (Object.keys(processedData).length === 0) {
         console.error(`[${extensionName}] TEMPLATE-DATA ERROR: 数据处理失败，使用备用数据`);
         return createEnhancedFallbackData(rawAttributes);
     }
-    
+
     return processedData;
 }
 
@@ -4095,34 +3875,34 @@ function processListData(value, typeConfig) {
 
     const separator = typeConfig?.separator || ',';
     const itemNames = value.split(separator).map(name => name.trim()).filter(name => name);
-    
+
     if (itemNames.length === 0) {
         console.log(`[${extensionName}] TEMPLATE-DATA: 列表解析后为空，返回空数组`);
         return [];
     }
 
     const autoProperties = typeConfig?.auto_properties || ['name'];
-    console.log(`[${extensionName}] TEMPLATE-DATA: 处理列表，发现 ${itemNames.length} 个项目:`, itemNames);
-    console.log(`[${extensionName}] TEMPLATE-DATA: 自动属性配置:`, autoProperties);
+    // console.log(`[${extensionName}] TEMPLATE-DATA: 处理列表，发现 ${itemNames.length} 个项目:`, itemNames);
+    // console.log(`[${extensionName}] TEMPLATE-DATA: 自动属性配置:`, autoProperties);
 
     const itemList = itemNames.map(itemName => {
         const itemData = { name: itemName };
-        
+
         // 根据 auto_properties 动态添加属性
         autoProperties.forEach(prop => {
             if (prop === 'name') {
                 // name已经设置，跳过
                 return;
             }
-            
+
             // 使用统一的属性查找函数
             const propValue = dataTypeFunctions.findPropertyValue(prop, itemName);
             if (propValue !== undefined && propValue !== '') {
                 itemData[prop] = propValue;
-                console.log(`[${extensionName}] TEMPLATE-DATA: "${itemName}" -> ${prop}: ${propValue}`);
+                // console.log(`[${extensionName}] TEMPLATE-DATA: "${itemName}" -> ${prop}: ${propValue}`);
             }
         });
-        
+
         return itemData;
     });
 
@@ -4140,7 +3920,7 @@ function processListData(value, typeConfig) {
 function processNPCSpecificData(placeholder, value, processedData, typeConfig) {
     const baseName = placeholder.replace(/[{}]/g, ''); // 移除花括号，如 "NPC_SPECIFIC_LEADER"
     const cleanValue = (value || '').trim();
-    
+
     console.log(`[${extensionName}] TEMPLATE-DATA: 处理NPC特定数据 ${baseName}, 值: "${cleanValue}"`);
 
     // 只有当值不为空时才设置属性（这样 {{#ifExists}} 才能正确工作）
@@ -4151,14 +3931,14 @@ function processNPCSpecificData(placeholder, value, processedData, typeConfig) {
         // 自动派生_NAME属性
         const nameKey = baseName + '_NAME';
         processedData[nameKey] = cleanValue;
-        console.log(`[${extensionName}] TEMPLATE-DATA: 派生属性 ${nameKey} = "${processedData[nameKey]}"`);
+        // console.log(`[${extensionName}] TEMPLATE-DATA: 派生属性 ${nameKey} = "${processedData[nameKey]}"`);
 
         // 自动派生_AVATAR属性
         const avatarKey = baseName + '_AVATAR';
         const npc = dataTypeFunctions.findNPCByName(cleanValue);
         processedData[avatarKey] = npc ? (npc.avatar ? getThumbnailUrl('avatar', npc.avatar) : '') : '';
-        console.log(`[${extensionName}] TEMPLATE-DATA: 派生属性 ${avatarKey} = "${processedData[avatarKey] || '无头像'}" (查找NPC: ${cleanValue})`);
-        
+        // console.log(`[${extensionName}] TEMPLATE-DATA: 派生属性 ${avatarKey} = "${processedData[avatarKey] || '无头像'}" (查找NPC: ${cleanValue})`);
+
         console.log(`[${extensionName}] TEMPLATE-DATA: NPC特定数据处理完成，创建了 ${baseName}, ${nameKey}, ${avatarKey} 三个属性`);
     } else {
         console.log(`[${extensionName}] TEMPLATE-DATA: NPC特定数据为空，跳过 ${baseName} 相关属性的创建`);
@@ -4184,7 +3964,7 @@ function createEnhancedFallbackData(rawAttributes) {
         NPC_SPECIFIC: rawAttributes['data-npc-specific'] || 'Unknown',
         NPC_SPECIFIC_AVATAR: ''
     };
-    
+
     // 处理NPC列表
     if (rawAttributes['data-npc-list']) {
         const npcNames = rawAttributes['data-npc-list'].split(',').map(name => name.trim()).filter(name => name);
@@ -4196,13 +3976,13 @@ function createEnhancedFallbackData(rawAttributes) {
             };
         });
     }
-    
+
     // 处理特定NPC头像
     if (enhancedData['NPC_SPECIFIC'] && enhancedData['NPC_SPECIFIC'] !== 'Unknown') {
         const npc = dataTypeFunctions.findNPCByName(enhancedData['NPC_SPECIFIC']);
         enhancedData['NPC_SPECIFIC_AVATAR'] = npc ? (npc.avatar ? getThumbnailUrl('avatar', npc.avatar) : '') : '';
     }
-    
+
     return enhancedData;
 }
 
@@ -4217,12 +3997,12 @@ function getSimpleDefaultValue(dataKey, configDefault) {
     if (configDefault && configDefault.trim() !== '') {
         return configDefault;
     }
-    
+
     // 处理dataKey为空或undefined的情况
     if (!dataKey || typeof dataKey !== 'string') {
         return '';
     }
-    
+
     // 否则使用智能默认值
     if (dataKey.includes('NPC_SPECIFIC') && !dataKey.includes('AVATAR')) {
         return 'Unknown';
@@ -4233,7 +4013,7 @@ function getSimpleDefaultValue(dataKey, configDefault) {
     if (dataKey.includes('MAIN_CHAR_NAME') || dataKey.includes('CHARACTER')) {
         return 'Character';
     }
-    
+
     // 默认返回空字符串
     return '';
 }
@@ -4254,7 +4034,7 @@ function renderTemplateWithConfig(template, data, config) {
     try {
         // 准备Handlebars数据格式 - 支持数据类型系统
         const handlebarsData = {};
-        
+
         // 首先将所有processed data直接添加到handlebars数据中（包括派生属性）
         Object.entries(data).forEach(([key, value]) => {
             // 处理属性名，移除data-前缀（如果有）
@@ -4263,12 +4043,12 @@ function renderTemplateWithConfig(template, data, config) {
             cleanKey = cleanKey.replace(/-/g, '_').toUpperCase();
             handlebarsData[cleanKey] = value;
         });
-        
+
         // 处理配置的数据映射（确保所有配置的字段都存在）
         Object.entries(config.data_mapping).forEach(([placeholder, fieldConfig]) => {
             const attributeName = fieldConfig.attribute;
             let value = null;
-            
+
             // 根据数据源获取值
             if (fieldConfig.source === 'auto' || fieldConfig.source === 'derived') {
                 value = data[placeholder];
@@ -4284,14 +4064,14 @@ function renderTemplateWithConfig(template, data, config) {
             // 将占位符转换为Handlebars变量名
             const handlebarsKey = placeholder.replace(/[{}]/g, '');
             handlebarsData[handlebarsKey] = value;
-            
+
             // 数据类型系统：检查是否有派生属性需要添加
             if (fieldConfig.category === 'npc_specific') {
                 const baseName = placeholder.replace(/[{}]/g, '');
                 // 确保派生属性也存在于handlebars数据中
                 const nameKey = baseName + '_NAME';
                 const avatarKey = baseName + '_AVATAR';
-                
+
                 if (data[nameKey] !== undefined) {
                     handlebarsData[nameKey] = data[nameKey];
                 }
@@ -4305,13 +4085,13 @@ function renderTemplateWithConfig(template, data, config) {
         Object.entries(data).forEach(([key, value]) => {
             if (/^[A-Z]/.test(key) && !handlebarsData[key]) {
                 handlebarsData[key] = value;
-                console.log(`[${extensionName}] TEMPLATE-RENDER: 添加派生属性 ${key} = ${JSON.stringify(value)}`);
+                // console.log(`[${extensionName}] TEMPLATE-RENDER: 添加派生属性 ${key} = ${JSON.stringify(value)}`);
             }
         });
 
-        console.log(`[${extensionName}] TEMPLATE-RENDER: 使用数据类型系统渲染，数据字段: ${Object.keys(handlebarsData).length}个`);
-        console.log(`[${extensionName}] TEMPLATE-RENDER: Handlebars数据键名:`, Object.keys(handlebarsData));
-        
+        // console.log(`[${extensionName}] TEMPLATE-RENDER: 使用数据类型系统渲染，数据字段: ${Object.keys(handlebarsData).length}个`);
+        // console.log(`[${extensionName}] TEMPLATE-RENDER: Handlebars数据键名:`, Object.keys(handlebarsData));
+
         return templateRenderer.render(template, handlebarsData, {
             sanitize: true,
             cache: true,
@@ -4333,31 +4113,30 @@ function renderTemplateWithConfig(template, data, config) {
  * 检测并处理消息中的所有模板数据标签（动态支持所有启用的模块）
  * @param {Element} messageElement - 消息DOM元素
  * @param {number} messageId - 消息ID（可选，用于持久化）
- * @param {boolean} saveToExtensions - 是否保存到扩展数据（默认true，传false为纯净渲染）
  */
-async function processSceneDataInMessage(messageElement, messageId = null, saveToExtensions = true) {
+async function processSceneDataInMessage(messageElement, messageId = null) {
     console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: processSceneDataInMessage called for messageId: ${messageId}`);
 
     // 获取当前启用的模块列表
     const settings = extension_settings[extensionName];
     const currentTheme = settings.template_theme || 'cyberpunk';
     const enabledModules = await getEnabledModulesForTheme(currentTheme);
-    
+
     console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Current theme: ${currentTheme}, enabled modules:`, enabledModules);
 
     if (enabledModules.length === 0) {
-        console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: No enabled modules, nothing to process`);
+        // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: No enabled modules, nothing to process`);
         return;
     }
 
     // 动态构建选择器，查找所有启用模块的元素
     const moduleSelectors = enabledModules.map(module => `span[data-type="${module}"]`);
     const allTemplateElements = messageElement.querySelectorAll(moduleSelectors.join(', '));
-    
-    console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Found ${allTemplateElements.length} template elements in message`);
+
+    // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Found ${allTemplateElements.length} template elements in message`);
 
     if (allTemplateElements.length === 0) {
-        console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: No template elements found, nothing to process`);
+        // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: No template elements found, nothing to process`);
         return;
     }
 
@@ -4377,7 +4156,7 @@ async function processSceneDataInMessage(messageElement, messageId = null, saveT
 
         for (let i = 0; i < elements.length; i++) {
             const templateElement = elements[i];
-            console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Processing ${moduleType} element ${i + 1}/${elements.length}`);
+            // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Processing ${moduleType} element ${i + 1}/${elements.length}`);
 
             try {
                 // 生成唯一ID用于标识模板数据元素
@@ -4386,7 +4165,7 @@ async function processSceneDataInMessage(messageElement, messageId = null, saveT
                 // 隐藏原始的span标签
                 if (templateElement instanceof HTMLElement) {
                     templateElement.style.display = 'none';
-                    console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Original ${moduleType} span hidden`);
+                    // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Original ${moduleType} span hidden`);
                 }
 
                 // 加载模板配置、HTML和CSS
@@ -4401,15 +4180,15 @@ async function processSceneDataInMessage(messageElement, messageId = null, saveT
 
                 // 解析模板数据属性（使用配置）
                 const templateData = processTemplateData(templateElement, templateConfig);
-                console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Parsed ${moduleType} data:`, templateData);
-                console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Data keys count: ${Object.keys(templateData).length}`);
-                console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Data keys:`, Object.keys(templateData));
+                // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Parsed ${moduleType} data:`, templateData);
+                // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Data keys count: ${Object.keys(templateData).length}`);
+                // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: Data keys:`, Object.keys(templateData));
 
                 // 简化的数据检查 - 只要有基本数据结构就继续渲染
                 if (Object.keys(templateData).length === 0) {
-                    console.error(`[${extensionName}] TEMPLATE-PROCESSING ERROR: processTemplateData returned empty object! This should not happen.`);
-                    console.error(`[${extensionName}] TEMPLATE-PROCESSING ERROR: Template config:`, templateConfig);
-                    console.error(`[${extensionName}] TEMPLATE-PROCESSING ERROR: Element attributes:`, Array.from(templateElement.attributes));
+                    // console.error(`[${extensionName}] TEMPLATE-PROCESSING ERROR: processTemplateData returned empty object! This should not happen.`);
+                    // console.error(`[${extensionName}] TEMPLATE-PROCESSING ERROR: Template config:`, templateConfig);
+                    // console.error(`[${extensionName}] TEMPLATE-PROCESSING ERROR: Element attributes:`, Array.from(templateElement.attributes));
                     continue;
                 }
 
@@ -4418,7 +4197,7 @@ async function processSceneDataInMessage(messageElement, messageId = null, saveT
                 // 渲染模板
                 let renderedHTML = renderTemplateWithConfig(templateHTML, templateData, templateConfig);
 
-                console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: ${moduleType} template rendered, HTML length: ${renderedHTML.length}`);
+                // console.log(`[${extensionName}] TEMPLATE-PROCESSING DEBUG: ${moduleType} template rendered, HTML length: ${renderedHTML.length}`);
 
                 // 创建容器并插入渲染后的HTML
                 const containerDiv = document.createElement('div');
@@ -4429,8 +4208,46 @@ async function processSceneDataInMessage(messageElement, messageId = null, saveT
                 templateContainer.setAttribute('data-template-id', elementId);
                 templateContainer.setAttribute('data-module-type', moduleType);
 
+                // 保护现有图像容器 - 在插入新容器前检查是否需要保护图像
+                const existingContainer = messageElement.querySelector(`[data-module-type="${moduleType}"]`);
+                const savedImages = [];
+                if (existingContainer) {
+                    // 查找并保存现有的图像容器
+                    const imageContainers = existingContainer.querySelectorAll('.custom-image-container');
+                    imageContainers.forEach(img => {
+                        // 临时移动到消息根元素，避免被清除
+                        messageElement.appendChild(img);
+                        img.style.display = 'none';
+                        img.setAttribute('data-temp-preserved', 'true');
+                        savedImages.push(img);
+                    });
+                    // 移除旧容器
+                    existingContainer.remove();
+                    console.log(`[${extensionName}] IMAGE-PROTECTION: Preserved ${savedImages.length} images from old ${moduleType} container`);
+                }
+
                 // 在原始span标签下方插入渲染结果
                 templateElement.parentNode.insertBefore(templateContainer, templateElement.nextSibling);
+
+                // 恢复保存的图像到新容器的占位符中
+                if (savedImages.length > 0) {
+                    const placeholder = templateContainer.querySelector('.img-placeholder');
+                    if (placeholder) {
+                        savedImages.forEach(img => {
+                            placeholder.appendChild(img);
+                            img.style.display = '';
+                            img.removeAttribute('data-temp-preserved');
+                        });
+                        console.log(`[${extensionName}] IMAGE-PROTECTION: Restored ${savedImages.length} images to new ${moduleType} container`);
+                    } else {
+                        // 如果没有占位符，恢复到原来的显示状态，保持在消息根元素下
+                        savedImages.forEach(img => {
+                            img.style.display = '';
+                            img.removeAttribute('data-temp-preserved');
+                        });
+                        console.log(`[${extensionName}] IMAGE-PROTECTION: No placeholder found, images kept at message root level`);
+                    }
+                }
 
                 console.log(`[${extensionName}] TEMPLATE-PROCESSING SUCCESS: ${moduleType} element ${i + 1} rendered and inserted successfully with ID: ${elementId}`);
 
@@ -4444,19 +4261,37 @@ async function processSceneDataInMessage(messageElement, messageId = null, saveT
         }
     }
 
+    // 消息模板渲染完成后，立即处理该消息对应的图像重定位
+    if (typeof messageId === 'number') {
+        const msgIdStr = messageId.toString();
+        if (pendingImageRelocations.has(msgIdStr)) {
+            console.log(`[${extensionName}] TEMPLATE-PROCESSING: 消息${messageId}模板渲染完成，处理对应的图像重定位`);
+            const pendingItem = pendingImageRelocations.get(msgIdStr);
+            const success = relocateImageToTheme(msgIdStr, pendingItem.imageContainer);
+            if (success) {
+                pendingImageRelocations.delete(msgIdStr);
+                console.log(`[${extensionName}] TEMPLATE-PROCESSING: 成功重定位消息${messageId}的图像并从队列中移除`);
+            } else {
+                console.log(`[${extensionName}] TEMPLATE-PROCESSING: 消息${messageId}的图像重定位仍然失败，保留在队列中`);
+            }
+        }
+
+        console.log(`[${extensionName}] TEMPLATE-PROCESSING: 消息${messageId}模板渲染完成`);
+    }
+
     // 初始化共享功能绑定 - 在所有模板渲染完成后
-    console.log(`[${extensionName}] TEMPLATE-PROCESSING: 初始化共享功能绑定...`);
+    // console.log(`[${extensionName}] TEMPLATE-PROCESSING: 初始化共享功能绑定...`);
     sharingFunctions.initializeFunctionBindings(messageElement);
     console.log(`[${extensionName}] TEMPLATE-PROCESSING: 共享功能绑定完成`);
 
     // 立即处理所有Markdown元素
-    console.log(`[${extensionName}] TEMPLATE-PROCESSING: 处理Markdown元素...`);
+    // console.log(`[${extensionName}] TEMPLATE-PROCESSING: 处理Markdown元素...`);
     const markdownElements = messageElement.querySelectorAll('[data-function*="show_markdown"]');
-    console.log(`[${extensionName}] TEMPLATE-PROCESSING: 发现 ${markdownElements.length} 个Markdown元素`);
-    
+    // console.log(`[${extensionName}] TEMPLATE-PROCESSING: 发现 ${markdownElements.length} 个Markdown元素`);
+
     markdownElements.forEach((element, index) => {
         try {
-            console.log(`[${extensionName}] TEMPLATE-PROCESSING: 处理Markdown元素 ${index + 1}/${markdownElements.length}`);
+            // console.log(`[${extensionName}] TEMPLATE-PROCESSING: 处理Markdown元素 ${index + 1}/${markdownElements.length}`);
             sharingFunctions.showMarkdown(element);
         } catch (error) {
             console.error(`[${extensionName}] TEMPLATE-PROCESSING: Markdown处理失败`, error);
@@ -4494,26 +4329,13 @@ async function onMessageSceneDataReceived(messageId) {
             const messageElement = document.querySelector(`#chat [mesid="${messageId}"]`);
             if (messageElement) {
                 standardTemplateProcessing('MESSAGE_RECEIVED', messageElement, numericMessageId);
+                // character message rendered：图像生成慢，模板渲染快，不需要队列处理
+                // 图像生成事件会在模板渲染之后到达，直接处理即可
             }
         }
-    }, 100);
+    }, 200);
 }
 
-/**
- * DOM观察器已禁用 - 使用纯净的事件驱动渲染
- * 不再依赖扩展数据恢复机制，所有渲染都基于DOM中的span[data-type]元素
- */
-function setupSceneDataDOMObserver() {
-    console.log(`[${extensionName}] SCENE-DATA DOM: DOM观察器已禁用，使用纯净的事件驱动渲染`);
-    // DOM观察器已被禁用，改用标准化事件处理流程
-    // 所有模板渲染都通过事件监听器触发的standardTemplateProcessing处理
-}
-
-// === 已废弃的扩展数据持久化函数 ===
-// 现在使用纯净的DOM驱动渲染，不再保存扩展数据
-
-// === 已废弃的恢复函数 ===
-// 现在使用纯净的DOM驱动渲染，不再需要从扩展数据恢复
 
 /**
  * 聊天变更事件处理器 - 使用标准化处理流程
@@ -4531,9 +4353,19 @@ async function onSceneDataChatChanged() {
         return;
     }
 
+    console.log(`[${extensionName}] CHAT_CHANGED: 开始处理聊天切换事件`);
+
     // 延迟执行确保DOM已更新
     setTimeout(() => {
         standardTemplateProcessing('CHAT_CHANGED');
+
+        // 延迟清理队列中的无效项 - 等待所有模板渲染完成
+        setTimeout(() => {
+            if (pendingImageRelocations.size > 0) {
+                console.log(`[${extensionName}] CHAT_CHANGED: 延迟清理剩余的 ${pendingImageRelocations.size} 个队列项`);
+                clearPendingImageQueue();
+            }
+        }, 2000); // 2秒后清理，给足够时间让所有模板渲染完成
     }, 100);
 }
 
@@ -4555,7 +4387,7 @@ async function onSceneDataMessageUpdated(messageId) {
 
     const now = Date.now();
     const messageKey = `${messageId}`;
-    
+
     // 防止短时间内重复处理同一消息 (150ms内) - 降低时间阈值，因为现在只有一个事件源
     if (lastProcessedMessage === messageKey && (now - lastProcessedTime) < 150) {
         console.log(`[${extensionName}] MESSAGE-UPDATED: 跳过重复处理消息 ${messageId} (${now - lastProcessedTime}ms前刚处理过)`);
@@ -4612,6 +4444,122 @@ async function onSceneDataMessageSwiped(messageId) {
 }
 
 /**
+ * 处理来自live-msg-inline-img-generator的图像事件 - 插件间协作
+ * @param {CustomEvent} event - 图像事件 (EventImgGenerated 或 EventImgRestored)
+ */
+function handleImageEvent(event) {
+    const { msgId, imageContainer, source } = event.detail;
+    const eventType = event.type;
+
+    console.log(`[${extensionName}] IMAGE-EVENT: Received ${eventType} from ${source} for message: ${msgId}`);
+
+    // 立即尝试重定位
+    const success = relocateImageToTheme(msgId, imageContainer);
+
+    if (!success) {
+        if (eventType === 'EventImgRestored') {
+            // 图像恢复事件：通常在chat changed时发生，图像恢复快，模板渲染慢
+            // 需要加入队列等待模板渲染完成
+            pendingImageRelocations.set(msgId.toString(), {
+                imageContainer: imageContainer,
+                eventType: eventType
+            });
+            console.log(`[${extensionName}] IMAGE-EVENT: Added to pending queue for message: ${msgId} (chat restore)`);
+        } else if (eventType === 'EventImgGenerated') {
+            // 图像生成事件：有时候图像生成也可能比模板渲染更快到达
+            // 如果重定位失败，也加入队列等待模板渲染完成
+            pendingImageRelocations.set(msgId.toString(), {
+                imageContainer: imageContainer,
+                eventType: eventType
+            });
+            console.log(`[${extensionName}] IMAGE-EVENT: Added to pending queue for message: ${msgId} (image generated before template ready)`);
+        }
+    } else {
+        console.log(`[${extensionName}] IMAGE-EVENT: Successfully relocated for message: ${msgId}`);
+        const messageElement = document.querySelector(`#chat [mesid="${msgId}"]`);
+        //在messageElement中寻找所有togglewrapper元素，并将初始状态设为隐藏后重新绑定。
+        // 如果页面中有多个相似的元素
+        const toggleWrappers = messageElement.querySelectorAll('[data-function*="toggle-wrapper"]');
+        if (toggleWrappers.length === 0) {
+            console.log(`[${extensionName}] IMAGE-EVENT: No toggle-wrapper elements found in message: ${msgId}`);
+            return;
+        } else {
+            // 遍历并移除属性
+             console.log(`[${extensionName}] IMAGE-EVENT: Found ${toggleWrappers.length} toggle-wrapper elements in message: ${msgId}`);
+            toggleWrappers.forEach(element => {
+                element.removeAttribute('data-initial-state-set');
+            });
+        }
+
+        sharingFunctions.initializeFunctionBindings(messageElement);
+        console.log(`[${extensionName}] IMAGE-EVENT: 图像重定向后共享功能绑定完成`);
+    }
+
+}
+
+// 全局待处理图像队列 - 解决时序问题
+const pendingImageRelocations = new Map(); // msgId -> { imageContainer, eventType }
+
+
+/**
+ * 清空待处理队列
+ */
+function clearPendingImageQueue() {
+    const queueSize = pendingImageRelocations.size;
+    pendingImageRelocations.clear();
+    if (queueSize > 0) {
+        console.log(`[${extensionName}] PENDING-QUEUE: Cleared ${queueSize} pending items`);
+    }
+}
+
+/**
+ * 将图像容器重定位到主题模板的占位符中
+ * @param {string|number} msgId - 消息ID
+ * @param {HTMLElement} imageContainer - 图像容器DOM元素
+ * @returns {boolean} 是否成功重定位
+ */
+function relocateImageToTheme(msgId, imageContainer) {
+    try {
+        // 查找消息元素
+        const msgElement = document.querySelector(`#chat [mesid="${msgId}"]`);
+        if (!msgElement) {
+            console.warn(`[${extensionName}] IMAGE-RELOCATE: Message element not found for ID: ${msgId}`);
+            return false;
+        }
+
+        // 查找主题容器中的占位符
+        const themeContainer = msgElement.querySelector('[data-module-type]');
+        const placeholder = themeContainer?.querySelector('.img-placeholder');
+
+        if (!themeContainer) {
+            console.log(`[${extensionName}] IMAGE-RELOCATE: No theme container found for message: ${msgId}`);
+            return false;
+        }
+
+        if (!placeholder) {
+            console.log(`[${extensionName}] IMAGE-RELOCATE: No image placeholder found in theme container for message: ${msgId}`);
+            return false;
+        }
+
+        // 检查图像是否已经在正确位置
+        if (imageContainer && imageContainer.parentNode !== placeholder) {
+            placeholder.appendChild(imageContainer);
+            console.log(`[${extensionName}] IMAGE-RELOCATE: Image successfully relocated to theme placeholder for message: ${msgId}`);
+            scrollToBottom();
+            return true;
+        } else if (imageContainer && imageContainer.parentNode === placeholder) {
+            console.log(`[${extensionName}] IMAGE-RELOCATE: Image already in correct position for message: ${msgId}`);
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.error(`[${extensionName}] IMAGE-RELOCATE ERROR:`, error);
+        return false;
+    }
+}
+
+/**
  * 设置场景数据处理集成
  */
 function setupSceneDataIntegration() {
@@ -4630,10 +4578,10 @@ function setupSceneDataIntegration() {
         console.log(`[${extensionName}] SCENE-DATA DEBUG: Event listener registered for CHARACTER_MESSAGE_RENDERED`);
 
         // 监听用户消息渲染事件 - 用户消息也可能包含场景数据
-        if (event_types.USER_MESSAGE_RENDERED) {
-            eventSource.on(event_types.USER_MESSAGE_RENDERED, onMessageSceneDataReceived);
-            console.log(`[${extensionName}] SCENE-DATA DEBUG: Event listener registered for USER_MESSAGE_RENDERED`);
-        }
+        // if (event_types.USER_MESSAGE_RENDERED) {
+        //     eventSource.on(event_types.USER_MESSAGE_RENDERED, onMessageSceneDataReceived);
+        //     console.log(`[${extensionName}] SCENE-DATA DEBUG: Event listener registered for USER_MESSAGE_RENDERED`);
+        // }
 
         // 监听聊天变更事件，用于恢复场景数据
         eventSource.on(event_types.CHAT_CHANGED, onSceneDataChatChanged);
@@ -4643,20 +4591,14 @@ function setupSceneDataIntegration() {
         eventSource.on(event_types.MESSAGE_UPDATED, onSceneDataMessageUpdated);
         console.log(`[${extensionName}] SCENE-DATA DEBUG: Event listener registered for MESSAGE_UPDATED`);
 
-        // 注释掉 MESSAGE_EDITED 事件监听，避免重复处理
-        // MESSAGE_UPDATED 事件已经能够处理消息编辑的情况
-        // if (event_types.MESSAGE_EDITED) {
-        //     eventSource.on(event_types.MESSAGE_EDITED, onSceneDataMessageUpdated);
-        //     console.log(`[${extensionName}] SCENE-DATA DEBUG: Event listener registered for MESSAGE_EDITED`);
-        // }
-
         // 监听消息换页事件
         eventSource.on(event_types.MESSAGE_SWIPED, onSceneDataMessageSwiped);
         console.log(`[${extensionName}] SCENE-DATA DEBUG: Event listener registered for MESSAGE_SWIPED`);
 
-        // 设置DOM观察器以处理动态DOM变化
-        setupSceneDataDOMObserver();
-
+        // 监听插件间通信事件 - 与live-msg-inline-img-generator协作
+        document.addEventListener('EventImgGenerated', handleImageEvent);
+        document.addEventListener('EventImgRestored', handleImageEvent);
+        console.log(`[${extensionName}] SCENE-DATA DEBUG: Plugin communication event listeners registered`);
         console.log(`[${extensionName}] SCENE-DATA SUCCESS: Scene data integration initialized with persistence`);
 
     } catch (error) {
@@ -4672,15 +4614,11 @@ function removeSceneDataIntegration() {
     try {
         // 移除所有事件监听器
         eventSource.removeListener(event_types.CHARACTER_MESSAGE_RENDERED, onMessageSceneDataReceived);
-        if (event_types.USER_MESSAGE_RENDERED) {
-            eventSource.removeListener(event_types.USER_MESSAGE_RENDERED, onMessageSceneDataReceived);
-        }
+        // if (event_types.USER_MESSAGE_RENDERED) {
+        //     eventSource.removeListener(event_types.USER_MESSAGE_RENDERED, onMessageSceneDataReceived);
+        // }
         eventSource.removeListener(event_types.CHAT_CHANGED, onSceneDataChatChanged);
         eventSource.removeListener(event_types.MESSAGE_UPDATED, onSceneDataMessageUpdated);
-        // 移除注释掉的 MESSAGE_EDITED 事件监听器（如果之前有注册的话）
-        // if (event_types.MESSAGE_EDITED) {
-        //     eventSource.removeListener(event_types.MESSAGE_EDITED, onSceneDataMessageUpdated);
-        // }
         eventSource.removeListener(event_types.MESSAGE_SWIPED, onSceneDataMessageSwiped);
 
         // 移除CSS样式
@@ -4695,7 +4633,14 @@ function removeSceneDataIntegration() {
         console.error(`[${extensionName}] Error removing scene data integration:`, error);
     }
 }
-
+//scroll to bottom function
+function scrollToBottom() {
+    const chatDiv = document.getElementById('chat');
+    chatDiv.scrollTo({
+        top: chatDiv.scrollHeight,
+        behavior: 'smooth'  // 平滑滚动
+    });
+}
 // Create global object for backwards compatibility (if needed)
 globalThis.cyberpunk2027 = {
     applyTheme,
@@ -4762,7 +4707,7 @@ jQuery(async () => {
 
         // Bind configuration control handlers
         // Blur strength controls - 滑块控制数字输入
-        $('#cyberpunk_blur_strength').on('input', function() {
+        $('#cyberpunk_blur_strength').on('input', function () {
             console.log(`[DEBUG] Slider input triggered, isUpdatingControls: ${isUpdatingControls}`);
             if (isUpdatingControls) {
                 console.log('[DEBUG] Slider input blocked by isUpdatingControls');
@@ -4778,7 +4723,7 @@ jQuery(async () => {
             onConfigChange('blur_strength', value);
         });
         // 数字输入控制滑块
-        $('#cyberpunk_blur_strength_number').on('input', function() {
+        $('#cyberpunk_blur_strength_number').on('input', function () {
             console.log(`[DEBUG] Number input triggered, isUpdatingControls: ${isUpdatingControls}`);
             if (isUpdatingControls) {
                 console.log('[DEBUG] Number input blocked by isUpdatingControls');
@@ -4795,7 +4740,7 @@ jQuery(async () => {
         });
 
         // Shadow width controls
-        $('#cyberpunk_shadow_width').on('input', function() {
+        $('#cyberpunk_shadow_width').on('input', function () {
             if (isUpdatingControls) return; // 防止递归调用
             const value = $(this).val();
             isUpdatingControls = true;
@@ -4803,7 +4748,7 @@ jQuery(async () => {
             isUpdatingControls = false;
             onConfigChange('shadow_width', value);
         });
-        $('#cyberpunk_shadow_width_number').on('input', function() {
+        $('#cyberpunk_shadow_width_number').on('input', function () {
             if (isUpdatingControls) return; // 防止递归调用
             const value = $(this).val();
             isUpdatingControls = true;
@@ -4813,7 +4758,7 @@ jQuery(async () => {
         });
 
         // Font scale controls
-        $('#cyberpunk_font_scale').on('input', function() {
+        $('#cyberpunk_font_scale').on('input', function () {
             if (isUpdatingControls) return; // 防止递归调用
             const value = $(this).val();
             isUpdatingControls = true;
@@ -4821,7 +4766,7 @@ jQuery(async () => {
             isUpdatingControls = false;
             onConfigChange('font_scale', value);
         });
-        $('#cyberpunk_font_scale_number').on('input', function() {
+        $('#cyberpunk_font_scale_number').on('input', function () {
             if (isUpdatingControls) return; // 防止递归调用
             const value = $(this).val();
             isUpdatingControls = true;
@@ -4831,7 +4776,7 @@ jQuery(async () => {
         });
 
         // Reset button handlers using event delegation
-        $(document).on('click', '.cyberpunk-reset-btn', function() {
+        $(document).on('click', '.cyberpunk-reset-btn', function () {
             const controlType = $(this).data('control');
             console.log(`[${extensionName}] Reset button clicked for: ${controlType}`);
             console.log(`[${extensionName}] Current theme defaults:`, cyberpunkThemeDefaults);

@@ -1,7 +1,7 @@
 /**
  * 共享功能模块 - 为所有模板提供通用的交互功能
  * Cyberpunk 2027 Hubs Extension - Sharing Functions Module
- * 
+ *
  * 使用方式：在模板中添加 data-function 属性
  * 例如：<div data-function="toggle-wrapper(target-id)">点击切换</div>
  */
@@ -45,11 +45,11 @@ class SharingFunctions {
      */
     bindFunctionToElement(element, functionCall) {
         const { functionName, parameters } = this.parseFunctionCall(functionCall);
-        
+
         // 避免重复绑定
-        if (element.dataset.functionBound === 'true') {
-            return;
-        }
+        // if (element.dataset.functionBound === 'true') {
+        //     return;
+        // }
 
         // 检查是否有初始状态参数需要立即应用
         if (functionName === 'toggle-wrapper' && parameters.length >= 2) {
@@ -59,7 +59,13 @@ class SharingFunctions {
                 this.executeFunction(functionName, parameters, element, null);
             }
         }
-
+        //先去除旧的绑定
+        element.removeEventListener('click', (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            this.executeFunction(functionName, parameters, element, event);
+        });
+        // 重新绑定事件
         element.addEventListener('click', (event) => {
             event.preventDefault();
             event.stopPropagation();
@@ -67,8 +73,8 @@ class SharingFunctions {
         });
 
         // 标记已绑定
-        element.dataset.functionBound = 'true';
-        
+        // element.dataset.functionBound = 'true';
+
         // 为交互元素添加视觉提示
         if (!element.classList.contains('no-function-cursor')) {
             element.style.cursor = 'pointer';
@@ -89,7 +95,7 @@ class SharingFunctions {
 
         const functionName = match[1];
         const parametersString = match[2].trim();
-        
+
         // 解析参数 - 支持逗号分隔，考虑引号内的逗号
         const parameters = [];
         if (parametersString) {
@@ -125,7 +131,7 @@ class SharingFunctions {
                 case 'slide-toggle':
                     this.slideToggle(parameters[0], parameters[1], sourceElement);
                     break;
-                
+
                 // 信息展示功能
                 case 'popup-info':
                     this.popupInfo(parameters[0], parameters[1], sourceElement, event);
@@ -136,7 +142,7 @@ class SharingFunctions {
                 case 'modal-display':
                     this.modalDisplay(parameters[0], parameters[1], sourceElement);
                     break;
-                
+
                 // 数据交互功能
                 case 'filter-list':
                     this.filterList(parameters[0], parameters[1], sourceElement);
@@ -147,7 +153,7 @@ class SharingFunctions {
                 case 'search-highlight':
                     this.searchHighlight(parameters[0], sourceElement);
                     break;
-                
+
                 // Markdown渲染功能
                 case 'show_markdown':
                     this.showMarkdown(sourceElement);
@@ -175,10 +181,11 @@ class SharingFunctions {
      */
     toggleWrapper(targetId, initShow = null, animation = 'fade', sourceElement) {
         console.log(`[${this.extensionName}] TOGGLE-WRAPPER: 开始切换 targetId: ${targetId}, initShow: ${initShow}`);
-        
-        const targetElement = document.getElementById(targetId);
+
+        // 使用就近父级查找策略，避免ID冲突
+        const targetElement = this.findTargetInNearestParent(sourceElement, targetId);
         if (!targetElement) {
-            console.warn(`[${this.extensionName}] TOGGLE-WRAPPER: 找不到目标元素 #${targetId}`);
+            console.warn(`[${this.extensionName}] TOGGLE-WRAPPER: 在就近父级中找不到目标元素 #${targetId}`);
             return;
         }
 
@@ -193,7 +200,7 @@ class SharingFunctions {
                 if (initShowMatch) {
                     const shouldShow = initShowMatch[1].toLowerCase() === 'true';
                     console.log(`[${this.extensionName}] TOGGLE-WRAPPER: 设置初始状态为 ${shouldShow ? '显示' : '隐藏'}`);
-                    
+
                     // 设置初始状态
                     this.setInitialToggleState(targetElement, sourceElement, shouldShow, animation);
                     // 标记已设置初始状态
@@ -204,7 +211,7 @@ class SharingFunctions {
         }
 
         // 正常的切换逻辑（点击时执行）
-        const isHidden = targetElement.style.display === 'none' || 
+        const isHidden = targetElement.style.display === 'none' ||
                         targetElement.classList.contains('hidden') ||
                         targetElement.hasAttribute('data-hidden');
 
@@ -212,7 +219,7 @@ class SharingFunctions {
 
         // 添加状态指示到源元素
         const indicator = sourceElement.querySelector('.toggle-indicator');
-        
+
         if (isHidden) {
             // 显示元素
             console.log(`[${this.extensionName}] TOGGLE-WRAPPER: 显示元素`);
@@ -228,7 +235,7 @@ class SharingFunctions {
             sourceElement.classList.add('toggle-collapsed');
             sourceElement.classList.remove('toggle-expanded');
         }
-        
+
         console.log(`[${this.extensionName}] TOGGLE-WRAPPER: 切换完成`);
     }
 
@@ -239,14 +246,15 @@ class SharingFunctions {
      * @param {Element} sourceElement - 触发元素
      */
     expandSection(targetId, effect = 'slide-down', sourceElement) {
-        const targetElement = document.getElementById(targetId);
+        // 使用就近父级查找策略
+        const targetElement = this.findTargetInNearestParent(sourceElement, targetId);
         if (!targetElement) {
-            console.warn(`[${this.extensionName}] EXPAND-SECTION: 找不到目标元素 #${targetId}`);
+            console.warn(`[${this.extensionName}] EXPAND-SECTION: 在就近父级中找不到目标元素 #${targetId}`);
             return;
         }
 
         const isExpanded = !targetElement.classList.contains('content-collapsed');
-        
+
         if (isExpanded) {
             // 收起
             targetElement.classList.add('content-collapsed');
@@ -267,16 +275,17 @@ class SharingFunctions {
      * @param {Element} sourceElement - 触发元素
      */
     slideToggle(targetId, direction = 'down', sourceElement) {
-        const targetElement = document.getElementById(targetId);
+        // 使用就近父级查找策略
+        const targetElement = this.findTargetInNearestParent(sourceElement, targetId);
         if (!targetElement) {
-            console.warn(`[${this.extensionName}] SLIDE-TOGGLE: 找不到目标元素 #${targetId}`);
+            console.warn(`[${this.extensionName}] SLIDE-TOGGLE: 在就近父级中找不到目标元素 #${targetId}`);
             return;
         }
 
         const isVisible = !targetElement.classList.contains('slide-hidden');
-        
+
         targetElement.style.transition = 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out';
-        
+
         if (isVisible) {
             // 滑出隐藏
             this.applySlidOut(targetElement, direction);
@@ -345,10 +354,10 @@ class SharingFunctions {
         const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
         document.body.appendChild(tooltip);
-        
+
         // 获取tooltip尺寸
         const tooltipRect = tooltip.getBoundingClientRect();
-        
+
         let top, left;
         switch (position) {
             case 'top':
@@ -409,7 +418,7 @@ class SharingFunctions {
     showMarkdown(sourceElement) {
         try {
             console.log(`[${this.extensionName}] SHOW-MARKDOWN: 开始处理Markdown转换`);
-            
+
             if (!sourceElement) {
                 console.error(`[${this.extensionName}] SHOW-MARKDOWN: 源元素未找到`);
                 return;
@@ -417,7 +426,7 @@ class SharingFunctions {
 
             // 获取原始Markdown内容
             let markdownContent = '';
-            
+
             // 尝试从不同属性获取Markdown内容
             if (sourceElement.dataset.markdownContent) {
                 // 优先使用data-markdown-content属性
@@ -454,11 +463,11 @@ class SharingFunctions {
             // 移除data-function属性，防止重复执行和意外点击
             sourceElement.removeAttribute('data-function');
             sourceElement.removeAttribute('data-function-bound');
-            
+
             // 清理内联样式（移除pointer光标和user-select）
             sourceElement.style.cursor = '';
             sourceElement.style.userSelect = '';
-            
+
             // 移除任何点击事件监听器
             const newElement = sourceElement.cloneNode(true);
             sourceElement.parentNode.replaceChild(newElement, sourceElement);
@@ -485,13 +494,13 @@ class SharingFunctions {
      */
     filterList(targetClass, filterValue, sourceElement) {
         const items = document.querySelectorAll(`.${targetClass}`);
-        
+
         items.forEach(item => {
             const itemText = item.textContent.toLowerCase();
-            const shouldShow = filterValue === 'all' || 
+            const shouldShow = filterValue === 'all' ||
                              itemText.includes(filterValue.toLowerCase()) ||
                              item.classList.contains(filterValue);
-            
+
             if (shouldShow) {
                 item.style.display = '';
                 item.classList.remove('filtered-hidden');
@@ -513,12 +522,19 @@ class SharingFunctions {
      * @param {Element} sourceElement - 触发元素
      */
     sortItems(targetClass, sortBy, sourceElement) {
-        const container = document.querySelector(`.${targetClass}`).parentElement;
-        const items = Array.from(document.querySelectorAll(`.${targetClass}`));
+        // 使用就近父级查找策略，避免在多个相同组件中选错容器
+        const nearestParent = this.findNearestParentWithClass(sourceElement, targetClass);
+        if (!nearestParent) {
+            console.warn(`[${this.extensionName}] SORT-ITEMS: 找不到包含 .${targetClass} 的父级容器`);
+            return;
+        }
+
+        const container = nearestParent;
+        const items = Array.from(nearestParent.querySelectorAll(`.${targetClass}`));
 
         items.sort((a, b) => {
             let aValue, bValue;
-            
+
             switch (sortBy) {
                 case 'name':
                     aValue = a.querySelector('.npc-name, .item-name, .name')?.textContent || '';
@@ -562,11 +578,11 @@ class SharingFunctions {
 
         // 查找所有可搜索的文本元素
         const searchableElements = document.querySelectorAll('.npc-name, .location-name, .item-name, .search-target');
-        
+
         searchableElements.forEach(element => {
             const text = element.textContent;
             const regex = new RegExp(`(${keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
-            
+
             if (regex.test(text)) {
                 element.innerHTML = text.replace(regex, '<span class="search-highlight">$1</span>');
                 element.classList.add('has-highlight');
@@ -579,6 +595,92 @@ class SharingFunctions {
     // ===================================
 
     /**
+     * 在就近父级中查找目标元素 - 解决ID重复问题的核心函数
+     * @param {Element} sourceElement - 触发元素
+     * @param {string} targetId - 目标元素ID
+     * @returns {Element|null} 找到的目标元素或null
+     */
+    findTargetInNearestParent(sourceElement, targetId) {
+        console.log(`[${this.extensionName}] FIND-TARGET: 开始从源元素查找目标 #${targetId}`);
+
+        let currentParent = sourceElement.parentElement;
+
+        while (currentParent) {
+            console.log(`[${this.extensionName}] FIND-TARGET: 检查父级容器:`, currentParent.className || currentParent.tagName);
+
+            // 在当前父级中查找目标元素
+            const targetElement = currentParent.querySelector(`#${targetId}`);
+
+            if (targetElement) {
+                console.log(`[${this.extensionName}] FIND-TARGET: 在父级容器中找到目标元素:`, currentParent.className || currentParent.tagName);
+                return targetElement;
+            }
+
+            // 防止越过模板边界
+            if (currentParent.hasAttribute('data-template-id') ||
+                currentParent.hasAttribute('data-module-type')) {
+                console.log(`[${this.extensionName}] FIND-TARGET: 到达模板边界，停止向上查找`);
+                break;
+            }
+
+            // 继续向上一级父级查找
+            currentParent = currentParent.parentElement;
+
+            // 防止无限向上查找
+            if (!currentParent || currentParent === document.body || currentParent === document.documentElement) {
+                console.log(`[${this.extensionName}] FIND-TARGET: 到达文档边界，停止查找`);
+                break;
+            }
+        }
+
+        console.warn(`[${this.extensionName}] FIND-TARGET: 在所有父级中都找不到目标 #${targetId}`);
+        return null;
+    }
+
+    /**
+     * 查找包含指定类名元素的最近父级容器 - 用于sortItems等类名查找功能
+     * @param {Element} sourceElement - 触发元素
+     * @param {string} targetClass - 目标类名
+     * @returns {Element|null} 包含目标类名元素的父级容器或null
+     */
+    findNearestParentWithClass(sourceElement, targetClass) {
+        console.log(`[${this.extensionName}] FIND-PARENT-WITH-CLASS: 开始查找包含 .${targetClass} 的父级`);
+
+        let currentParent = sourceElement.parentElement;
+
+        while (currentParent) {
+            console.log(`[${this.extensionName}] FIND-PARENT-WITH-CLASS: 检查父级:`, currentParent.className || currentParent.tagName);
+
+            // 检查当前父级是否包含目标类名的元素
+            const hasTargetClass = currentParent.querySelector(`.${targetClass}`) !== null;
+
+            if (hasTargetClass) {
+                console.log(`[${this.extensionName}] FIND-PARENT-WITH-CLASS: 找到包含 .${targetClass} 的父级:`, currentParent.className || currentParent.tagName);
+                return currentParent;
+            }
+
+            // 防止越过模板边界
+            if (currentParent.hasAttribute('data-template-id') ||
+                currentParent.hasAttribute('data-module-type')) {
+                console.log(`[${this.extensionName}] FIND-PARENT-WITH-CLASS: 到达模板边界，停止向上查找`);
+                break;
+            }
+
+            // 继续向上一级父级查找
+            currentParent = currentParent.parentElement;
+
+            // 防止无限向上查找
+            if (!currentParent || currentParent === document.body || currentParent === document.documentElement) {
+                console.log(`[${this.extensionName}] FIND-PARENT-WITH-CLASS: 到达文档边界，停止查找`);
+                break;
+            }
+        }
+
+        console.warn(`[${this.extensionName}] FIND-PARENT-WITH-CLASS: 找不到包含 .${targetClass} 的父级容器`);
+        return null;
+    }
+
+    /**
      * 设置切换元素的初始状态
      * @param {Element} targetElement - 目标元素
      * @param {Element} sourceElement - 源元素
@@ -587,7 +689,7 @@ class SharingFunctions {
      */
     setInitialToggleState(targetElement, sourceElement, shouldShow, animation) {
         const indicator = sourceElement.querySelector('.toggle-indicator');
-        
+
         if (shouldShow) {
             // 设置为显示状态
             this.showElement(targetElement, 'none'); // 初始化时不使用动画
@@ -704,7 +806,7 @@ class SharingFunctions {
             'left': 'translateX(-100%)',
             'right': 'translateX(100%)'
         };
-        
+
         element.style.transform = transforms[direction] || transforms.down;
         element.style.opacity = '0';
     }
@@ -722,7 +824,7 @@ class SharingFunctions {
      */
     createNPCInfoModal(npc, template) {
         const avatar = npc.avatar ? getThumbnailUrl('avatar', npc.avatar) : '';
-        
+
         return `
             <div class="npc-info-modal-content">
                 <div class="modal-header">
@@ -858,7 +960,7 @@ class SharingFunctions {
         this.closeActiveModal();
         this.closeActiveTooltip();
         this.clearSearchHighlights();
-        
+
         // 移除所有功能绑定
         const functionElements = document.querySelectorAll('[data-function-bound="true"]');
         functionElements.forEach(element => {

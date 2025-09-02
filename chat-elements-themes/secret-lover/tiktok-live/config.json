@@ -1,0 +1,153 @@
+{
+    "template_type": "tiktok-live",
+    "version": "1.0.0",
+    "description": "Secret Lover主题的TikTok直播界面 - 模拟短视频直播互动体验",
+    "data_types": {
+        "general_array": {
+            "description": "通用数组数据类型，自动处理逗号分隔的字符串为数组，每个元素包含name属性",
+            "output_format": "array",
+            "auto_properties": [
+                "name"
+            ],
+            "separator": ","
+        },
+        "numeric_stats": {
+            "description": "数值统计数据类型（点赞数、评论数等）",
+            "output_format": "numeric",
+            "min_value": 0,
+            "max_value": 999999,
+            "default_value": 0,
+            "display_format": "short",
+            "animation": "count-up"
+        },
+        "dialogue_msg": {
+            "description": "对话消息数据类型 - 从span标签innerHTML中获取内容",
+            "output_format": "innerHTML",
+            "source_method": "innerHTML",
+            "supports_markdown": true,
+            "supports_html": true,
+            "max_length": 10000,
+            "encoding": "utf-8"
+        }
+    },
+    "data_mapping": {
+        "{{LLM_DIALOGUE}}": {
+            "source": "llm",
+            "category": "dialogue_msg",
+            "attribute": "data-llm-dialogue",
+            "source_method": "innerHTML",
+            "required": false,
+            "default": "",
+            "description": "LLM输出的直播内容或互动对话"
+        },
+        "{{NPC_SPECIFIC}}": {
+            "source": "llm",
+            "category": "npc_specific",
+            "attribute": "data-npc-name",
+            "required": false,
+            "default": "",
+            "description": "目标NPC角色名称"
+        },
+        "{{NPC_SPECIFIC_AVATAR}}": {
+            "source": "auto",
+            "category": "auto_data",
+            "type": "npc",
+            "attribute": "avatar",
+            "npc_name_source": "{{NPC_SPECIFIC}}",
+            "required": false,
+            "default": "",
+            "description": "NPC头像（自动获取，用作背景）"
+        },
+        "{{LIKE_COUNT}}": {
+            "source": "llm",
+            "category": "numeric_stats",
+            "attribute": "data-like-count",
+            "required": false,
+            "default": "0",
+            "description": "点赞数"
+        },
+        "{{COMMENT_COUNT}}": {
+            "source": "llm",
+            "category": "numeric_stats", 
+            "attribute": "data-comment-count",
+            "required": false,
+            "default": "0",
+            "description": "评论数"
+        },
+        "{{VIEWER_COUNT}}": {
+            "source": "llm",
+            "category": "numeric_stats",
+            "attribute": "data-viewer-count", 
+            "required": false,
+            "default": "0",
+            "description": "观看人数"
+        },
+        "{{LIVE_COMMENTS}}": {
+            "source": "llm",
+            "category": "general_array",
+            "attribute": "data-live-comments",
+            "required": false,
+            "default": "",
+            "description": "实时评论列表，格式: user1:comment1,user2:comment2"
+        },
+        "{{LIVE_STATUS}}": {
+            "source": "llm",
+            "category": "basic_data",
+            "attribute": "data-live-status",
+            "required": false,
+            "default": "直播中",
+            "description": "直播状态（直播中/已结束/即将开始）"
+        },
+        "{{USER_NAME}}": {
+            "source": "auto",
+            "category": "auto_data",
+            "type": "user",
+            "attribute": "name",
+            "required": false,
+            "default": "用户",
+            "description": "用户名称（自动获取）"
+        },
+        "{{USER_AVATAR}}": {
+            "source": "auto",
+            "category": "auto_data",
+            "type": "user",
+            "attribute": "avatar",
+            "required": false,
+            "default": "",
+            "description": "用户头像（自动获取）"
+        }
+    },
+    "validation": {
+        "min_required_fields": 1,
+        "ignore_unknown_attributes": true
+    },
+    "ui_settings": {
+        "live_layout": "portrait",
+        "comment_scroll_speed": "medium",
+        "animation_enabled": true,
+        "auto_scroll_comments": true,
+        "max_visible_comments": 10,
+        "color_scheme": {
+            "primary": "#ff0050",
+            "secondary": "#000000",
+            "accent": "#25f4ee",
+            "background": "linear-gradient(180deg, #000 0%, #1a1a1a 100%)",
+            "text_primary": "#ffffff",
+            "text_secondary": "#c0c0c0"
+        },
+        "icons": {
+            "like": "❤️",
+            "comment": "💬", 
+            "share": "➤",
+            "home": "🏠",
+            "search": "🔍",
+            "compose": "➕",
+            "profile": "👤"
+        }
+    },
+    "effects": {
+        "like_animation": "heart-burst",
+        "comment_scroll": "fade-up",
+        "viewer_count_update": "pulse"
+    }
+}

@@ -72,8 +72,10 @@
 
 /* 段落样式 */
 .cyberpunk-markdown p {
-    margin: 1em 0;
-    color: #e8e8e8;
+	margin: 1em 0;
+	color: #e8e8e8;
+	text-shadow: 0 0 20px purple;
+	font-size: ;
 }
 
 /* 列表样式 */
@@ -127,13 +129,16 @@
 
 /* 引用样式 */
 .cyberpunk-markdown blockquote {
-    border-left: 4px solid #ff2a6d;
-    margin: 1em 0;
-    padding: 0.5em 1em;
-    background: rgba(255, 42, 109, 0.1);
-    border-radius: 0 6px 6px 0;
-    font-style: italic;
-    color: #ffccdd;
+	border-left: 4px solid #ff2a6d;
+	margin: 1em 0;
+	padding: 0.5em 1em;
+	background: rgba(255, 42, 109, 0.1);
+	border-radius: 0 6px 6px 0;
+	/* font-style: italic; */
+	color: #ffccdd;
+	font-weight: bold;
+	/* text-shadow: 0px 0px 5px red; */
+	font-size: 15px;
 }
 
 /* 链接样式 */

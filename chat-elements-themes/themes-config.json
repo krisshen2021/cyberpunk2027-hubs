@@ -6,7 +6,8 @@
     "character-status",
     "dialogue-panel",
     "map-display",
-    "intimate-status"
+    "intimate-status",
+    "tiktok-live"
   ],
   "themes": {
     "cyberpunk": {
@@ -77,6 +78,11 @@
           "name": "亲密状态",
           "description": "动态ML状态显示",
           "enabled": true
+        },
+        "tiktok-live": {
+          "name": "直播互动",
+          "description": "模拟TikTok直播界面的实时互动体验",
+          "enabled": false
         }
       }
     }

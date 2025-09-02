@@ -1,8 +1,9 @@
 {
-    "display_name": "Cyberpunk 2027 hubs",
+    "display_name": "[Muffin] Cyberpunk 2027 hubs",
     "description": "A futuristic, post-apocalyptic theme with customizable layouts and styles.",
     "author": "Muffin",
     "version": "1.0.0",
+    "loading_order": 14,
     "js": "index.js",
     "css": "style.css",
     "settings": "settings.html",

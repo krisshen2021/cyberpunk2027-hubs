@@ -2,185 +2,196 @@
 <!-- 地下恋人的欲望与危险 - 修复数组+背景头像版 -->
 
 <div class="intimate-status-container secret-lover-theme" data-module="intimate-status">
-  
-  <!-- 🔥 对话内容区域 - 支持Markdown格式 -->
-  {{#ifNotEmpty LLM_DIALOGUE}}
-  <div class="intimate-dialogue-section">
-    <div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
-  </div>
-  {{/ifNotEmpty}}
-  
-  <!-- 💕 主要状态栏 - 带NPC背景头像 -->
-  <div class="intimate-status-bar {{#if NPC_SPECIFIC_AVATAR}}has-npc-background{{/if}}" 
-       {{#if NPC_SPECIFIC_AVATAR}}style="--npc-avatar-url: url('{{NPC_SPECIFIC_AVATAR}}')"{{/if}}>
-    
-    
-    <!-- 左侧：核心数值显示 -->
-    <div class="status-metrics-section">
-      
-      <!-- 欲望度指示器 -->
-      <div class="metric-item desire-metric" data-value="{{DESIRE_LEVEL}}" data-max="100">
-        <div class="metric-icon">🔥</div>
-        <div class="metric-info">
-          <div class="metric-label">欲望</div>
-          <div class="metric-bar-container">
-            <div class="metric-bar desire-bar">
-              <div class="metric-fill desire-fill" style="width: {{DESIRE_LEVEL}}%"></div>
-              <div class="metric-glow desire-glow"></div>
+    <div class="img-placeholder" data-role="image-container">
+        <!-- 图像容器将移动到这里 -->
+    </div>
+    <!-- 🔥 对话内容区域 - 支持Markdown格式 -->
+    {{#ifNotEmpty LLM_DIALOGUE}}
+    <div class="intimate-dialogue-section">
+        <div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
+        <!--status bar-->
+        <div>
+            <!-- 核心数值显示 -->
+            <div class="status-metrics-section">
+
+                <!-- 欲望度指示器 -->
+                <div class="metric-item desire-metric" data-value="{{DESIRE_LEVEL}}" data-max="100">
+                    <div class="metric-icon">🔥</div>
+                    <div class="metric-info">
+                        <div class="metric-label">欲望</div>
+                        <div class="metric-value">{{DESIRE_LEVEL}}%</div>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar desire-bar">
+                                <div class="metric-fill desire-fill" style="width: {{DESIRE_LEVEL}}%"></div>
+                                <div class="metric-glow desire-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 体力指示器 -->
+                <div class="metric-item stamina-metric" data-value="{{STAMINA_LEVEL}}" data-max="100">
+                    <div class="metric-icon">⚡</div>
+                    <div class="metric-info">
+                        <div class="metric-label">体力</div>
+                        <div class="metric-value">{{STAMINA_LEVEL}}%</div>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar stamina-bar">
+                                <div class="metric-fill stamina-fill" style="width: {{STAMINA_LEVEL}}%"></div>
+                                <div class="metric-glow stamina-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 爱慕度指示器 -->
+                <div class="metric-item affection-metric" data-value="{{AFFECTION_LEVEL}}" data-max="100">
+                    <div class="metric-icon">💖</div>
+                    <div class="metric-info">
+                        <div class="metric-label">爱慕</div>
+                        <div class="metric-value">{{AFFECTION_LEVEL}}%</div>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar affection-bar">
+                                <div class="metric-fill affection-fill" style="width: {{AFFECTION_LEVEL}}%"></div>
+                                <div class="metric-glow affection-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 防备度指示器 -->
+                <div class="metric-item guard-metric" data-value="{{GUARD_LEVEL}}" data-max="100">
+                    <div class="metric-icon">🛡️</div>
+                    <div class="metric-info">
+                        <div class="metric-label">防备</div>
+                        <div class="metric-value">{{GUARD_LEVEL}}%</div>
+                        <div class="metric-bar-container">
+                            <div class="metric-bar guard-bar">
+                                <div class="metric-fill guard-fill" style="width: {{GUARD_LEVEL}}%"></div>
+                                <div class="metric-glow guard-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-          </div>
-          <div class="metric-value">{{DESIRE_LEVEL}}%</div>
         </div>
-      </div>
-      
-      <!-- 体力指示器 -->  
-      <div class="metric-item stamina-metric" data-value="{{STAMINA_LEVEL}}" data-max="100">
-        <div class="metric-icon">⚡</div>
-        <div class="metric-info">
-          <div class="metric-label">体力</div>
-          <div class="metric-bar-container">
-            <div class="metric-bar stamina-bar">
-              <div class="metric-fill stamina-fill" style="width: {{STAMINA_LEVEL}}%"></div>
-              <div class="metric-glow stamina-glow"></div>
+    </div>
+    {{/ifNotEmpty}}
+
+
+    <!-- 💕 主要状态栏 - 带NPC背景头像 -->
+    <div class="intimate-status-bar {{#if NPC_SPECIFIC_AVATAR}}has-npc-background{{/if}}" {{#if
+        NPC_SPECIFIC_AVATAR}}style="--npc-avatar-url: url('{{NPC_SPECIFIC_AVATAR}}')" {{/if}}>
+
+        <!--npc info area-->
+        <div>
+            <!-- 关系信息 -->
+            <div class="relationship-section">
+
+                <!-- NPC基础信息 -->
+                {{#ifExists NPC_SPECIFIC}}
+                <div class="npc-basic-info">
+                    <div class="npc-name-display">{{NPC_SPECIFIC}}</div>
+                    {{#if NPC_MOOD}}
+                    <div class="npc-mood-display">情绪: {{NPC_MOOD}}</div>
+                    {{/if}}
+                    {{#if NPC_ATTITUDE}}
+                    <div class="npc-attitude-display">态度: {{NPC_ATTITUDE}}</div>
+                    {{/if}}
+                </div>
+                {{/ifExists}}
+
+                <!-- 当前关系状态 -->
+                <div class="relationship-status-card">
+                    <div class="relationship-label">当前关系</div>
+                    <div class="relationship-value {{CURRENT_RELATIONSHIP}}">{{CURRENT_RELATIONSHIP}}</div>
+                    {{#if SCENE_AMBIANCE}}
+                    <div class="scene-ambiance">{{SCENE_AMBIANCE}}</div>
+                    {{/if}}
+                    {{#if DANGER_LEVEL}}
+                    <div class="danger-indicator" data-danger="{{DANGER_LEVEL}}">
+                        <div class="danger-icon">⚠️</div>
+                        <div class="danger-level">{{DANGER_LEVEL}}%</div>
+                    </div>
+                    {{/if}}
+                </div>
+
+
+
+                <!-- 右侧：解锁内容 -->
+
+
+                <!-- 可折叠的解锁互动 -->
+                {{#ifNotEmpty UNLOCKED_INTERACTIONS}}
+                <div class="unlocked-group">
+                    <div class="unlocked-header"
+                        data-function="toggle-wrapper(unlocked-interactions-content, init_show=false)">
+                        <div class="toggle-indicator">▶</div>
+                        <div class="unlocked-title">解锁互动 ({{UNLOCKED_INTERACTIONS.length}})</div>
+                    </div>
+                    <div class="unlocked-content" id="unlocked-interactions-content">
+                        {{#each UNLOCKED_INTERACTIONS}}
+                        <div class="unlocked-item interaction-item">
+                            <span class="item-name">{{name}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/ifNotEmpty}}
+
+                <!-- 可折叠的解锁装备 -->
+                {{#ifNotEmpty UNLOCKED_EQUIPMENT}}
+                <div class="unlocked-group">
+                    <div class="unlocked-header"
+                        data-function="toggle-wrapper(unlocked-equipment-content, init_show=false)">
+                        <div class="toggle-indicator">▶</div>
+                        <div class="unlocked-title">解锁装备 ({{UNLOCKED_EQUIPMENT.length}})</div>
+                    </div>
+                    <div class="unlocked-content" id="unlocked-equipment-content">
+                        {{#each UNLOCKED_EQUIPMENT}}
+                        <div class="unlocked-item equipment-item">
+                            <span class="item-name">{{name}}</span>
+                        </div>
+                        {{/each}}
+                    </div>
+                </div>
+                {{/ifNotEmpty}}
+
+
+
             </div>
-          </div>
-          <div class="metric-value">{{STAMINA_LEVEL}}%</div>
         </div>
-      </div>
-      
-      <!-- 爱慕度指示器 -->
-      <div class="metric-item affection-metric" data-value="{{AFFECTION_LEVEL}}" data-max="100">
-        <div class="metric-icon">💖</div>
-        <div class="metric-info">
-          <div class="metric-label">爱慕</div>
-          <div class="metric-bar-container">
-            <div class="metric-bar affection-bar">
-              <div class="metric-fill affection-fill" style="width: {{AFFECTION_LEVEL}}%"></div>
-              <div class="metric-glow affection-glow"></div>
-            </div>
-          </div>
-          <div class="metric-value">{{AFFECTION_LEVEL}}%</div>
-        </div>
-      </div>
-      
-      <!-- 防备度指示器 -->
-      <div class="metric-item guard-metric" data-value="{{GUARD_LEVEL}}" data-max="100">
-        <div class="metric-icon">🛡️</div>
-        <div class="metric-info">
-          <div class="metric-label">防备</div>
-          <div class="metric-bar-container">
-            <div class="metric-bar guard-bar">
-              <div class="metric-fill guard-fill" style="width: {{GUARD_LEVEL}}%"></div>
-              <div class="metric-glow guard-glow"></div>
-            </div>
-          </div>
-          <div class="metric-value">{{GUARD_LEVEL}}%</div>
-        </div>
-      </div>
-      
+
+
+
+
+
     </div>
-    
-    <!-- 中间：关系信息 -->
-    <div class="relationship-section">
-      
-      <!-- 当前关系状态 -->
-      <div class="relationship-status-card">
-        <div class="relationship-header">
-          <div class="relationship-label">当前关系</div>
-          {{#if DANGER_LEVEL}}
-          <div class="danger-indicator" data-danger="{{DANGER_LEVEL}}">
-            <div class="danger-icon">⚠️</div>
-            <div class="danger-level">{{DANGER_LEVEL}}%</div>
-          </div>
-          {{/if}}
+
+    <!-- 🌟 特殊效果层 - 满值时的视觉盛宴 -->
+    <div class="special-effects-overlay">
+        <!-- 欲望满值效果 -->
+        <div class="max-effect desire-max-effect" data-trigger-value="{{DESIRE_LEVEL}}">
+            <div class="fire-particles"></div>
         </div>
-        <div class="relationship-value {{CURRENT_RELATIONSHIP}}">{{CURRENT_RELATIONSHIP}}</div>
-        {{#if SCENE_AMBIANCE}}
-        <div class="scene-ambiance">{{SCENE_AMBIANCE}}</div>
-        {{/if}}
-      </div>
-      
-      <!-- NPC基础信息 -->
-      {{#ifExists NPC_SPECIFIC}}
-      <div class="npc-basic-info">
-        <div class="npc-name-display">{{NPC_SPECIFIC}}</div>
-        {{#if NPC_MOOD}}
-        <div class="npc-mood-display">情绪: {{NPC_MOOD}}</div>
-        {{/if}}
-        {{#if NPC_ATTITUDE}}
-        <div class="npc-attitude-display">态度: {{NPC_ATTITUDE}}</div>
-        {{/if}}
-      </div>
-      {{/ifExists}}
-      
-    </div>
-    
-    <!-- 右侧：解锁内容 -->
-    <div class="unlocked-section">
-      
-      <!-- 可折叠的解锁互动 -->
-      {{#ifNotEmpty UNLOCKED_INTERACTIONS}}
-      <div class="unlocked-group">
-        <div class="unlocked-header" data-function="toggle-wrapper(unlocked-interactions-content, init_show=false)">
-          <div class="toggle-indicator">▶</div>
-          <div class="unlocked-title">🎭 互动 ({{UNLOCKED_INTERACTIONS.length}})</div>
+
+        <!-- 爱慕满值效果 -->
+        <div class="max-effect affection-max-effect" data-trigger-value="{{AFFECTION_LEVEL}}">
+            <div class="heart-particles"></div>
         </div>
-        <div class="unlocked-content" id="unlocked-interactions-content">
-          {{#each UNLOCKED_INTERACTIONS}}
-          <div class="unlocked-item interaction-item">
-            <span class="item-icon">🎭</span>
-            <span class="item-name">{{name}}</span>
-          </div>
-          {{/each}}
+
+        <!-- 体力满值效果 -->
+        <div class="max-effect stamina-max-effect" data-trigger-value="{{STAMINA_LEVEL}}">
+            <div class="energy-wave"></div>
         </div>
-      </div>
-      {{/ifNotEmpty}}
-      
-      <!-- 可折叠的解锁装备 -->
-      {{#ifNotEmpty UNLOCKED_EQUIPMENT}}
-      <div class="unlocked-group">
-        <div class="unlocked-header" data-function="toggle-wrapper(unlocked-equipment-content, init_show=false)">
-          <div class="toggle-indicator">▶</div>
-          <div class="unlocked-title">🎨 装备 ({{UNLOCKED_EQUIPMENT.length}})</div>
-        </div>
-        <div class="unlocked-content" id="unlocked-equipment-content">
-          {{#each UNLOCKED_EQUIPMENT}}
-          <div class="unlocked-item equipment-item">
-            <span class="item-icon">🎨</span>
-            <span class="item-name">{{name}}</span>
-          </div>
-          {{/each}}
-        </div>
-      </div>
-      {{/ifNotEmpty}}
-      
     </div>
-    
-  </div>
-  
-  <!-- 🌟 特殊效果层 - 满值时的视觉盛宴 -->
-  <div class="special-effects-overlay">
-    <!-- 欲望满值效果 -->
-    <div class="max-effect desire-max-effect" data-trigger-value="{{DESIRE_LEVEL}}">
-      <div class="fire-particles"></div>
-    </div>
-    
-    <!-- 爱慕满值效果 -->
-    <div class="max-effect affection-max-effect" data-trigger-value="{{AFFECTION_LEVEL}}">
-      <div class="heart-particles"></div>
-    </div>
-    
-    <!-- 体力满值效果 -->
-    <div class="max-effect stamina-max-effect" data-trigger-value="{{STAMINA_LEVEL}}">
-      <div class="energy-wave"></div>
-    </div>
-  </div>
-  
+
 </div>
 
 <!-- 调试信息 (开发时可见) -->
 {{#if debug}}
 <div class="debug-panel" style="display: none;">
-  <pre>{{json this}}</pre>
+    <pre>{{json this}}</pre>
 </div>
 {{/if}}

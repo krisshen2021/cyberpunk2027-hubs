@@ -1,0 +1,168 @@
+<!-- Secret Lover - TikTok Live 直播界面 v1.0 -->
+<!-- 模拟短视频直播互动体验 -->
+
+<div class="tiktok-live-container secret-lover-theme" data-module="tiktok-live">
+    <!-- 图像占位符 - 主要视频区域 -->
+    <div class="live-video-area {{#if NPC_SPECIFIC_AVATAR}}has-npc-background{{/if}}" {{#if NPC_SPECIFIC_AVATAR}}style="--npc-avatar-url: url('{{NPC_SPECIFIC_AVATAR}}')" {{/if}}>
+        <div class="img-placeholder" data-role="image-container">
+            <!-- 图像容器将移动到这里 -->
+        </div>
+        
+        <!-- 直播状态覆盖层 -->
+        <div class="live-status-overlay">
+            <div class="live-indicator {{LIVE_STATUS}}">
+                <div class="live-dot"></div>
+                <span class="live-text">{{LIVE_STATUS}}</span>
+            </div>
+            
+            <!-- 观看人数 -->
+            {{#if VIEWER_COUNT}}
+            <div class="viewer-count">
+                <div class="viewer-icon">👁️</div>
+                <span class="viewer-number" data-count="{{VIEWER_COUNT}}">{{VIEWER_COUNT}}</span>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+
+    <!-- 背景评论流层 - 独立容器，覆盖整个屏幕下半部分 -->
+    {{#ifNotEmpty LIVE_COMMENTS}}
+    <div class="live-comments-background">
+        <div class="comments-container">
+            <!-- 第一组评论 -->
+            <div class="comments-group">
+                {{#each LIVE_COMMENTS}}
+                <div class="live-comment-item" data-comment-index="{{@index}}">
+                    <div class="comment-avatar">
+                        <div class="comment-default-avatar" data-comment-hash="{{@index}}">
+                            👤
+                        </div>
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-full-text">{{name}}</div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            <!-- 第二组评论（复制，用于无缝循环） -->
+            <div class="comments-group">
+                {{#each LIVE_COMMENTS}}
+                <div class="live-comment-item" data-comment-index="{{@index}}">
+                    <div class="comment-avatar">
+                        <div class="comment-default-avatar" data-comment-hash="{{@index}}">
+                            👤
+                        </div>
+                    </div>
+                    <div class="comment-content">
+                        <div class="comment-full-text">{{name}}</div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+    {{/ifNotEmpty}}
+
+    <!-- 主要对话内容区域（如果有） - 覆盖在评论流上方 -->
+    {{#ifNotEmpty LLM_DIALOGUE}}
+    <div class="live-dialogue-section">
+        <div class="dialogue-content" data-function="show_markdown()">{{{LLM_DIALOGUE}}}</div>
+    </div>
+    {{/ifNotEmpty}}
+
+    <!-- 右侧交互区域 -->
+    <div class="tiktok-right-sidebar">
+        <!-- 主播头像 -->
+        {{#ifExists NPC_SPECIFIC}}
+        <div class="streamer-avatar-section">
+            {{#if NPC_SPECIFIC_AVATAR}}
+            <div class="streamer-avatar has-avatar" style="--avatar-url: url('{{NPC_SPECIFIC_AVATAR}}')"></div>
+            {{else}}
+            <div class="streamer-avatar default-avatar">{{NPC_SPECIFIC.[0]}}</div>
+            {{/if}}
+            <div class="streamer-name">{{NPC_SPECIFIC}}</div>
+            <div class="follow-btn">+</div>
+        </div>
+        {{/ifExists}}
+
+        <!-- 点赞按钮和数量 -->
+        <div class="interaction-item like-section">
+            <div class="interaction-icon like-icon" data-function="animate-like()">
+                <div class="like-heart">❤️</div>
+                <div class="like-burst"></div>
+            </div>
+            <div class="interaction-count like-count" data-count="{{LIKE_COUNT}}">{{LIKE_COUNT}}</div>
+        </div>
+
+        <!-- 评论按钮和数量 -->
+        <div class="interaction-item comment-section">
+            <div class="interaction-icon comment-icon">
+                <div class="comment-bubble">💬</div>
+            </div>
+            <div class="interaction-count comment-count" data-count="{{COMMENT_COUNT}}">{{COMMENT_COUNT}}</div>
+        </div>
+
+        <!-- 分享按钮 -->
+        <div class="interaction-item share-section">
+            <div class="interaction-icon share-icon">
+                <div class="share-arrow">➤</div>
+            </div>
+            <div class="interaction-count share-count">分享</div>
+        </div>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="tiktok-bottom-bar">
+        <div class="nav-item home-nav active">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">首页</div>
+        </div>
+        
+        <div class="nav-item search-nav">
+            <div class="nav-icon">🔍</div>
+            <div class="nav-label">搜索</div>
+        </div>
+        
+        <div class="nav-item compose-nav">
+            <div class="nav-icon compose-plus">➕</div>
+            <div class="nav-label"></div>
+        </div>
+        
+        <div class="nav-item notifications-nav">
+            <div class="nav-icon">💬</div>
+            <div class="nav-label">消息</div>
+        </div>
+        
+        <div class="nav-item profile-nav">
+            <div class="nav-icon">
+                {{#if USER_AVATAR}}
+                <img src="{{USER_AVATAR}}" alt="{{USER_NAME}}" class="profile-avatar">
+                {{else}}
+                <div class="default-profile">👤</div>
+                {{/if}}
+            </div>
+            <div class="nav-label">我</div>
+        </div>
+    </div>
+
+    <!-- 特殊效果层 -->
+    <div class="tiktok-effects-overlay">
+        <!-- 点赞爆炸效果 -->
+        <div class="like-explosion-area"></div>
+        
+        <!-- 飘浮的心形动画 -->
+        <div class="floating-hearts"></div>
+        
+        <!-- 评论弹幕效果 -->
+        <div class="comment-danmaku"></div>
+    </div>
+
+</div>
+
+<!-- 调试信息 (开发时可见) -->
+{{#if debug}}
+<div class="debug-panel" style="display: none;">
+    <h4>TikTok Live Debug Info:</h4>
+    <pre>{{json this}}</pre>
+</div>
+{{/if}}
